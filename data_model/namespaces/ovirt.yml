@@ -1,0 +1,46 @@
+
+namespace:
+  name: ovirt
+  type: group
+  description: >
+    Namespace for ovirt metadata.
+  fields:
+  - name: entity
+    type: keyword
+    description: >
+      The type of the data source, hosts, vms, engine etc.
+
+  - name: host_id
+    type: keyword
+    description: >
+      The oVirt host UUID.
+
+  - name: engine_fqdn
+    type: keyword
+    description: >
+      FQDN of the oVirt engine.
+
+  - name: cluster_name
+    type: keyword
+    description: >
+      Cluster name of the oVirt host.
+
+  - name: class
+    type: keyword
+    description: >
+      Class name of the oVirt host.
+
+  - name: module_lineno
+    type: keyword
+    description: >
+      Module and line number of the oVirt host.
+
+  - name: thread
+    type: keyword
+    description: >
+      Thread name of the oVirt host.
+
+  - name: correlationid
+    type: keyword
+    description: >
+      Correlation ID of the oVirt host.

@@ -1,0 +1,47 @@
+version: 2016.03.10.0
+
+defaults:
+  type: keyword
+  doc_values: true
+  index: true
+
+openstack:
+  type: group
+  description: >
+    Mapping specifically for openstack. Inherits all the fields from __default__
+    _type of the documents in this mapping should be openstack
+  fields:
+    - name: openstack
+      type: group
+      product_subgroup: true
+      description: >
+        TODO.
+      norms: true
+      fields:
+        - name: instance
+          type: keyword
+          description: >
+            TODO.
+          norms: true
+
+        - name: context
+          type: keyword
+          description: >
+            We understand this to be a value scraped from the originating HTTP REST API request so that one can track related API requests throughout the stack, as such it is an identifier and should not be tokenized when indexed.
+          norms: true
+
+        - name: class
+          type: keyword
+          description: >
+            TODO.
+          norms: true
+            
+        - name: region
+          type: keyword
+          description: >
+            Region mapping  
+          norms: true
+
+doc_sections:
+  - ["_default_", "Common logging metadata"]
+  - ["openstack", "OpenStack-specific information"]
