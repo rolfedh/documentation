@@ -1,0 +1,5554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.12">
+<title>Loki</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<style>
+/* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
+/* Uncomment @import statement to use as custom stylesheet */
+/*@import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700";*/
+article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section{display:block}
+audio,video{display:inline-block}
+audio:not([controls]){display:none;height:0}
+html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}
+a{background:none}
+a:focus{outline:thin dotted}
+a:active,a:hover{outline:0}
+h1{font-size:2em;margin:.67em 0}
+abbr[title]{border-bottom:1px dotted}
+b,strong{font-weight:bold}
+dfn{font-style:italic}
+hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0}
+mark{background:#ff0;color:#000}
+code,kbd,pre,samp{font-family:monospace;font-size:1em}
+pre{white-space:pre-wrap}
+q{quotes:"\201C" "\201D" "\2018" "\2019"}
+small{font-size:80%}
+sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}
+sup{top:-.5em}
+sub{bottom:-.25em}
+img{border:0}
+svg:not(:root){overflow:hidden}
+figure{margin:0}
+fieldset{border:1px solid silver;margin:0 2px;padding:.35em .625em .75em}
+legend{border:0;padding:0}
+button,input,select,textarea{font-family:inherit;font-size:100%;margin:0}
+button,input{line-height:normal}
+button,select{text-transform:none}
+button,html input[type="button"],input[type="reset"],input[type="submit"]{-webkit-appearance:button;cursor:pointer}
+button[disabled],html input[disabled]{cursor:default}
+input[type="checkbox"],input[type="radio"]{box-sizing:border-box;padding:0}
+button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}
+textarea{overflow:auto;vertical-align:top}
+table{border-collapse:collapse;border-spacing:0}
+*,*::before,*::after{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}
+html,body{font-size:100%}
+body{background:#fff;color:rgba(0,0,0,.8);padding:0;margin:0;font-family:"Noto Serif","DejaVu Serif",serif;font-weight:400;font-style:normal;line-height:1;position:relative;cursor:auto;tab-size:4;word-wrap:anywhere;-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased}
+a:hover{cursor:pointer}
+img,object,embed{max-width:100%;height:auto}
+object,embed{height:100%}
+img{-ms-interpolation-mode:bicubic}
+.left{float:left!important}
+.right{float:right!important}
+.text-left{text-align:left!important}
+.text-right{text-align:right!important}
+.text-center{text-align:center!important}
+.text-justify{text-align:justify!important}
+.hide{display:none}
+img,object,svg{display:inline-block;vertical-align:middle}
+textarea{height:auto;min-height:50px}
+select{width:100%}
+.subheader,.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{line-height:1.45;color:#7a2518;font-weight:400;margin-top:0;margin-bottom:.25em}
+div,dl,dt,dd,ul,ol,li,h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6,pre,form,p,blockquote,th,td{margin:0;padding:0}
+a{color:#2156a5;text-decoration:underline;line-height:inherit}
+a:hover,a:focus{color:#1d4b8f}
+a img{border:0}
+p{font-family:inherit;font-weight:400;font-size:1em;line-height:1.6;margin-bottom:1.25em;text-rendering:optimizeLegibility}
+p aside{font-size:.875em;line-height:1.35;font-style:italic}
+h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{font-family:"Open Sans","DejaVu Sans",sans-serif;font-weight:300;font-style:normal;color:#ba3925;text-rendering:optimizeLegibility;margin-top:1em;margin-bottom:.5em;line-height:1.0125em}
+h1 small,h2 small,h3 small,#toctitle small,.sidebarblock>.content>.title small,h4 small,h5 small,h6 small{font-size:60%;color:#e99b8f;line-height:0}
+h1{font-size:2.125em}
+h2{font-size:1.6875em}
+h3,#toctitle,.sidebarblock>.content>.title{font-size:1.375em}
+h4,h5{font-size:1.125em}
+h6{font-size:1em}
+hr{border:solid #dddddf;border-width:1px 0 0;clear:both;margin:1.25em 0 1.1875em;height:0}
+em,i{font-style:italic;line-height:inherit}
+strong,b{font-weight:bold;line-height:inherit}
+small{font-size:60%;line-height:inherit}
+code{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;color:rgba(0,0,0,.9)}
+ul,ol,dl{font-size:1em;line-height:1.6;margin-bottom:1.25em;list-style-position:outside;font-family:inherit}
+ul,ol{margin-left:1.5em}
+ul li ul,ul li ol{margin-left:1.25em;margin-bottom:0;font-size:1em}
+ul.square li ul,ul.circle li ul,ul.disc li ul{list-style:inherit}
+ul.square{list-style-type:square}
+ul.circle{list-style-type:circle}
+ul.disc{list-style-type:disc}
+ol li ul,ol li ol{margin-left:1.25em;margin-bottom:0}
+dl dt{margin-bottom:.3125em;font-weight:bold}
+dl dd{margin-bottom:1.25em}
+abbr,acronym{text-transform:uppercase;font-size:90%;color:rgba(0,0,0,.8);border-bottom:1px dotted #ddd;cursor:help}
+abbr{text-transform:none}
+blockquote{margin:0 0 1.25em;padding:.5625em 1.25em 0 1.1875em;border-left:1px solid #ddd}
+blockquote cite{display:block;font-size:.9375em;color:rgba(0,0,0,.6)}
+blockquote cite::before{content:"\2014 \0020"}
+blockquote cite a,blockquote cite a:visited{color:rgba(0,0,0,.6)}
+blockquote,blockquote p{line-height:1.6;color:rgba(0,0,0,.85)}
+@media screen and (min-width:768px){h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2}
+h1{font-size:2.75em}
+h2{font-size:2.3125em}
+h3,#toctitle,.sidebarblock>.content>.title{font-size:1.6875em}
+h4{font-size:1.4375em}}
+table{background:#fff;margin-bottom:1.25em;border:solid 1px #dedede;word-wrap:normal}
+table thead,table tfoot{background:#f7f8f7}
+table thead tr th,table thead tr td,table tfoot tr th,table tfoot tr td{padding:.5em .625em .625em;font-size:inherit;color:rgba(0,0,0,.8);text-align:left}
+table tr th,table tr td{padding:.5625em .625em;font-size:inherit;color:rgba(0,0,0,.8)}
+table tr.even,table tr.alt{background:#f8f8f7}
+table thead tr th,table tfoot tr th,table tbody tr td,table tr td,table tfoot tr td{line-height:1.6}
+h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2;word-spacing:-.05em}
+h1 strong,h2 strong,h3 strong,#toctitle strong,.sidebarblock>.content>.title strong,h4 strong,h5 strong,h6 strong{font-weight:400}
+.center{margin-left:auto;margin-right:auto}
+.stretch{width:100%}
+.clearfix::before,.clearfix::after,.float-group::before,.float-group::after{content:" ";display:table}
+.clearfix::after,.float-group::after{clear:both}
+:not(pre).nobreak{word-wrap:normal}
+:not(pre).nowrap{white-space:nowrap}
+:not(pre).pre-wrap{white-space:pre-wrap}
+:not(pre):not([class^=L])>code{font-size:.9375em;font-style:normal!important;letter-spacing:0;padding:.1em .5ex;word-spacing:-.15em;background:#f7f7f8;-webkit-border-radius:4px;border-radius:4px;line-height:1.45;text-rendering:optimizeSpeed}
+pre{color:rgba(0,0,0,.9);font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;line-height:1.45;text-rendering:optimizeSpeed}
+pre code,pre pre{color:inherit;font-size:inherit;line-height:inherit}
+pre>code{display:block}
+pre.nowrap,pre.nowrap pre{white-space:pre;word-wrap:normal}
+em em{font-style:normal}
+strong strong{font-weight:400}
+.keyseq{color:rgba(51,51,51,.8)}
+kbd{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;display:inline-block;color:rgba(0,0,0,.8);font-size:.65em;line-height:1.45;background:#f7f7f7;border:1px solid #ccc;-webkit-border-radius:3px;border-radius:3px;-webkit-box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em white inset;box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em #fff inset;margin:0 .15em;padding:.2em .5em;vertical-align:middle;position:relative;top:-.1em;white-space:nowrap}
+.keyseq kbd:first-child{margin-left:0}
+.keyseq kbd:last-child{margin-right:0}
+.menuseq,.menuref{color:#000}
+.menuseq b:not(.caret),.menuref{font-weight:inherit}
+.menuseq{word-spacing:-.02em}
+.menuseq b.caret{font-size:1.25em;line-height:.8}
+.menuseq i.caret{font-weight:bold;text-align:center;width:.45em}
+b.button::before,b.button::after{position:relative;top:-1px;font-weight:400}
+b.button::before{content:"[";padding:0 3px 0 2px}
+b.button::after{content:"]";padding:0 2px 0 3px}
+p a>code:hover{color:rgba(0,0,0,.9)}
+#header,#content,#footnotes,#footer{width:100%;margin-left:auto;margin-right:auto;margin-top:0;margin-bottom:0;max-width:62.5em;*zoom:1;position:relative;padding-left:.9375em;padding-right:.9375em}
+#header::before,#header::after,#content::before,#content::after,#footnotes::before,#footnotes::after,#footer::before,#footer::after{content:" ";display:table}
+#header::after,#content::after,#footnotes::after,#footer::after{clear:both}
+#content{margin-top:1.25em}
+#content::before{content:none}
+#header>h1:first-child{color:rgba(0,0,0,.85);margin-top:2.25rem;margin-bottom:0}
+#header>h1:first-child+#toc{margin-top:8px;border-top:1px solid #dddddf}
+#header>h1:only-child,body.toc2 #header>h1:nth-last-child(2){border-bottom:1px solid #dddddf;padding-bottom:8px}
+#header .details{border-bottom:1px solid #dddddf;line-height:1.45;padding-top:.25em;padding-bottom:.25em;padding-left:.25em;color:rgba(0,0,0,.6);display:-ms-flexbox;display:-webkit-flex;display:flex;-ms-flex-flow:row wrap;-webkit-flex-flow:row wrap;flex-flow:row wrap}
+#header .details span:first-child{margin-left:-.125em}
+#header .details span.email a{color:rgba(0,0,0,.85)}
+#header .details br{display:none}
+#header .details br+span::before{content:"\00a0\2013\00a0"}
+#header .details br+span.author::before{content:"\00a0\22c5\00a0";color:rgba(0,0,0,.85)}
+#header .details br+span#revremark::before{content:"\00a0|\00a0"}
+#header #revnumber{text-transform:capitalize}
+#header #revnumber::after{content:"\00a0"}
+#content>h1:first-child:not([class]){color:rgba(0,0,0,.85);border-bottom:1px solid #dddddf;padding-bottom:8px;margin-top:0;padding-top:1rem;margin-bottom:1.25rem}
+#toc{border-bottom:1px solid #e7e7e9;padding-bottom:.5em}
+#toc>ul{margin-left:.125em}
+#toc ul.sectlevel0>li>a{font-style:italic}
+#toc ul.sectlevel0 ul.sectlevel1{margin:.5em 0}
+#toc ul{font-family:"Open Sans","DejaVu Sans",sans-serif;list-style-type:none}
+#toc li{line-height:1.3334;margin-top:.3334em}
+#toc a{text-decoration:none}
+#toc a:active{text-decoration:underline}
+#toctitle{color:#7a2518;font-size:1.2em}
+@media screen and (min-width:768px){#toctitle{font-size:1.375em}
+body.toc2{padding-left:15em;padding-right:0}
+#toc.toc2{margin-top:0!important;background:#f8f8f7;position:fixed;width:15em;left:0;top:0;border-right:1px solid #e7e7e9;border-top-width:0!important;border-bottom-width:0!important;z-index:1000;padding:1.25em 1em;height:100%;overflow:auto}
+#toc.toc2 #toctitle{margin-top:0;margin-bottom:.8rem;font-size:1.2em}
+#toc.toc2>ul{font-size:.9em;margin-bottom:0}
+#toc.toc2 ul ul{margin-left:0;padding-left:1em}
+#toc.toc2 ul.sectlevel0 ul.sectlevel1{padding-left:0;margin-top:.5em;margin-bottom:.5em}
+body.toc2.toc-right{padding-left:0;padding-right:15em}
+body.toc2.toc-right #toc.toc2{border-right-width:0;border-left:1px solid #e7e7e9;left:auto;right:0}}
+@media screen and (min-width:1280px){body.toc2{padding-left:20em;padding-right:0}
+#toc.toc2{width:20em}
+#toc.toc2 #toctitle{font-size:1.375em}
+#toc.toc2>ul{font-size:.95em}
+#toc.toc2 ul ul{padding-left:1.25em}
+body.toc2.toc-right{padding-left:0;padding-right:20em}}
+#content #toc{border-style:solid;border-width:1px;border-color:#e0e0dc;margin-bottom:1.25em;padding:1.25em;background:#f8f8f7;-webkit-border-radius:4px;border-radius:4px}
+#content #toc>:first-child{margin-top:0}
+#content #toc>:last-child{margin-bottom:0}
+#footer{max-width:none;background:rgba(0,0,0,.8);padding:1.25em}
+#footer-text{color:rgba(255,255,255,.8);line-height:1.44}
+#content{margin-bottom:.625em}
+.sect1{padding-bottom:.625em}
+@media screen and (min-width:768px){#content{margin-bottom:1.25em}
+.sect1{padding-bottom:1.25em}}
+.sect1:last-child{padding-bottom:0}
+.sect1+.sect1{border-top:1px solid #e7e7e9}
+#content h1>a.anchor,h2>a.anchor,h3>a.anchor,#toctitle>a.anchor,.sidebarblock>.content>.title>a.anchor,h4>a.anchor,h5>a.anchor,h6>a.anchor{position:absolute;z-index:1001;width:1.5ex;margin-left:-1.5ex;display:block;text-decoration:none!important;visibility:hidden;text-align:center;font-weight:400}
+#content h1>a.anchor::before,h2>a.anchor::before,h3>a.anchor::before,#toctitle>a.anchor::before,.sidebarblock>.content>.title>a.anchor::before,h4>a.anchor::before,h5>a.anchor::before,h6>a.anchor::before{content:"\00A7";font-size:.85em;display:block;padding-top:.1em}
+#content h1:hover>a.anchor,#content h1>a.anchor:hover,h2:hover>a.anchor,h2>a.anchor:hover,h3:hover>a.anchor,#toctitle:hover>a.anchor,.sidebarblock>.content>.title:hover>a.anchor,h3>a.anchor:hover,#toctitle>a.anchor:hover,.sidebarblock>.content>.title>a.anchor:hover,h4:hover>a.anchor,h4>a.anchor:hover,h5:hover>a.anchor,h5>a.anchor:hover,h6:hover>a.anchor,h6>a.anchor:hover{visibility:visible}
+#content h1>a.link,h2>a.link,h3>a.link,#toctitle>a.link,.sidebarblock>.content>.title>a.link,h4>a.link,h5>a.link,h6>a.link{color:#ba3925;text-decoration:none}
+#content h1>a.link:hover,h2>a.link:hover,h3>a.link:hover,#toctitle>a.link:hover,.sidebarblock>.content>.title>a.link:hover,h4>a.link:hover,h5>a.link:hover,h6>a.link:hover{color:#a53221}
+details,.audioblock,.imageblock,.literalblock,.listingblock,.stemblock,.videoblock{margin-bottom:1.25em}
+details>summary:first-of-type{cursor:pointer;display:list-item;outline:none;margin-bottom:.75em}
+.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{text-rendering:optimizeLegibility;text-align:left;font-family:"Noto Serif","DejaVu Serif",serif;font-size:1rem;font-style:italic}
+table.tableblock.fit-content>caption.title{white-space:nowrap;width:0}
+.paragraph.lead>p,#preamble>.sectionbody>[class="paragraph"]:first-of-type p{font-size:1.21875em;line-height:1.6;color:rgba(0,0,0,.85)}
+table.tableblock #preamble>.sectionbody>[class="paragraph"]:first-of-type p{font-size:inherit}
+.admonitionblock>table{border-collapse:separate;border:0;background:none;width:100%}
+.admonitionblock>table td.icon{text-align:center;width:80px}
+.admonitionblock>table td.icon img{max-width:none}
+.admonitionblock>table td.icon .title{font-weight:bold;font-family:"Open Sans","DejaVu Sans",sans-serif;text-transform:uppercase}
+.admonitionblock>table td.content{padding-left:1.125em;padding-right:1.25em;border-left:1px solid #dddddf;color:rgba(0,0,0,.6);word-wrap:anywhere}
+.admonitionblock>table td.content>:last-child>:last-child{margin-bottom:0}
+.exampleblock>.content{border-style:solid;border-width:1px;border-color:#e6e6e6;margin-bottom:1.25em;padding:1.25em;background:#fff;-webkit-border-radius:4px;border-radius:4px}
+.exampleblock>.content>:first-child{margin-top:0}
+.exampleblock>.content>:last-child{margin-bottom:0}
+.sidebarblock{border-style:solid;border-width:1px;border-color:#dbdbd6;margin-bottom:1.25em;padding:1.25em;background:#f3f3f2;-webkit-border-radius:4px;border-radius:4px}
+.sidebarblock>:first-child{margin-top:0}
+.sidebarblock>:last-child{margin-bottom:0}
+.sidebarblock>.content>.title{color:#7a2518;margin-top:0;text-align:center}
+.exampleblock>.content>:last-child>:last-child,.exampleblock>.content .olist>ol>li:last-child>:last-child,.exampleblock>.content .ulist>ul>li:last-child>:last-child,.exampleblock>.content .qlist>ol>li:last-child>:last-child,.sidebarblock>.content>:last-child>:last-child,.sidebarblock>.content .olist>ol>li:last-child>:last-child,.sidebarblock>.content .ulist>ul>li:last-child>:last-child,.sidebarblock>.content .qlist>ol>li:last-child>:last-child{margin-bottom:0}
+.literalblock pre,.listingblock>.content>pre{-webkit-border-radius:4px;border-radius:4px;overflow-x:auto;padding:1em;font-size:.8125em}
+@media screen and (min-width:768px){.literalblock pre,.listingblock>.content>pre{font-size:.90625em}}
+@media screen and (min-width:1280px){.literalblock pre,.listingblock>.content>pre{font-size:1em}}
+.literalblock pre,.listingblock>.content>pre:not(.highlight),.listingblock>.content>pre[class="highlight"],.listingblock>.content>pre[class^="highlight "]{background:#f7f7f8}
+.literalblock.output pre{color:#f7f7f8;background:rgba(0,0,0,.9)}
+.listingblock>.content{position:relative}
+.listingblock code[data-lang]::before{display:none;content:attr(data-lang);position:absolute;font-size:.75em;top:.425rem;right:.5rem;line-height:1;text-transform:uppercase;color:inherit;opacity:.5}
+.listingblock:hover code[data-lang]::before{display:block}
+.listingblock.terminal pre .command::before{content:attr(data-prompt);padding-right:.5em;color:inherit;opacity:.5}
+.listingblock.terminal pre .command:not([data-prompt])::before{content:"$"}
+.listingblock pre.highlightjs{padding:0}
+.listingblock pre.highlightjs>code{padding:1em;-webkit-border-radius:4px;border-radius:4px}
+.listingblock pre.prettyprint{border-width:0}
+.prettyprint{background:#f7f7f8}
+pre.prettyprint .linenums{line-height:1.45;margin-left:2em}
+pre.prettyprint li{background:none;list-style-type:inherit;padding-left:0}
+pre.prettyprint li code[data-lang]::before{opacity:1}
+pre.prettyprint li:not(:first-child) code[data-lang]::before{display:none}
+table.linenotable{border-collapse:separate;border:0;margin-bottom:0;background:none}
+table.linenotable td[class]{color:inherit;vertical-align:top;padding:0;line-height:inherit;white-space:normal}
+table.linenotable td.code{padding-left:.75em}
+table.linenotable td.linenos{border-right:1px solid currentColor;opacity:.35;padding-right:.5em}
+pre.pygments .lineno{border-right:1px solid currentColor;opacity:.35;display:inline-block;margin-right:.75em}
+pre.pygments .lineno::before{content:"";margin-right:-.125em}
+.quoteblock{margin:0 1em 1.25em 1.5em;display:table}
+.quoteblock:not(.excerpt)>.title{margin-left:-1.5em;margin-bottom:.75em}
+.quoteblock blockquote,.quoteblock p{color:rgba(0,0,0,.85);font-size:1.15rem;line-height:1.75;word-spacing:.1em;letter-spacing:0;font-style:italic;text-align:justify}
+.quoteblock blockquote{margin:0;padding:0;border:0}
+.quoteblock blockquote::before{content:"\201c";float:left;font-size:2.75em;font-weight:bold;line-height:.6em;margin-left:-.6em;color:#7a2518;text-shadow:0 1px 2px rgba(0,0,0,.1)}
+.quoteblock blockquote>.paragraph:last-child p{margin-bottom:0}
+.quoteblock .attribution{margin-top:.75em;margin-right:.5ex;text-align:right}
+.verseblock{margin:0 1em 1.25em}
+.verseblock pre{font-family:"Open Sans","DejaVu Sans",sans;font-size:1.15rem;color:rgba(0,0,0,.85);font-weight:300;text-rendering:optimizeLegibility}
+.verseblock pre strong{font-weight:400}
+.verseblock .attribution{margin-top:1.25rem;margin-left:.5ex}
+.quoteblock .attribution,.verseblock .attribution{font-size:.9375em;line-height:1.45;font-style:italic}
+.quoteblock .attribution br,.verseblock .attribution br{display:none}
+.quoteblock .attribution cite,.verseblock .attribution cite{display:block;letter-spacing:-.025em;color:rgba(0,0,0,.6)}
+.quoteblock.abstract blockquote::before,.quoteblock.excerpt blockquote::before,.quoteblock .quoteblock blockquote::before{display:none}
+.quoteblock.abstract blockquote,.quoteblock.abstract p,.quoteblock.excerpt blockquote,.quoteblock.excerpt p,.quoteblock .quoteblock blockquote,.quoteblock .quoteblock p{line-height:1.6;word-spacing:0}
+.quoteblock.abstract{margin:0 1em 1.25em;display:block}
+.quoteblock.abstract>.title{margin:0 0 .375em;font-size:1.15em;text-align:center}
+.quoteblock.excerpt>blockquote,.quoteblock .quoteblock{padding:0 0 .25em 1em;border-left:.25em solid #dddddf}
+.quoteblock.excerpt,.quoteblock .quoteblock{margin-left:0}
+.quoteblock.excerpt blockquote,.quoteblock.excerpt p,.quoteblock .quoteblock blockquote,.quoteblock .quoteblock p{color:inherit;font-size:1.0625rem}
+.quoteblock.excerpt .attribution,.quoteblock .quoteblock .attribution{color:inherit;text-align:left;margin-right:0}
+p.tableblock:last-child{margin-bottom:0}
+td.tableblock>.content{margin-bottom:1.25em;word-wrap:anywhere}
+td.tableblock>.content>:last-child{margin-bottom:-1.25em}
+table.tableblock,th.tableblock,td.tableblock{border:0 solid #dedede}
+table.grid-all>*>tr>*{border-width:1px}
+table.grid-cols>*>tr>*{border-width:0 1px}
+table.grid-rows>*>tr>*{border-width:1px 0}
+table.frame-all{border-width:1px}
+table.frame-ends{border-width:1px 0}
+table.frame-sides{border-width:0 1px}
+table.frame-none>colgroup+*>:first-child>*,table.frame-sides>colgroup+*>:first-child>*{border-top-width:0}
+table.frame-none>:last-child>:last-child>*,table.frame-sides>:last-child>:last-child>*{border-bottom-width:0}
+table.frame-none>*>tr>:first-child,table.frame-ends>*>tr>:first-child{border-left-width:0}
+table.frame-none>*>tr>:last-child,table.frame-ends>*>tr>:last-child{border-right-width:0}
+table.stripes-all tr,table.stripes-odd tr:nth-of-type(odd),table.stripes-even tr:nth-of-type(even),table.stripes-hover tr:hover{background:#f8f8f7}
+th.halign-left,td.halign-left{text-align:left}
+th.halign-right,td.halign-right{text-align:right}
+th.halign-center,td.halign-center{text-align:center}
+th.valign-top,td.valign-top{vertical-align:top}
+th.valign-bottom,td.valign-bottom{vertical-align:bottom}
+th.valign-middle,td.valign-middle{vertical-align:middle}
+table thead th,table tfoot th{font-weight:bold}
+tbody tr th{background:#f7f8f7}
+tbody tr th,tbody tr th p,tfoot tr th,tfoot tr th p{color:rgba(0,0,0,.8);font-weight:bold}
+p.tableblock>code:only-child{background:none;padding:0}
+p.tableblock{font-size:1em}
+ol{margin-left:1.75em}
+ul li ol{margin-left:1.5em}
+dl dd{margin-left:1.125em}
+dl dd:last-child,dl dd:last-child>:last-child{margin-bottom:0}
+ol>li p,ul>li p,ul dd,ol dd,.olist .olist,.ulist .ulist,.ulist .olist,.olist .ulist{margin-bottom:.625em}
+ul.checklist,ul.none,ol.none,ul.no-bullet,ol.no-bullet,ol.unnumbered,ul.unstyled,ol.unstyled{list-style-type:none}
+ul.no-bullet,ol.no-bullet,ol.unnumbered{margin-left:.625em}
+ul.unstyled,ol.unstyled{margin-left:0}
+ul.checklist{margin-left:.625em}
+ul.checklist li>p:first-child>.fa-square-o:first-child,ul.checklist li>p:first-child>.fa-check-square-o:first-child{width:1.25em;font-size:.8em;position:relative;bottom:.125em}
+ul.checklist li>p:first-child>input[type="checkbox"]:first-child{margin-right:.25em}
+ul.inline{display:-ms-flexbox;display:-webkit-box;display:flex;-ms-flex-flow:row wrap;-webkit-flex-flow:row wrap;flex-flow:row wrap;list-style:none;margin:0 0 .625em -1.25em}
+ul.inline>li{margin-left:1.25em}
+.unstyled dl dt{font-weight:400;font-style:normal}
+ol.arabic{list-style-type:decimal}
+ol.decimal{list-style-type:decimal-leading-zero}
+ol.loweralpha{list-style-type:lower-alpha}
+ol.upperalpha{list-style-type:upper-alpha}
+ol.lowerroman{list-style-type:lower-roman}
+ol.upperroman{list-style-type:upper-roman}
+ol.lowergreek{list-style-type:lower-greek}
+.hdlist>table,.colist>table{border:0;background:none}
+.hdlist>table>tbody>tr,.colist>table>tbody>tr{background:none}
+td.hdlist1,td.hdlist2{vertical-align:top;padding:0 .625em}
+td.hdlist1{font-weight:bold;padding-bottom:1.25em}
+td.hdlist2{word-wrap:anywhere}
+.literalblock+.colist,.listingblock+.colist{margin-top:-.5em}
+.colist td:not([class]):first-child{padding:.4em .75em 0;line-height:1;vertical-align:top}
+.colist td:not([class]):first-child img{max-width:none}
+.colist td:not([class]):last-child{padding:.25em 0}
+.thumb,.th{line-height:0;display:inline-block;border:solid 4px #fff;-webkit-box-shadow:0 0 0 1px #ddd;box-shadow:0 0 0 1px #ddd}
+.imageblock.left{margin:.25em .625em 1.25em 0}
+.imageblock.right{margin:.25em 0 1.25em .625em}
+.imageblock>.title{margin-bottom:0}
+.imageblock.thumb,.imageblock.th{border-width:6px}
+.imageblock.thumb>.title,.imageblock.th>.title{padding:0 .125em}
+.image.left,.image.right{margin-top:.25em;margin-bottom:.25em;display:inline-block;line-height:0}
+.image.left{margin-right:.625em}
+.image.right{margin-left:.625em}
+a.image{text-decoration:none;display:inline-block}
+a.image object{pointer-events:none}
+sup.footnote,sup.footnoteref{font-size:.875em;position:static;vertical-align:super}
+sup.footnote a,sup.footnoteref a{text-decoration:none}
+sup.footnote a:active,sup.footnoteref a:active{text-decoration:underline}
+#footnotes{padding-top:.75em;padding-bottom:.75em;margin-bottom:.625em}
+#footnotes hr{width:20%;min-width:6.25em;margin:-.25em 0 .75em;border-width:1px 0 0}
+#footnotes .footnote{padding:0 .375em 0 .225em;line-height:1.3334;font-size:.875em;margin-left:1.2em;margin-bottom:.2em}
+#footnotes .footnote a:first-of-type{font-weight:bold;text-decoration:none;margin-left:-1.05em}
+#footnotes .footnote:last-of-type{margin-bottom:0}
+#content #footnotes{margin-top:-.625em;margin-bottom:0;padding:.75em 0}
+.gist .file-data>table{border:0;background:#fff;width:100%;margin-bottom:0}
+.gist .file-data>table td.line-data{width:99%}
+div.unbreakable{page-break-inside:avoid}
+.big{font-size:larger}
+.small{font-size:smaller}
+.underline{text-decoration:underline}
+.overline{text-decoration:overline}
+.line-through{text-decoration:line-through}
+.aqua{color:#00bfbf}
+.aqua-background{background:#00fafa}
+.black{color:#000}
+.black-background{background:#000}
+.blue{color:#0000bf}
+.blue-background{background:#0000fa}
+.fuchsia{color:#bf00bf}
+.fuchsia-background{background:#fa00fa}
+.gray{color:#606060}
+.gray-background{background:#7d7d7d}
+.green{color:#006000}
+.green-background{background:#007d00}
+.lime{color:#00bf00}
+.lime-background{background:#00fa00}
+.maroon{color:#600000}
+.maroon-background{background:#7d0000}
+.navy{color:#000060}
+.navy-background{background:#00007d}
+.olive{color:#606000}
+.olive-background{background:#7d7d00}
+.purple{color:#600060}
+.purple-background{background:#7d007d}
+.red{color:#bf0000}
+.red-background{background:#fa0000}
+.silver{color:#909090}
+.silver-background{background:#bcbcbc}
+.teal{color:#006060}
+.teal-background{background:#007d7d}
+.white{color:#bfbfbf}
+.white-background{background:#fafafa}
+.yellow{color:#bfbf00}
+.yellow-background{background:#fafa00}
+span.icon>.fa{cursor:default}
+a span.icon>.fa{cursor:inherit}
+.admonitionblock td.icon [class^="fa icon-"]{font-size:2.5em;text-shadow:1px 1px 2px rgba(0,0,0,.5);cursor:default}
+.admonitionblock td.icon .icon-note::before{content:"\f05a";color:#19407c}
+.admonitionblock td.icon .icon-tip::before{content:"\f0eb";text-shadow:1px 1px 2px rgba(155,155,0,.8);color:#111}
+.admonitionblock td.icon .icon-warning::before{content:"\f071";color:#bf6900}
+.admonitionblock td.icon .icon-caution::before{content:"\f06d";color:#bf3400}
+.admonitionblock td.icon .icon-important::before{content:"\f06a";color:#bf0000}
+.conum[data-value]{display:inline-block;color:#fff!important;background:rgba(0,0,0,.8);-webkit-border-radius:50%;border-radius:50%;text-align:center;font-size:.75em;width:1.67em;height:1.67em;line-height:1.67em;font-family:"Open Sans","DejaVu Sans",sans-serif;font-style:normal;font-weight:bold}
+.conum[data-value] *{color:#fff!important}
+.conum[data-value]+b{display:none}
+.conum[data-value]::after{content:attr(data-value)}
+pre .conum[data-value]{position:relative;top:-.125em}
+b.conum *{color:inherit!important}
+.conum:not([data-value]):empty{display:none}
+dt,th.tableblock,td.content,div.footnote{text-rendering:optimizeLegibility}
+h1,h2,p,td.content,span.alt{letter-spacing:-.01em}
+p strong,td.content strong,div.footnote strong{letter-spacing:-.005em}
+p,blockquote,dt,td.content,span.alt{font-size:1.0625rem}
+p{margin-bottom:1.25rem}
+.sidebarblock p,.sidebarblock dt,.sidebarblock td.content,p.tableblock{font-size:1em}
+.exampleblock>.content{background:#fffef7;border-color:#e0e0dc;-webkit-box-shadow:0 1px 4px #e0e0dc;box-shadow:0 1px 4px #e0e0dc}
+.print-only{display:none!important}
+@page{margin:1.25cm .75cm}
+@media print{*{-webkit-box-shadow:none!important;box-shadow:none!important;text-shadow:none!important}
+html{font-size:80%}
+a{color:inherit!important;text-decoration:underline!important}
+a.bare,a[href^="#"],a[href^="mailto:"]{text-decoration:none!important}
+a[href^="http:"]:not(.bare)::after,a[href^="https:"]:not(.bare)::after{content:"(" attr(href) ")";display:inline-block;font-size:.875em;padding-left:.25em}
+abbr[title]::after{content:" (" attr(title) ")"}
+pre,blockquote,tr,img,object,svg{page-break-inside:avoid}
+thead{display:table-header-group}
+svg{max-width:100%}
+p,blockquote,dt,td.content{font-size:1em;orphans:3;widows:3}
+h2,h3,#toctitle,.sidebarblock>.content>.title{page-break-after:avoid}
+#header,#content,#footnotes,#footer{max-width:none}
+#toc,.sidebarblock,.exampleblock>.content{background:none!important}
+#toc{border-bottom:1px solid #dddddf!important;padding-bottom:0!important}
+body.book #header{text-align:center}
+body.book #header>h1:first-child{border:0!important;margin:2.5em 0 1em}
+body.book #header .details{border:0!important;display:block;padding:0!important}
+body.book #header .details span:first-child{margin-left:0!important}
+body.book #header .details br{display:block}
+body.book #header .details br+span::before{content:none!important}
+body.book #toc{border:0!important;text-align:left!important;padding:0!important;margin:0!important}
+body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-break-before:always}
+.listingblock code[data-lang]::before{display:block}
+#footer{padding:0 .9375em}
+.hide-on-print{display:none!important}
+.print-only{display:block!important}
+.hide-for-print{display:none!important}
+.show-for-print{display:inherit!important}}
+@media print,amzn-kf8{#header>h1:first-child{margin-top:1.25rem}
+.sect1{padding:0!important}
+.sect1+.sect1{border:0}
+#footer{background:none}
+#footer-text{color:rgba(0,0,0,.6);font-size:.9em}}
+@media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
+</style>
+</head>
+<body class="article">
+<div id="header">
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_loki">Loki</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_notes">Notes</h3>
+<div class="paragraph">
+<p>Epics</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://issues.redhat.com/browse/LOG-704">LOG-704 Adapting Loki as an
+alternative to Elasticsearch to support more lightweight, easier to
+manage/operate storage scenarios - Red Hat Issue Tracker</a></p>
+</li>
+<li>
+<p>[[<a href="https://issues.redhat.com/browse/LOG-770" class="bare">https://issues.redhat.com/browse/LOG-770</a>][[LOG-770] [M1] Enable
+collecting logs from all our CI clusters and aggregate them inside a
+central Loki deployment - Red Hat Issue Tracker]]</p>
+</li>
+<li>
+<p>[[<a href="https://issues.redhat.com/browse/LOG-1101" class="bare">https://issues.redhat.com/browse/LOG-1101</a>][[LOG-1101] Epic to track
+the initial creation and work of the Loki Operator for on-cluster
+deployment and management - Red Hat Issue Tracker]]</p>
+</li>
+<li>
+<p>conversation:
+<a href="https://coreos.slack.com/archives/G01M0QVNHBP/p1613025772077900" class="bare">https://coreos.slack.com/archives/G01M0QVNHBP/p1613025772077900</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Roadmap:
+<a href="https://docs.google.com/document/d/1dUfTPaUO7IrjZlYxH5TwFf_bsNBbbm7K7naoCQ4yjQE/edit#">Adapting
+Loki - Milestones - Google Docs</a></p>
+</div>
+<div class="paragraph">
+<p>Relevant doc:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://grafana.com/docs/loki/latest/getting-started/logcli/">LogCLI |
+Grafana Labs</a></p>
+</li>
+<li>
+<p><a href="https://grafana.com/docs/loki/latest/best-practices/">Best practices |
+Grafana Labs</a></p>
+</li>
+<li>
+<p><a href="https://grafana.com/docs/loki/latest/api/">HTTP API | Grafana Labs</a></p>
+</li>
+<li>
+<p><a href="https://github.com/grafana/loki/pull/3420">Introduce a unpack parser.
+by cyriltovena · Pull Request #3420 · grafana/loki · GitHub</a></p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_quay_io_logs">Quay.io logs</h4>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>100GB/month to AWS in Pod logs.</p>
+</li>
+<li>
+<p>event log are way larger, but sent over different path? AppSRE call?</p>
+<div class="ulist">
+<ul>
+<li>
+<p>legal issues</p>
+</li>
+<li>
+<p>cloudwatch forwarder as sidecar now</p>
+</li>
+<li>
+<p>load question</p>
+</li>
+<li>
+<p>collection question: pipe to file?</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>large audit logs, need infosec approval</p>
+</li>
+<li>
+<p>&#10063; Not testing our collector for event logs, only testing grafana.</p>
+</li>
+<li>
+<p>&#10063; What are we trying to accomplish here? Pod logs to small, event
+logs too unusual?</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_loki_notes_from_peri">Loki notes from Peri</h4>
+<div class="paragraph">
+<p>Distributer&#8594;Ingester connection - via consistent hash ring of labels.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Hash lookup for load balancing.</p>
+</li>
+<li>
+<p>Scale ingesters.</p>
+</li>
+<li>
+<p>Like sharding but not really sharding.</p>
+</li>
+<li>
+<p>Consistent distributed hash ring (memberlist) - new ingester may move
+data around in re-balance.</p>
+</li>
+<li>
+<p>Look up: Gossip ring, Reverse Dictionary, K-set operations, Sharding,
+Consistent Hash</p>
+</li>
+<li>
+<p>BoltDB</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Timestamp ordered - timestamp where? From the origin. Nano precision.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Compactor re-orders out-of-order timestamps. Chunk files to S3.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Query:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>select labels, pipeline (parse, extract fields etc), compare (&gt; &lt; ==
+etc)</p>
+</li>
+<li>
+<p>sum/histogram queries - metrics, alerts</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>ssoQuery frontend &#8594;N Queriers &#8594;N Ingesters (cached recent data)</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Query workqueue, failed queries are retried.</p>
+</li>
+<li>
+<p>Query frontend splits queries and aggregates results.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Ingesters replicated for write, only one will normally write to backend
+some duplication is possible, queriers deduplicate.</p>
+</div>
+<div class="paragraph">
+<p>API for cluster: authn, authz, (oauth)</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Review this API with respect to changes to CL API.</p>
+</li>
+<li>
+<p>tokens, RBAC. Ingestion path. Can&#8217;t distinguish by labels? Maybe?</p>
+</li>
+<li>
+<p>Open Policy Agent - may provide finer control.</p>
+</li>
+<li>
+<p>Maybe we need to write a gateway to do finer grained control.</p>
+</li>
+<li>
+<p>Need to review security issues.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>What about on-prem customers - what storage?</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>S3 compatible API is implemented for k8s (mineo)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>QUESTIONS</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Find by pod labels &#8658; unconstrained high cardinality?? Need to
+hash label sets?</p>
+</li>
+<li>
+<p>&#10063; Retention - offload to backend, need backend support from common
+config?</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>What does CLO need to configure:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Loki.</p>
+</li>
+<li>
+<p>S3 compatible store (mineo) - retention.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Ingester lifecycle, handoff on exit - instead of replication?</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>voluntary exit with handoff - better performance than failure
+recovery?</p>
+</li>
+<li>
+<p>&#10063; Split brain on member list? Quorum (of what)?</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Ingesters/Queriers are stateful sets over PVCs - can still scale
+horizontally.</p>
+</div>
+<div class="paragraph">
+<p>BoltDB-Shipper setup uses PVC caching. Possible upstream contribution?
+JSON enhancement</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_next_a_loki_forwarder_labels_design_doc_internal_and_for_grafana">NEXT [#A] Loki forwarder &amp; labels design doc, internal and for Grafana.</h3>
+<div class="paragraph">
+<p>[[<a href="https://issues.redhat.com/browse/LOG-1194" class="bare">https://issues.redhat.com/browse/LOG-1194</a>][[LOG-1194] Define
+and implement labels for per-log metrics - Red Hat Issue Tracker]]
+<a href="https://grafana.com/docs/loki/latest/logql/#logfmt">LogQL | Grafana Labs</a></p>
+</div>
+<div class="sect3">
+<h4 id="_notes_from_es_queries_to_map_to_promql_google_docs">Notes from <a href="https://docs.google.com/document/d/1uonrApydz51t1l9LN0_ypLxjMQKv8EVNLVfy2ELWAic/edit?ts=601c03b9">ES queries to map to promql - Google Docs</a></h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Use a kubernetes.label.app filter to limit output to a service.</p>
+</li>
+<li>
+<p>Message searches:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>message:error</p>
+</li>
+<li>
+<p>message:1i0en3cm6n0318ke0hr4r7qkt2hmbpts AND message:”failed to”`</p>
+</li>
+<li>
+<p>kubernetes.container<sub>name</sub>.raw="uhc-acct-mngr-ocp-usage-reconciler"</p>
+</li>
+<li>
+<p>kubernetes.pod<sub>name</sub>:"ocm-service-log-557b5fc6c-g4t8g" AND
+kubernetes.namespace<sub>name</sub>:"uhc-production" AND
+kubernetes.container<sub>name</sub>.raw:"service" ANDfpo message:serving</p>
+</li>
+<li>
+<p>deployment pod<sub>labels</sub> kubernetes.labels.deploymentconfig</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Get lines around a specific line (in a pod stream)</p>
+</li>
+<li>
+<p>LogQL example:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>query: kubernetes.labels.deploymentconfig:"f8notification" AND
+level:"error"</p>
+</li>
+<li>
+<p>\{cluster="dsaas"} |=
+'kubernetes.labels.deploymentconfig:f8notification' |= 'level:"error"'</p>
+</li>
+<li>
+<p>kubernetes.labels.app:"keycloak" AND message:"<strong>503 Service
+Unavailable</strong>"</p>
+</li>
+<li>
+<p>\{cluster="dsaas"} |= 'kubernetes.labels.app:keycloak' |=
+'message:%22503 Service Unavailable"'</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>JSON parser: <code>| json</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p>\{ "a.b": \{c: "d"}, e: "f" }</p>
+</li>
+<li>
+<p>\{a<sub>bc</sub>="d", e="f"}</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>LogQL examples use "container"?</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_to_do">To do</h4>
+<div class="paragraph">
+<p>Check container names: oc get pod -A -otemplate='\{\{range
+.items}}\{\{.metadata.name}}\{\{range
+.spec.containers}}\{\{""͡}}\{\{.name}}\{{end}}\{\{""}}\{{end}}'</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>fluent-gem install fluent-plugin-grafana-loki</p>
+</li>
+<li>
+<p>&#10063; Typical user queries? namespace/name, label query - review example
+queries</p>
+<div class="ulist">
+<ul>
+<li>
+<p>how to construct queries for label/non-label metadata?</p>
+</li>
+<li>
+<p>queries for selecting long/short retentions?</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#10063; Cardinality: cluster, node, namespace, pod, container, pod labels?</p>
+<div class="ulist">
+<ul>
+<li>
+<p>need equality test for efficient search.</p>
+</li>
+<li>
+<p>option to disable pod on busy clusters. Best default?</p>
+</li>
+<li>
+<p>search by container/image - limited number in cluster?</p>
+</li>
+<li>
+<p>search by label - option to identify important labels?</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#10063; Look for blogs about query time? Filter on regexp/string match
+before JSON parsing etc.</p>
+</li>
+<li>
+<p>&#10063; Include relevant info from <em>Labels, correlation and project X -
+write up</em></p>
+</li>
+<li>
+<p>&#10063; JSON format: same features as all. Alternates? Msgpack? Protobuf?</p>
+</li>
+<li>
+<p>&#10063; Updates to: Rolfe, Lukas, Jeff, Eric</p>
+<div class="ulist">
+<ul>
+<li>
+<p>review from Grafana folks, Eldin, Bartok (meeting)</p>
+</li>
+<li>
+<p>IBM: andrew<sub>low</sub>@ca.ibm.com, Eran Raichstein &lt;<a href="mailto:eranra@il.ibm.com">eranra@il.ibm.com</a>&gt;,
+<a href="mailto:factor@il.ibm.com">factor@il.ibm.com</a>, <a href="mailto:ftucci@ca.ibm.com">ftucci@ca.ibm.com</a>, Gargi B Dasgupta
+&lt;<a href="mailto:gaargidasgupta@in.ibm.com">gaargidasgupta@in.ibm.com</a>&gt;, <a href="mailto:gerard.vanloo@ibm.com">gerard.vanloo@ibm.com</a>, <a href="mailto:jrmcgee@us.ibm.com">jrmcgee@us.ibm.com</a>,
+Hui Kang &lt;<a href="mailto:kangh@us.ibm.com">kangh@us.ibm.com</a>&gt;, <a href="mailto:paula@il.ibm.com">paula@il.ibm.com</a>, Periklis Tsirakidis
+&lt;<a href="mailto:ptsiraki@redhat.com">ptsiraki@redhat.com</a>&gt;, <a href="mailto:sguven@us.ibm.com">sguven@us.ibm.com</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#10063; Notes on static meta data:</p>
+</li>
+<li>
+<p>Loki tags</p>
+</li>
+<li>
+<p>Cloudwatch group tags
+<a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/Working-with-log-groups-and-streams.html" class="bare">https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/Working-with-log-groups-and-streams.html</a></p>
+</li>
+<li>
+<p>Syslog</p>
+</li>
+<li>
+<p>Standardize and advertize our fluent-tag format?</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_next_a_prototype_loki_forwarder_asap">NEXT [#A] Prototype Loki forwarder ASAP</h3>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>[[<a href="https://issues.redhat.com/browse/LOG-684" class="bare">https://issues.redhat.com/browse/LOG-684</a>][[LOG-684] Cluster
+LogForwarder Loki support - Red Hat Issue Tracker]]</p>
+</li>
+<li>
+<p>&#10063; COMPARE CPU/Mem use promtail vs. fluentd for budget purposes</p>
+</li>
+<li>
+<p>&#10063; <strong>Need</strong> loki forwarder - milestones. Need it in quayg.io</p>
+<div class="ulist">
+<ul>
+<li>
+<p>introduce promtail first then fluentd, comparison.</p>
+</li>
+<li>
+<p>perf testing - prom, fluetbit, fluentd.</p>
+</li>
+<li>
+<p>Check jeff&#8217;s stuff?</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#10063; Fluentd plugins, review:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/banzaicloud/fluent-plugin-kubernetes-loki" class="bare">https://github.com/banzaicloud/fluent-plugin-kubernetes-loki</a></p>
+</li>
+<li>
+<p><a href="https://grafana.com/docs/loki/latest/clients/fluentd/">Fluentd |
+Grafana Labs</a></p>
+</li>
+<li>
+<p><a href="https://github.com/fabric8io/fluent-plugin-kubernetes_metadata_filter">fabric8io/fluent-plugin-kubernetes<sub>metadatafilter</sub>:
+Enrich your fluentd events with Kubernetes metadata</a></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Peri started:
+<a href="https://github.com/openshift/cluster-logging-operator/pull/428">Add Loki
+output support for LogForwarding by periklis · Pull Request #428 ·
+openshift/cluster-logging-operator</a></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>does fluentd support pack/unpack of labels?</p>
+</li>
+<li>
+<p>support optional packed labels? extra real labels?</p>
+</li>
+<li>
+<p>loki query options for JSON?</p>
+</li>
+<li>
+<p>other formats than JSON: PromQL searches? Original still available.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>JSON path coming</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Log format: avoid nested objects. Underscore keys. Pack/unpack can
+extract labels.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Log FT: key/value format in Go.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>JSON is faster than regex.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Prometheus label keys are all letters or numbers or _.</p>
+</div>
+<div class="sect3">
+<h4 id="_me_components">Me, components</h4>
+<div class="paragraph">
+<p>CLO forwarder is critial. Operator? Not Grafana. Not validating CLO yet.
+Validate on OSD.</p>
+</div>
+<div class="paragraph">
+<p>Quay/next phase:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>missing: need forwarder.</p>
+</li>
+<li>
+<p>missing: testing of operator.</p>
+</li>
+<li>
+<p>operator scaling &amp; setup.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Milestone:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>short term loki forwarder alternative to Elastic</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_next_es_queries_to_map_to_promql_google_docs">NEXT <a href="https://docs.google.com/document/d/1uonrApydz51t1l9LN0_ypLxjMQKv8EVNLVfy2ELWAic/edit?ts=601c03b9">ES queries to map to promql - Google Docs</a></h4>
+<div class="paragraph">
+<p>Review for metadata/tags.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_dptp_tests_for_forwarder_cpu_requirements_promtail_vs_fluentd">DPTP tests for forwarder, CPU requirements promtail vs. fluentd</h3>
+<div class="paragraph">
+<p>Get cluster stats - DPTP, Elastic (OSD, Telemetry)</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_load_test_cases_for_grafana">Load test cases for Grafana.</h3>
+<div class="paragraph">
+<p>Run my forwarder with
+<a href="https://github.com/pmoogi-redhat/logloss-benchmarking">pmoogi-redhat/logloss-benchmarking</a>
+viaq repo loki repo</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Peri has testing setup, will point at loki. Need to understandd?</p>
+</li>
+<li>
+<p>&#10063; Load client to generate load with labels.</p>
+</li>
+<li>
+<p>&#10063; Start a google doc and/or repo.</p>
+</li>
+<li>
+<p>&#10063; Document for collaboration.</p>
+</li>
+<li>
+<p>&#10063; Collect 'em, need test cases</p>
+</li>
+<li>
+<p>&#10063; benchmarks</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Black box benchmark, not biased by specific workload. (DPTP/OSD
+workloads) Smaller version for loki tests.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_grafana_pilot">Grafana Pilot</h3>
+<div class="sect3">
+<h4 id="_pilot_status">Pilot status</h4>
+<div class="paragraph">
+<p><a href="mailto:alex.martin@grafana.com">alex.martin@grafana.com</a>, Chris Welch &lt;<a href="mailto:chris.welch@grafana.com">chris.welch@grafana.com</a>&gt;,
+<a href="mailto:chris.williamson@grafana.com">chris.williamson@grafana.com</a>, <a href="mailto:cyril.tovena@grafana.com">cyril.tovena@grafana.com</a>, Eldin
+&lt;<a href="mailto:eldin@grafana.com">eldin@grafana.com</a>&gt;, "Eder, Jeremy" &lt;<a href="mailto:jeder@redhat.com">jeder@redhat.com</a>&gt;, Periklis
+Tsirakidis &lt;<a href="mailto:periklis@redhat.com">periklis@redhat.com</a>&gt;, Swetha Shankar Paida
+&lt;<a href="mailto:swshanka@redhat.com">swshanka@redhat.com</a>&gt;, Urvashi Bhargava &lt;<a href="mailto:ubhargav@redhat.com">ubhargav@redhat.com</a>&gt;, Vadim
+Rutkovsky &lt;<a href="mailto:vrutkovs@redhat.com">vrutkovs@redhat.com</a>&gt;, "W. Trevor King" &lt;<a href="mailto:wking@redhat.com">wking@redhat.com</a>&gt;</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>reducing labels to handle short-lived clusters</p>
+</li>
+<li>
+<p>[2021-03-02 Tue] 800Gb ingested</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>? Query performance tests ? Phase 2 encryption.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://grafana.com/orgs/openshift">Redhat Openshift Overview | Grafana
+Labs</a></p>
+</li>
+<li>
+<p><a href="https://grafana.com/docs/grafana/latest/auth/generic-oauth/#generic-oauth-authentication">OAuth
+authentication | Grafana Labs</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Pack/unpack labels support useful, but new in online version only.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>does fluentd have pack/unpack support?</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>1Tb reached [2021-03-04 Thu] since</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_notes_2">Notes</h4>
+<div class="paragraph">
+<p>Our instance</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://grafana.com/orgs/openshift/instances/170071">Redhat Openshift
+Instance Details: openshift.grafana.net | Grafana Labs</a></p>
+</li>
+<li>
+<p><a href="https://openshift.grafana.net" class="bare">https://openshift.grafana.net</a></p>
+</li>
+<li>
+<p><a href="https://grafana.com/orgs/openshift" class="bare">https://grafana.com/orgs/openshift</a></p>
+</li>
+<li>
+<p>PRs for promtail
+<a href="https://github.com/openshift/release/pull/16006/files">hosted-loki: drop
+filename via labeldrop by vrutkovs · Pull Request #16006 ·
+openshift/release</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="https://docs.google.com/document/d/1uonrApydz51t1l9LN0_ypLxjMQKv8EVNLVfy2ELWAic/edit?ts=601c03b9">ES
+queries to map to promql - Google Docs</a>
+<a href="https://docs.google.com/document/d/14GfXQrbZXdIMRda3AmZLGbBJAN1av7pMCDWbfAeKiJI/edit">OCM
+log search examples - Google Docs</a></p>
+</div>
+<div class="paragraph">
+<p>Chris Welch | Sr. Enterprise Account Executive | Call/Text: 862-596-2869
+| <a href="mailto:chris.welch@grafana.com">chris.welch@grafana.com</a> Elidin is tech contact, slack/email. Alex
+Martin tech overseeing. Chris Willamson management business help.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Pilot scope
+<a href="https://docs.google.com/document/d/1nD2rj0qTyj2nRKJ6_H9Az7_OAaPbAimFoAsZGgFjjCo/edit">Scope
+of RHT / Grafana.com Loki Prototype - Google Docs</a></p>
+</li>
+<li>
+<p>Grafana slides
+<a href="https://docs.google.com/presentation/d/1GS9-n7fLPW8Gs-2wa9cPDFaqHYBPDmo3ia67jO5XOqA/edit?ts=5ffc6e04#slide=id.g9e527f12ab_0_1594">OpenShift
+Online Managed Loki Pilot Success Plan - Google Slides</a></p>
+</li>
+<li>
+<p>Slack, Urvashi, Eric &amp; co
+<a href="https://coreos.slack.com/archives/G018Z7Y83V1/p1611757434003800" class="bare">https://coreos.slack.com/archives/G018Z7Y83V1/p1611757434003800</a></p>
+</li>
+<li>
+<p>Slack #internal-grafana-loki-collab
+<a href="https://coreos.slack.com/archives/C01JTSZUG72" class="bare">https://coreos.slack.com/archives/C01JTSZUG72</a></p>
+</li>
+<li>
+<p>[[<a href="https://issues.redhat.com/browse/SDE-904" class="bare">https://issues.redhat.com/browse/SDE-904</a>][[SDE-904] AppSRE:
+Onboard Loki as part of Observatorium - Red Hat Issue Tracker]]</p>
+</li>
+<li>
+<p><a href="https://mail.google.com/mail/u/0/#inbox/FMfcgxwKkRPDdZtCRwTcPPzhzcjbzsvZ">Re:
+RHT / Grafana.com Loki logging POC - <a href="mailto:aconway@redhat.com">aconway@redhat.com</a> - Red Hat Mail</a></p>
+</li>
+<li>
+<p><a href="https://grafana.com/legal/grafana-slas/">Grafana SLAs | Grafana Labs</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Feb 5: Red Hat prep steps before Feb 2</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Gather sample elasticsearch Queries from DPTP (Jeremy) - Translate to
+LogQL</p>
+</li>
+<li>
+<p>Set up Red Hat SSO, grafana.com accounts.</p>
+</li>
+<li>
+<p>Design/test promtail configuration and deployment.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Initial goals of pilot:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Login &amp; configure Dedicated Cluster</p>
+</li>
+<li>
+<p>Deploy and configure promtail collectors</p>
+</li>
+<li>
+<p>Set up UI - dashboards, queries etc. (question on whether we or
+Grafana host the UI?a)</p>
+</li>
+<li>
+<p>Port Peri&#8217;s existing dashboards.</p>
+</li>
+<li>
+<p>Load some historical data from our existing Loki (if possible)</p>
+</li>
+<li>
+<p>Begin query testing (response times) with sample queries</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Later:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Define "Heavy Load" test cases to exercise</p>
+</li>
+<li>
+<p>Set up stress tests - check existing work by Peri &amp; others for re-use.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_note_ibm_loki_discussoins_powered_by_box">NOTE: <a href="https://app.box.com/folder/134167028719?s=gbnqwl0wva59bdqbjl1m5cmualjsolv5">IBM Loki Discussoins | Powered by Box</a></h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_performance">Performance</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_next_a_rapid_scan_of_alternate_collectors">NEXT [#A] Rapid scan of alternate collectors</h3>
+<div class="paragraph">
+<p>Output</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>elasticsearch</p>
+</li>
+<li>
+<p>cloudwatch</p>
+</li>
+<li>
+<p>kafka</p>
+</li>
+<li>
+<p>rsyslog</p>
+</li>
+<li>
+<p>splunk?</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Input</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>crio-o line assembly</p>
+</li>
+<li>
+<p>systemd-journal/syslog pipes</p>
+</li>
+<li>
+<p>kubernetes metadata decoration</p>
+</li>
+<li>
+<p>JSON parsing, jsonpath?</p>
+</li>
+<li>
+<p>multi-line entries (regexp matching)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Other</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>routing - namespaces, labels, source, log type</p>
+</li>
+<li>
+<p>unicode normalization?</p>
+</li>
+<li>
+<p>record rewriting?</p>
+</li>
+<li>
+<p>prometheus - collected bytes, other metrics</p>
+</li>
+<li>
+<p>kubeclient</p>
+</li>
+<li>
+<p>openid<sub>connect</sub> for SSO?</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_vector_revdiw">Vector revdiw</h4>
+<div class="paragraph">
+<p><a href="https://github.com/timberio/vector/">timberio/vector: High-performance,
+high-reliability observability data pipeline.</a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_fluentbit_whats_missing">Fluentbit: what&#8217;s missing</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_vector">Vector?</h4>
+
+</div>
+</div>
+<div class="sect2">
+<h3 id="_next_update_httpsissues_redhat_combrowselog_1179log_1179_improve_overall_log_collection_performance_red_hat_issue_tracker">NEXT Update [[<a href="https://issues.redhat.com/browse/LOG-1179" class="bare">https://issues.redhat.com/browse/LOG-1179</a>][[LOG-1179] Improve overall log collection performance - Red Hat Issue Tracker]]</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_next_b_add_forward_keepalive_by_cpmoore_pull_request_836_openshiftcluster_logging_operator">NEXT [#B] <a href="https://github.com/openshift/cluster-logging-operator/pull/836#issuecomment-790351870">Add forward keepalive by cpmoore · Pull Request #836 · openshift/cluster-logging-operator</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_next_httpsissues_redhat_combrowselog_1059log_1059_fluentd_pod_ooming_red_hat_issue_tracker">NEXT [[<a href="https://issues.redhat.com/browse/LOG-1059" class="bare">https://issues.redhat.com/browse/LOG-1059</a>][[LOG-1059] fluentd pod OOMing - Red Hat Issue Tracker]]</h3>
+<div class="paragraph">
+<p>[[<a href="https://issues.redhat.com/browse/LOG-1059" class="bare">https://issues.redhat.com/browse/LOG-1059</a>][[LOG-1059] fluentd pod
+OOMing - Red Hat Issue Tracker]] We shouldn&#8217;t OOM, regardless of the
+memory limit - there&#8217;s nothing changing here.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_b_create_telemetry_dashboards_for_logging_health_performance">[#B] Create telemetry dashboards for logging health &amp; performance</h3>
+<div class="paragraph">
+<p>Talk to Ben Browning. Can view dashboards from grafana. Elasticsearch
+operator on 77000 clusters. Beware changes!</p>
+</div>
+<div class="paragraph">
+<p>Ben Browning 9:24 AM Alexey:
+<a href="https://help.datahub.redhat.com/docs/interacting-with-telemetry-data" class="bare">https://help.datahub.redhat.com/docs/interacting-with-telemetry-data</a> is
+a good start for how to access the data and contribute to shared grafana
+dashboards. Depending on your team&#8217;s needs, you may choose to host/run
+your own grafana instead of using the shared datahub one for dashboards.
+I created <a href="https://github.com/bbrowning/openshift-telemetry-playground" class="bare">https://github.com/bbrowning/openshift-telemetry-playground</a>
+for my own personal telemetry dashboard needs so I can play around
+infinitely in grafana in a container locally without messing with the
+shared one.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_b_measure_current_performance_limits_sizing_recommendations">[#B] Measure current performance limits, sizing recommendations.</h3>
+<div class="paragraph">
+<p><a href="https://coreos.slack.com/archives/DQTRK0T45/p1612994507001900" class="bare">https://coreos.slack.com/archives/DQTRK0T45/p1612994507001900</a> Ask
+Jeremy. Memory consumption by fluentd, what&#8217;s up
+<a href="https://coreos.slack.com/archives/CB3HXM2QK/p1612902201462600?thread_ts=1612897790.459400&amp;cid=CB3HXM2QK" class="bare">https://coreos.slack.com/archives/CB3HXM2QK/p1612902201462600?thread_ts=1612897790.459400&amp;cid=CB3HXM2QK</a></p>
+</div>
+<div class="sect3">
+<h4 id="_performance_benchmark_urgently_needed">Performance benchmark urgently needed.</h4>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Collect existing work:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Flow control, loss measurements:
+<a href="https://github.com/pmoogi-redhat/logloss-benchmarking">pmoogi-redhat/logloss-benchmarking</a></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Faster collector!!! Fluentd supervisor mode hung in the past:
+multi-process + k8s becomes a problems. 2500 msg/sec with single
+container.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>realistic</p>
+</li>
+<li>
+<p>multi-container</p>
+</li>
+<li>
+<p>multi-node</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Peter Portante viaq load driver the load driver output embeds a sequence
+number in every log message so that can be used determine loss 17:22 I’d
+use a fluentd command the sends them to a pipe were the “verify loader”
+can read them and detect any problems. 17:22 the verify loader can track
+multiple individual flows.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_watch_not_poll_in_operators">Watch not Poll in operators</h3>
+<div class="paragraph">
+<p>Check out Informers also - rather than raw watch?
+<a href="https://engineering.bitnami.com/articles/a-deep-dive-into-kubernetes-controllers.html">Bitnami
+Engineering: A deep dive into Kubernetes controllers</a> (CPU,
+responsiveness, error awareness)</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_notes_3">Notes</h3>
+<div class="paragraph">
+<p><a href="https://coreos.slack.com/archives/G01GW3XH5HP/p1615713302090400">Eran&#8217;s
+initial fluentd/fluentbit results.</a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_flow_control">Flow Control</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_wait_a_discuss_our_go_exporter_for_prometheus_node_exporter_plugin">WAIT [#A] Discuss our Go exporter for prometheus node-exporter plugin</h3>
+<div class="paragraph">
+<p><a href="https://github.com/prometheus/node_exporter">prometheus/node<sub>exporter</sub>:
+Exporter for machine mels trics</a> Not allowed root - is it still worth
+pursuing? Sergiusz Urbaniak @sur <a href="https://coreos.slack.com/team/UC0RYBQSE" class="bare">https://coreos.slack.com/team/UC0RYBQSE</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_next_b_metric_labelling_need_to_change_file_name_is_too_high_cardinality">NEXT [#B] Metric labelling! Need to change, file name is too high-cardinality.</h3>
+<div class="paragraph">
+<p>Research - Bartok.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_review_perf_tests_working_version_by_eranra_pull_request_3_pmoogi_redhatlogloss_benchmarking">Review perf tests <a href="https://github.com/pmoogi-redhat/logloss-benchmarking/pull/3">working version :-) by eranra · Pull Request #3 · pmoogi-redhat/logloss-benchmarking</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_monitor_only_mode_for_logging_with_logged_metric">Monitor-only mode for logging with logged metric.</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_notes_4">Notes</h3>
+<div class="paragraph">
+<p>Peter:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/containers/conmon/issues/84">Provide logging
+behavior policies applied by conmon to stdout/stderr · Issue #84 ·
+containers/conmon</a></p>
+</li>
+<li>
+<p><a href="https://docs.google.com/presentation/d/1kNr5AqKjvWBxJ78yzHU4ANZ84RMvhnBFZtvDjN_mjBE/edit#slide=id.g6bf2897a05_0_61">The
+Problem with Logging: A SRE Perspective - Fall '20 - Google Slides</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Epics:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>[[<a href="https://issues.redhat.com/browse/LOG-1073" class="bare">https://issues.redhat.com/browse/LOG-1073</a>][[LOG-1073] Implement flow
+control by backpressure]]</p>
+</li>
+<li>
+<p>[[<a href="https://issues.redhat.com/browse/LOG-884" class="bare">https://issues.redhat.com/browse/LOG-884</a>][[LOG-884] Flow control
+mechanisms for more predictable log collection]]</p>
+</li>
+<li>
+<p>[[<a href="https://issues.redhat.com/browse/LOG-1074" class="bare">https://issues.redhat.com/browse/LOG-1074</a>][[LOG-1074] Combined rate
+limits for flow control]]</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Stories</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>[[<a href="https://issues.redhat.com/browse/LOG-1032" class="bare">https://issues.redhat.com/browse/LOG-1032</a>][[LOG-1032] Metric for
+inbound log data loss at the collector - Red Hat Issue Tracker]]</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Docs</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Benchmarks &amp; log loss measurements:
+<a href="https://github.com/pmoogi-redhat/logloss-benchmarking">pmoogi-redhat/logloss-benchmarking</a></p>
+</li>
+<li>
+<p>Log loss bug from the field:
+<a href="https://bugzilla.redhat.com/show_bug.cgi?id=1872465">1872465 – Missing
+messages while testing logging at scale</a></p>
+</li>
+<li>
+<p>pportante log stream format
+<a href="https://github.com/cri-o/cri-o/pull/1605">WIP - Proposed Stream Log
+Writer by portante cri-o/cri-o</a>**</p>
+</li>
+<li>
+<p>Pratibha slides
+<a href="https://docs.google.com/presentation/d/1T0dPyJo4tm527SA5NnEuRIa_xUrjfkyz/edit#slide=id.p1">Flow
+Control CL OCP - proposal - summary.pptx - Google Slides</a></p>
+</li>
+<li>
+<p>Back-pressure POC
+[[<a href="https://issues.redhat.com/browse/LOG-575?filter=12357141" class="bare">https://issues.redhat.com/browse/LOG-575?filter=12357141</a>][[LOG-575]
+MVP container back-pressure mechanism. - Red Hat Issue Tracker]]</p>
+</li>
+<li>
+<p>AMQP fluentd
+<a href="https://github.com/ViaQ/docker-fluentd/blob/master/amqp_qpid/lib/fluent/plugin/in_amqp_qpid.rb" class="bare">https://github.com/ViaQ/docker-fluentd/blob/master/amqp_qpid/lib/fluent/plugin/in_amqp_qpid.rb</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_re_start_work_on_conmon_provide_logging_behavior_policies_applied_by_conmon_to_stdoutstderr_issue_84_containersconmon">Re-start work on conmon <a href="https://github.com/containers/conmon/issues/84">Provide logging behavior policies applied by conmon to stdout/stderr · Issue #84 · containers/conmon</a></h3>
+<div class="paragraph">
+<p>!* Testing re-work :test:</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_next_b_fix_oal_smoke_test_all_tests_to_better_framework">NEXT [#B] Fix OAL smoke test, all tests to better framework</h3>
+<div class="paragraph">
+<p>Stuckf OAL PR:
+<a href="https://github.com/openshift/origin-aggregated-logging/pull/2073#issuecomment-791446380">Fixed
+typo in out<sub>syslog</sub>, TCP &amp; UDP. Global @facilty should be @facility by
+samimb · Pull Request #2073 · openshift/origin-aggregated-logging</a></p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Read
+<a href="https://docs.ci.openshift.org/docs/how-tos/testing-operator-sdk-operators/">Testing
+Operators Built With The Operator SDK and Deployed Through OLM |
+Openshift CI docs</a></p>
+</li>
+<li>
+<p>&#10063; Track in JIRA - self-contained, central lib for deploying, client,
+manipulation.</p>
+</li>
+<li>
+<p>&#10063; Single go lib + program for OLM deployment (bundle?)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>export shared library: with Viaq logerr? OAL? Move from existing CLO
+lib?</p>
+</li>
+<li>
+<p>need to handle mustgather for CI?</p>
+</li>
+<li>
+<p>no more scripts!</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#10063; Fix OAL first (Go tests, no scripts etc.)</p>
+</li>
+<li>
+<p>&#10063; Self-setup tests: Go and/or Gomega?</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="https://coreos.slack.com/archives/GGUR75P60/p1614954823032500?thread_ts=1614954542.030000&amp;cid=GGUR75P60">Peri</a>:
+To the best of my knowledge we have two e2e testing approaches across
+three repos: CLO &amp; EO E2E: Work on olm<sub>deploy</sub> EO E2E upgrade tests:
+Work on old olm configmap OAL: Work on old olm configmap and to complete
+the confusion, OLM migrated to use bundles in 4.6, but we never adapted
+our E2E machinery…</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ibm_cloud_testing">IBM cloud testing</h3>
+<div class="paragraph">
+<p>Sudha Ponnaganti - Contact re. logging CI and dev testing. We&#8217;re OK with
+one cloud testing. Adi Demback is working on it. There are POC acts
+being setup - Jason Holt holds the key. We are going through him for
+these initial POCs</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Dev testing experiments, OCP not supported?</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_test_clusters_httpsmail_google_commailu0inboxfmfcgxwkjnrnbczzmwvkxqwscshrqjwqre_devtools_leads_aos_leads_wip_a_cluster_for_hosting_product_engineering_workloads_aconwayredhat_com_red_hat_mail">Test clusters? [[<a href="https://mail.google.com/mail/u/0/#inbox/FMfcgxwKjnRnbcZZmWvkxqwSCShRQJWQ" class="bare">https://mail.google.com/mail/u/0/#inbox/FMfcgxwKjnRnbcZZmWvkxqwSCShRQJWQ</a>][Re: [devtools-leads] [aos-leads] WIP: A cluster for hosting product engineering workloads - <a href="mailto:aconway@redhat.com">aconway@redhat.com</a> - Red Hat Mail]]</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_make_all_e2e_tests_self_contained">Make all e2e tests self-contained.</h3>
+<div class="paragraph">
+<p>Hook up new tests in e2e-tests. CI to run without wrapper scripts
+(artifact collection) Test strategies:</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>silent unless fail by default</p>
+</li>
+<li>
+<p>LOG<sub>LEVEL</sub>=0 by default, except for CI?</p>
+</li>
+<li>
+<p>&#10063; Replace Watch and List with Informers?</p>
+</li>
+<li>
+<p>&#10063; improvement projet - better-tests branch and tests for fluent
+forwarding.</p>
+</li>
+<li>
+<p>&#10063; Implement demo Gotest branch and optimal tests for fluent</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Reference watcher?</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Example for watch based controller with independent loops (CLO<br>
+ELO loops)</p>
+</li>
+<li>
+<p>&#10063; Example of logging best practices.</p>
+</li>
+<li>
+<p>&#10063; Put it in OAL? Add pointer to readme?</p>
+</li>
+<li>
+<p>&#10063; Move arch doc to OAL, mention in both READMES.</p>
+</li>
+<li>
+<p>&#10063; helpers/cmd should be named helpers/exec, cmd clashes</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_merge_e2e_and_functional_frameworks">Merge e2e and functional frameworks.</h3>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Merge with/update functional tests</p>
+</li>
+<li>
+<p>&#10063; still very slow?</p>
+<div class="ulist">
+<ul>
+<li>
+<p>WIP-better tests: separate changes</p>
+</li>
+<li>
+<p>Reorg packages: helpers in correct place? Move runtime stuff to
+helpers/client?</p>
+</li>
+<li>
+<p>rename cmd&#8594;exec</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#10063; Speed up tests with pre-pulled images??</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_better_test_coverage_visibility_coveralls">Better test coverage visibility, coveralls</h3>
+<div class="paragraph">
+<p>Eric:
+<a href="https://coveralls.io/builds/35336515/source?filename=log/logger.go#L75">ViaQ/logerr
+| Build 392418782 | log/logger.go | Coveralls - Test Coverage History &amp;
+Statistics</a>**</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_sweep_tests_for_duplication_performance">Sweep tests for duplication, performance.</h3>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Faster e2e tests, convert existing tests to be self-contained.</p>
+</li>
+<li>
+<p>&#10063; Find slow points, speed things up?</p>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Receiver start is slow.</p>
+</li>
+<li>
+<p>&#10063; (once only) 2s Client dynamicRestMapper</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#10063; Convert a test, record before/after times.</p>
+</li>
+<li>
+<p>&#10063; Replace waiting in functional framework</p>
+</li>
+<li>
+<p>&#10063; Benchmark &amp; optimize fluentd buffer sizes…</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_observability">Observability</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_next_labels_correlation_and_project_x_write_up">NEXT Labels, correlation and project X - write up</h3>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Partial review by grafana?</p>
+</li>
+<li>
+<p>[ ]
+[[<a href="https://docs.google.com/document/d/1usS9H-R-AwFYiGVOiW-N2YSFmla0-oUsTWPRvwyeh34/edit?ts=60368829#heading=h.bupciudrwmna" class="bare">https://docs.google.com/document/d/1usS9H-R-AwFYiGVOiW-N2YSFmla0-oUsTWPRvwyeh34/edit?ts=60368829#heading=h.bupciudrwmna</a>][[Public]
+Scalable Observability Collector - Google Docs]]</p>
+</li>
+<li>
+<p>[ ]
+<a href="https://docs.google.com/document/d/1cSz_ZbS35mk8Op92xhB9ijW1ivOtJuD1uAzPiBdSUqs/edit#heading=h.bupciudrwmna">RHOBS:
+Red Hat Internal Observability Service - Google Docs</a></p>
+</li>
+<li>
+<p>Bartok hobby horse: unified observability configuration. Universal
+agent.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Components: Monitoring, Telemetry, Observatorium (Thanos=distrib prom.),
+AlertManager Dashboards: Grafana vs. Openshift? Grafana seems out of
+scope for everybody?</p>
+</div>
+<div class="paragraph">
+<p>Integration points:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>UI (Grafana? Openshift?)</p>
+</li>
+<li>
+<p>Correlation (Prometheus/Loki label naming, Jaeger traces?)</p>
+</li>
+<li>
+<p>Single installer: configure the scale?</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Logging plans:</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; logging labels (max 10): cluster, namespace-name, node?,
+container-name?</p>
+<div class="ulist">
+<ul>
+<li>
+<p>static, easy search given resource</p>
+</li>
+<li>
+<p>container name is fairly static - image name by default?</p>
+</li>
+<li>
+<p>is node useful? may partition namespaces. Need to match up with
+"instance" representation of node.</p>
+</li>
+<li>
+<p>no pod name, too high cardinality (DPTP experiment), limited value
+(who searches knowing the pod name?)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#10063; metric labels (max 30): cluster, namespace-name, pod-name,
+container-name?, job=log-collector, instance</p>
+<div class="ulist">
+<ul>
+<li>
+<p>pod name required for pod granularity, prometheus is OK with greater
+cardinality than lok (per Grafana, Eldin)</p>
+</li>
+<li>
+<p>container name does not increase cardinality, dependent on pod.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#10063; Forward our data model to Bartok.</p>
+</li>
+<li>
+<p>&#10063; Security: Cert management is different. Look at Telemetry model.</p>
+</li>
+<li>
+<p>&#10063; Relationship to OpenTelemetry (vendor based, not pushing it)</p>
+</li>
+<li>
+<p>&#10063; Key/Value nesting structure for loki? Use of packed labels instead
+of JSON?</p>
+</li>
+<li>
+<p>&#10063; Combined agents idea?</p>
+<div class="ulist">
+<ul>
+<li>
+<p>already pull metrics, traces?</p>
+</li>
+<li>
+<p>pull logs from file system? fluentd pull protocol?</p>
+</li>
+<li>
+<p>what&#8217;s the benefit over push to loki? Configuration?</p>
+</li>
+<li>
+<p>still need push protocols for syslog &amp; other remotes.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#10063; Comply with tennancy data (per cluster, namespace what?)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Need a tennancy field.</p>
+</li>
+<li>
+<p>Need a tennancy plug-in? Who injects the label? Tennancy security
+requirements &amp; trust?</p>
+</li>
+<li>
+<p>Metric tennancy: get label from cluster/service-account? Total
+metadata.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#10063; Review by bartok</p>
+<div class="ulist">
+<ul>
+<li>
+<p>naming conventions</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#10063; Obs. "backend"</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Write</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Relationships: Telemetry, Observatorium, Monitoring, Project X</p>
+</li>
+<li>
+<p>&#10063; Correlation.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Discuss</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Start talking to bartok</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Overlap:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Loki operator</p>
+</li>
+<li>
+<p>Common query experience</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Loki/prom labels</p>
+</li>
+<li>
+<p>Meta-data navigation (design new meta-data format?)</p>
+</li>
+<li>
+<p>Loki label injection?</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_notes_to_sort_out">Notes to sort out</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">OpenTelemetry Log fields</th>
+<th class="tableblock halign-left valign-top">Openshift</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Timestamp</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">@timestamp</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time when the event occurred.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TraceId</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Request trace id.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SpanId</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Request span id.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TraceFlags</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">W3C trace flag.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SeverityText</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">level</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The severity text (also known as log level).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SeverityNumber</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Numerical value of the severity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Short event identifier.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Body</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">message</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The body of the log record.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Resource</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">…</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Describes the source of the log.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Attributes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">…</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Additional information about the event.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>[ ]
+<a href="https://github.com/observatorium/docs/blob/master/design/correlation.md">docs/correlation.md
+at master · observatorium/docs</a></p>
+</li>
+<li>
+<p>[X] Review logging and fluentd metrics.</p>
+</li>
+<li>
+<p>&#10063; Observatorium</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Metadata for correlation. OpenTelemetry: labels, fields and attributes.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>distributed context propagation.</p>
+</li>
+<li>
+<p>w3c standards (in HTTP) baggage.</p>
+</li>
+<li>
+<p>tracing baggage: [trace-id, span-id, trace-flags]</p>
+<div class="ulist">
+<ul>
+<li>
+<p>server gets request &amp; returns response, with trace attached - this is
+a span.</p>
+</li>
+<li>
+<p>spans have sub-spans, carries existing context.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>trace data is gathered and forwarded out of band, emitted to.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>client libraries sampling rules: rate limited, errors, stats, etc.</p>
+</li>
+<li>
+<p>everyone reports with the trace-id, span-id info</p>
+</li>
+<li>
+<p>add metadata, timestamps, resource info - pod, node cluster</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Key for correlation - opentelemetry specs for logging</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>standardize how to insert trace ID, span ID into logs vs. metrics.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Yaeger, open tracing, w3c etc. standards for propagation. Backends.
+Labels - cardinality</p>
+</div>
+<div class="paragraph">
+<p>k8s: resource, result\{OK/FAIL}, job k8s kube state:
+<a href="https://github.com/kubernetes/kube-state-metrics#conflict-resolution-in-label-names">kubernetes/kube-state-metrics:
+Add-on agent to generate and expose cluster-level metrics.</a></p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; read opentelemetry logging</p>
+</li>
+<li>
+<p>[ ]
+<a href="https://docs.openshift.com/container-platform/4.6/monitoring/understanding-the-monitoring-stack.html">Understanding
+the monitoring stack | Monitoring | OpenShift Container Platform 4.6</a></p>
+</li>
+<li>
+<p>The Prometheus Adapter (PA in the preceding diagram) translates
+Kubernetes node and pod queries for use in Prometheus</p>
+</li>
+<li>
+<p>The kube-state-metrics exporter agent (KSM in the preceding diagram)
+converts Kubernetes objects to metrics that Prometheus can use</p>
+</li>
+<li>
+<p>The openshift-state-metrics exporter (OSM in the preceding diagram)
+expands upon kube-state-metrics by adding metrics for OpenShift
+Container Platform-specific resources.</p>
+</li>
+<li>
+<p>The openshift-state-metrics exporter (OSM in the preceding diagram)
+expands upon kube-state-metrics by adding metrics for OpenShift
+Container Platform-specific resources.</p>
+</li>
+<li>
+<p>[ ] Review
+<a href="https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/logs/data-model.md">opentelemetry-specification/data-model.md
+at main · open-telemetry/opentelemetry-specification</a></p>
+</li>
+<li>
+<p>&#10063; Note on correlation doc page.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Metric names:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>fluentd_ has own prefix, so should logging.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Labels</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_start_disscussion_with_bartek_ben_eric_peri">Start disscussion with Bartek, Ben, Eric, Peri</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>slack thread to get going, propos meeting</p>
+</li>
+<li>
+<p>bring in correlation?</p>
+</li>
+<li>
+<p>[ ] [[<a href="https://issues.redhat.com/browse/LOG-1194" class="bare">https://issues.redhat.com/browse/LOG-1194</a>][[LOG-1194]
+Define and implement labels for per-log metrics - Red Hat Issue
+Tracker]]</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_next_review_existing_prometheus_dashboards_for_logging">NEXT Review existing prometheus dashboards for logging.</h3>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; VIEW existing CLO dashboard, alerts and metrics - uses fluentd
+tag. How tagged?</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Log explore team know about dashboards.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_openmetricsopenmetrics_md_at_main_openobservabilityopenmetrics_github"><a href="https://github.com/OpenObservability/OpenMetrics/blob/main/specification/OpenMetrics.md">OpenMetrics/OpenMetrics.md at main · OpenObservability/OpenMetrics · GitHub</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_how_to_have_labels_for_machine_roles_robust_perception_prometheus_monitoring_experts"><a href="https://www.robustperception.io/how-to-have-labels-for-machine-roles">How to have labels for machine roles – Robust Perception | Prometheus Monitoring Experts</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_metric_and_label_naming_prometheus"><a href="https://prometheus.io/docs/practices/naming/">Metric and label naming | Prometheus</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_github_openshiftcluster_monitoring_operator_manage_the_openshift_monitoring_stack"><a href="https://github.com/openshift/cluster-monitoring-operator">GitHub - openshift/cluster-monitoring-operator: Manage the OpenShift monitoring stack</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_sending_metrics_via_telemetry_google_docs"><a href="https://docs.google.com/document/d/1a6n5iBGM2QaIQRg9Lw4-Npj6QY9&#8212;&#8203;Hpx3XYut-BrUSY/edit#heading=h.i05nm4wmvn7x">Sending metrics via telemetry - Google Docs</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_cluster_logging_telemetry_google_docs"><a href="https://docs.google.com/document/d/1GicAsPnOCBdi3aw4NSL3lbM0QsfUmbpVdgIKTwAWLAU/edit?ts=6047a51a#heading=h.9u98xli5oq26">Cluster logging telemetry - Google Docs</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_slo_for_telemetry_not_metrics">SLO for telemetry (not metrics)</h3>
+<div class="paragraph">
+<p>Telemetry is observation of product use NOT metrics for management. What
+should we expose?</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_sla_design_doc_logging_service_level_google_docs">SLA Design doc: <a href="https://docs.google.com/document/d/1BNaJXLOfkcqP_4C02qTNpiHNk23i5K-QTph4MnGr5aw/edit?ts=5fce7524#">Logging Service Level - Google Docs</a></h3>
+<div class="paragraph">
+<p>Ref:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://app.slack.com/client/T027F3GAJ/G01FZT72REX/thread/C01D9SK01HN-1606831948.034100">Slack
+| Jeff Cantrill, Periklis Tsirakidis, Swetha Shankar, Urvashi Bhargava |
+CoreOS | 2 new items</a></p>
+</li>
+<li>
+<p><a href="https://sre.google/workbook/slo-document/" class="bare">https://sre.google/workbook/slo-document/</a></p>
+</li>
+<li>
+<p><a href="https://docs.google.com/document/d/1BNaJXLOfkcqP_4C02qTNpiHNk23i5K-QTph4MnGr5aw/edit#">Logging
+Service Level - Google Docs</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Metrics
+<a href="https://mail.google.com/mail/u/0/#inbox/FMfcgxwKjwwJgvVcfCKJMMqlxzfWBkDx">Logging
+for ROSA and SRE - <a href="mailto:aconway@redhat.com">aconway@redhat.com</a> - Red Hat Mail</a></p>
+</div>
+<div class="paragraph">
+<p>SLOs come later, objectives based on metrics.</p>
+</div>
+<div class="paragraph">
+<p>SLIs based on metrics from the fluentd prometheus plugin
+<a href="https://github.com/fluent/fluent-plugin-prometheus" class="bare">https://github.com/fluent/fluent-plugin-prometheus</a> (anyone know where
+these metrics are documented?)</p>
+</div>
+<div class="paragraph">
+<p>Collector</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>latency within fluentd: fluentd<sub>statusbuffernewesttimekey</sub> -
+fluentd<sub>statusbufferoldesttimekey</sub></p>
+</li>
+<li>
+<p>output throughput in bytes: (oddly, I only found
+fluentd<sub>outputstatusnumrecordstotal</sub>) (we could include input thruput
+but buffer size is a better measure of a rate mismatch )</p>
+</li>
+<li>
+<p>dropped data in bytes: currently we don&#8217;t capture this, will be part
+of flow control.</p>
+</li>
+<li>
+<p>buffer size: fluentd<sub>outputstatusbufferqueuebytesize</sub></p>
+</li>
+<li>
+<p>buffer % full: fluentd<sub>outputstatusbufferavailablespaceratio</sub></p>
+</li>
+<li>
+<p>total flush time (blocked by target):
+fluentd<sub>outputstatusflushtimecount</sub></p>
+</li>
+<li>
+<p>output reconnects: fluentd<sub>outputstatusretrycount</sub></p>
+</li>
+<li>
+<p>output errors: fluentd<sub>outputstatusnumerrors</sub></p>
+</li>
+<li>
+<p>CPU use.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Note on collector SLO: the collector is in the middle. If output
+endpoints are unavailable or slow then latency and buffer metrics will
+look bad. Do we need to try to distinguish collector problems from
+output endpoint problems?</p>
+</div>
+<div class="paragraph">
+<p>Store</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>end-to-end latency: Compare timestamp with time of arrival</p>
+</li>
+<li>
+<p>incoming data rate</p>
+</li>
+<li>
+<p>disk used Mb</p>
+</li>
+<li>
+<p>% of available disk used</p>
+</li>
+<li>
+<p>estimated time till disk full (based on incoming rate, disk available,
+retention)</p>
+</li>
+<li>
+<p>CPU use.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>There are probably more store metrics to consider.</p>
+</div>
+<div class="paragraph">
+<p>latency across collector</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_dashboard_for_team_slo_my_page">Dashboard for team SLO <a href="https://team-slo-results-ocp-eng-architects.apps.ocp4.prod.psi.redhat.com/">My page</a></h3>
+<div class="paragraph">
+<p>[[<a href="https://mail.google.com/mail/u/0/#inbox/FMfcgxwKjKqzLzXKCNkXTpFvXvTLrzTp" class="bare">https://mail.google.com/mail/u/0/#inbox/FMfcgxwKjKqzLzXKCNkXTpFvXvTLrzTp</a>][Fwd:
+[aos-leads] RFC: a proper feedback loop on Alerts - <a href="mailto:aconway@redhat.com">aconway@redhat.com</a> -
+Red Hat Mail]]</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_contribution_of_stanza_logging_agent_to_opentelemetry_issue_605_open_telemetrycommunity"><a href="https://github.com/open-telemetry/community/issues/605">Contribution of Stanza logging agent to OpenTelemetry · Issue #605 · open-telemetry/community</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://mail.google.com/mail/u/0/#inbox/FMfcgxwHNqJFhxSXVNTMxfvTjjCKmzFC" class="bare">https://mail.google.com/mail/u/0/#inbox/FMfcgxwHNqJFhxSXVNTMxfvTjjCKmzFC</a>[Re:
+Logging Architecture Overview - Invitation to edit - <a href="mailto:aconway@redhat.com">aconway@redhat.com</a></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Red Hat Mail]</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_label_selectors_nec">Label selectors (NEC)</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_notes_5">Notes</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/openshift/enhancements/blob/master/enhancements/cluster-logging/forwarder-label-selector.md">enhancements/forwarder-label-selector.md
+at master · openshift/enhancements</a></p>
+</li>
+<li>
+<p><a href="https://github.com/openshift/cluster-logging-operator/pull/865#issuecomment-766560279">Pull
+Request #865 · openshift/cluster-logging-operator</a></p>
+</li>
+<li>
+<p>Kii-san repo:
+<a href="https://github.com/k-keiichi-rh/cluster-logging-operator">keiichi-rh/cluster-logging-operator:
+Operator to support OKD cluster logging</a></p>
+</li>
+<li>
+<p>Label selectors enhancement
+<a href="https://github.com/openshift/enhancements/blob/master/enhancements/cluster-logging/forwarder-label-selector.md">enhancements/forwarder-label-selector.md</a></p>
+</li>
+<li>
+<p>Label selectors</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Epic [[<a href="https://issues.redhat.com/browse/LOG-883" class="bare">https://issues.redhat.com/browse/LOG-883</a>][[LOG-883] Add
+filtering logs via pod labels to the log forwarding API]]</p>
+</li>
+<li>
+<p>Story [[<a href="https://issues.redhat.com/browse/LOG-660" class="bare">https://issues.redhat.com/browse/LOG-660</a>][[LOG-660]
+ClusterLogFowarder Log Filtering by pod label - Red Hat Issue Tracker]]</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_next_a_review_label_selector_pr">NEXT [#A] Review label selector PR</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_next_b_wip_enable_pod_label_base_filtering_using_label_router_plugin_by_k_keiichi_rh_pull_request_865_openshiftcluster_logging_operator">NEXT [#B] <a href="https://github.com/openshift/cluster-logging-operator/pull/865">WIP: Enable pod label base filtering using label router plugin by k-keiichi-rh · Pull Request #865 · openshift/cluster-logging-operator</a></h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_data_model_documentation_design">Data model documentation &amp; design</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_notes_6">Notes</h3>
+<div class="paragraph">
+<p>Contacts: Eran, Bartok, Ben Browning OpenTelemetry, observability group.
+OpenMetrics. Common meta-data/label dictionary: correlation &amp;
+cross-query.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://opentelemetry.io/">OpenTelemetry</a></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Resources
+<a href="https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/resource/semantic_conventions/README.md">opentelemetry-specification/README.md
+at main · open-telemetry/opentelemetry-specification</a></p>
+</li>
+<li>
+<p>k8s
+<a href="https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/resource/semantic_conventions/k8s.md">opentelemetry-specification/k8s.md
+at main · open-telemetry/opentelemetry-specification</a></p>
+</li>
+<li>
+<p>Log data model
+<a href="https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/logs/data-model.md">opentelemetry-specification/data-model.md
+at main · open-telemetry/opentelemetry-specification</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Openshift Monitoring model:
+<a href="https://github.com/openshift/cluster-monitoring-operator/blob/master/Documentation/data-collection.md">cluster-monitoring-operator/data-collection.md
+at master · openshift/cluster-monitoring-operator</a> Observatorium:
+<a href="https://github.com/observatorium/docs/blob/master/design/correlation.md">docs/correlation.md
+at master · observatorium/docs</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_next_b_httpsissues_redhat_combrowserhdevdocs_2521rhdevdocs_2521_document_our_json_log_entry_format_red_hat_issue_tracker">NEXT [#B] [[<a href="https://issues.redhat.com/browse/RHDEVDOCS-2521" class="bare">https://issues.redhat.com/browse/RHDEVDOCS-2521</a>][[RHDEVDOCS-2521] Document our JSON log entry format. - Red Hat Issue Tracker]]</h3>
+<div class="paragraph">
+<p>Doc team JIRA:
+[[<a href="https://issues.redhat.com/browse/RHDEVDOCS-2521" class="bare">https://issues.redhat.com/browse/RHDEVDOCS-2521</a>][[RHDEVDOCS-2521]
+Document our JSON log entry format. - Red Hat Issue Tracker]] Data
+model:
+<a href="https://github.com/ViaQ/elasticsearch-templates">viaQ/elasticsearch-templates
+repo</a> PR: <a href="https://github.com/ViaQ/elasticsearch-templates/pull/125">WIP:
+Initial stab at generating public docs for data model. by alanconway ·
+Pull Request #125 · ViaQ/elasticsearch-templates</a></p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Discuss: @jpkroehling (tracing), Ben, Christian (other) metrics.
+Bartok, etc.</p>
+</li>
+<li>
+<p>Goals:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>support JSON and flat name/value (separators? prometheus syntax?)</p>
+</li>
+<li>
+<p>relate to OpenTelemetry data model</p>
+</li>
+<li>
+<p>update README and other doc</p>
+</li>
+<li>
+<p>k8s: are these public: component, provider etc.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>[X] New output directory logging/ - subset by namespace &#8658;
+openshift-cluster-logging.adoc</p>
+</li>
+<li>
+<p>[X] Establish markers for: public/internal (e.g. viaq in root
+namespace)</p>
+</li>
+<li>
+<p>&#10063; Conservative pass at public fields.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>namespace<sub>name</sub>/<sub>id</sub> doubled up in root &amp; k8s?</p>
+</li>
+<li>
+<p>master<sub>url</sub> should be cluster<sub>name</sub>?</p>
+</li>
+<li>
+<p>deploymentconfig?</p>
+</li>
+<li>
+<p>event group status?</p>
+</li>
+<li>
+<p>openshift field for forwarder labels? Other?</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Rolfe:</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>.adoc suffix</p>
+</li>
+<li>
+<p>Public-only generator</p>
+</li>
+<li>
+<p>Give me sample, I&#8217;ll fix generator</p>
+</li>
+<li>
+<p>Let adoc create the index?</p>
+</li>
+<li>
+<p>Parameterize intro text, formatting bits - include snippets? adoc
+template?</p>
+</li>
+<li>
+<p>&#10063; Check actual logging output for fields.</p>
+</li>
+<li>
+<p>&#10063; Review all fields, mark explicit public/private</p>
+</li>
+<li>
+<p>&#10063; Separate/parameterize document generator - asciidoc template from
+Rolfe with includes.</p>
+</li>
+<li>
+<p>&#10063; Establish markers for static/dynamic (immutable/mutable,
+invariant/variant)</p>
+</li>
+<li>
+<p>&#10063; Review namespaces/ pass 1, mark public/private (conservative)
+static/dynamic. Leave as "unknown" where unknown.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Lukas review input:
+<a href="https://coreos.slack.com/archives/G01KY955MU3/p1611770697043000" class="bare">https://coreos.slack.com/archives/G01KY955MU3/p1611770697043000</a></p>
+</li>
+<li>
+<p>check real log messages.</p>
+</li>
+<li>
+<p>overview: records, metadata, static vs. dynamic</p>
+</li>
+<li>
+<p>known fields &amp; types - rely only on these. Record may include other
+fields.</p>
+</li>
+<li>
+<p>encodings - mention loki labels, JSON fields, elastic indices, syslog
+userdata</p>
+</li>
+<li>
+<p>Jeff Cantrill 'docker' should probably be deprecated in favor of
+something like container<sub>engine</sub> unless there is docker specific info</p>
+</li>
+<li>
+<p>Drop the Collectd namespace from the data model.</p>
+</li>
+<li>
+<p>No openshift namespace? Check tagging proposal.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#10063; Labelling for flow control metrics</p>
+</li>
+<li>
+<p>&#10063; Generate public &amp; private subset docs</p>
+<div class="ulist">
+<ul>
+<li>
+<p>jq filters before existing doc generatorto list: public/private,
+static/dynamic etc.</p>
+</li>
+<li>
+<p>get rid of elasticsearch guff, tidy up format, check Rolfes doc.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#10063; New fields: logType, schema, structured (review proposal)</p>
+</li>
+<li>
+<p>&#10063; extract data model from elasticsearch stuff, create new repo?
+data<sub>model</sub></p>
+</li>
+<li>
+<p>&#10063; Review pass 2, compare to CLO/ELO codebases</p>
+</li>
+<li>
+<p>&#10063; Review pass 3, collect logs from live cluster &amp; check for
+conformance.</p>
+</li>
+<li>
+<p>&#10063; Extract generic model, remove elasticsearch terminology. Support
+alternate encodings.</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_notes_7">Notes</h4>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>Changed suffix to .adoc -
+<a href="https://asciidoctor.org/docs/asciidoc-recommended-practices/#document-extension" class="bare">https://asciidoctor.org/docs/asciidoc-recommended-practices/#document-extension</a></p>
+</li>
+<li>
+<p>Data model is in namespaces/</p>
+</li>
+<li>
+<p>Create new output dir for logging public/private docs?</p>
+</li>
+<li>
+<p>Need to cover metric models also in future?</p>
+</li>
+<li>
+<p>Lukas: why idetical -projects and -operations doc files?</p>
+</li>
+<li>
+<p>&#10063; Back with tests:
+<a href="https://github.com/openshift/cluster-logging-operator/pull/934/files#diff-74642f44fce5da5ad4f33f4d04348787e5c97beb2e975d764e2de0eee1b23674" class="bare">https://github.com/openshift/cluster-logging-operator/pull/934/files#diff-74642f44fce5da5ad4f33f4d04348787e5c97beb2e975d764e2de0eee1b23674</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_purge_of_unused_fields">Purge of unused fields</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_review_all_public_fields_for_accurate_comments">Review all public fields for accurate comments</h3>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Cross ref with CLO and Elastic code, check with Lukas</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_data_model_why_notes_2021_01_28_thu">Data model why notes [2021-01-28 Thu]</h3>
+<div class="paragraph">
+<p>Lukas history:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>started before logging team</p>
+</li>
+<li>
+<p>codebase built for Elasticsearch (based on logstash, not full
+original)</p>
+</li>
+<li>
+<p>our field definitions + namespaces notion. (<strong>user</strong> namespace)</p>
+</li>
+<li>
+<p>was for logging + metrics</p>
+</li>
+<li>
+<p>was designed per collector (fluentd/syslog etc.)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Namespace</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>collectd namespace for metrics</p>
+</li>
+<li>
+<p>can drop most namespaces.</p>
+</li>
+<li>
+<p>Rolfe:</p>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; doc what customers need</p>
+</li>
+<li>
+<p>&#10063; work on top-level first</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For me</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Eric and Jeff need to know for compatibility.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>remove</p>
+</li>
+<li>
+<p>add?</p>
+</li>
+<li>
+<p>rename?</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#10063; Public (downstream) doc: fields for Rolfe first cut.</p>
+</li>
+<li>
+<p>&#10063; Internal (upstream ) greater detail, private fields.</p>
+</li>
+<li>
+<p>&#10063; Use the mechanics: YAML source, generation, documentation.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>extend to code generators?</p>
+</li>
+<li>
+<p>tweak for docs - minor formatting changes/aesethetic</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#10063; Goal docs:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>upstream/internal/details</p>
+</li>
+<li>
+<p>downstream doc</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#10063; Metadata classification: static/dynamic, labels/content</p>
+</li>
+<li>
+<p>&#10063; Fields still in use: docker</p>
+</li>
+<li>
+<p>&#10063; Some new fields in ES (from fluentd), some modified by CLO.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>test: start logging &amp; compare resulting indices.</p>
+</li>
+<li>
+<p>vlog</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Users</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; JSON record output</p>
+</li>
+<li>
+<p>&#10063; Metadata classification: static/dynamic, labels/content</p>
+</li>
+<li>
+<p>&#10063; Relationship to metrics &amp; prometheus lables</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Viaq repository:</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Merged by Lukas, owner.</p>
+</li>
+<li>
+<p>&#10063; Unit tests etc. automation missing?</p>
+<div class="ulist">
+<ul>
+<li>
+<p>manage changes in namespaces.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_write_up_common_pattern_for_mapping_metadata_to_transport_fields">Write up common pattern for mapping metadata to transport fields</h3>
+<div class="paragraph">
+<p><a href="https://mail.google.com/mail/u/0/#inbox/FMfcgxwLsJzmHpmWMvHnTbKzXDQMRxWQ" class="bare">https://mail.google.com/mail/u/0/#inbox/FMfcgxwLsJzmHpmWMvHnTbKzXDQMRxWQ</a>
+cloudwatch groups kafka topics JSON stuff?</p>
+</div>
+<div class="sect3">
+<h4 id="_httpsissues_redhat_combrowserfe_923rfe_923_enable_the_default_error_label_configuration_in_the_logging_forwarder_red_hat_issue_tracker">[[<a href="https://issues.redhat.com/browse/RFE-923" class="bare">https://issues.redhat.com/browse/RFE-923</a>][[RFE-923] Enable the default "@ERROR label" configuration in the logging forwarder - Red Hat Issue Tracker]]</h4>
+<div class="paragraph">
+<p>Update JSON handling, see conversation:
+<a href="https://github.com/openshift/cluster-logging-operator/pull/934#discussion_r593284611" class="bare">https://github.com/openshift/cluster-logging-operator/pull/934#discussion_r593284611</a></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_tls_configuration">TLS configuration</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_next_jeff_certificate_problem_help_debug">NEXT Jeff certificate problem, help debug.</h3>
+<div class="paragraph">
+<p>Slack:
+<a href="https://coreos.slack.com/archives/GGUR75P60/p1615404272099700?thread_ts=1615403877.099000&amp;cid=GGUR75P60" class="bare">https://coreos.slack.com/archives/GGUR75P60/p1615404272099700?thread_ts=1615403877.099000&amp;cid=GGUR75P60</a></p>
+</div>
+<div class="paragraph">
+<p>6m Jeff Cantrill:spiral<sub>calendarpad</sub>: trying a 4.6 backport
+<a href="https://github.com/openshift/cluster-logging-operator/pull/926" class="bare">https://github.com/openshift/cluster-logging-operator/pull/926</a> doesnt
+recognize the output 2m Alan Conway There was definitely recent
+refactoring in that area, very possible that backport missed a line that
+created such a problem. &lt;1m Alan Conway Let me look again with that in
+mind…</p>
+</div>
+<div class="paragraph">
+<p>Pull: <a href="https://github.com/openshift/cluster-logging-operator/pull/926">Bug
+1929420: ClusterLogForwarder with Output.Secret causes fluentd crash
+loop by jcantrill · Pull Request #926 ·
+openshift/cluster-logging-operator</a> Failure:
+<a href="https://prow.ci.openshift.org/view/gs/origin-ci-test/pr-logs/pull/openshift_cluster-logging-operator/926/pull-ci-openshift-cluster-logging-operator-release-4.6-e2e-operator/1367646706383982592#1:build-log.txt%3A673">pull-ci-openshift-cluster-logging-operator-release-4.6-e2e-operator
+#1367646706383982592</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_update_httpsissues_redhat_combrowselog_895log_895_comply_with_ocp_cluster_wide_cryptographic_policies_red_hat_issue_tracker">Update [[<a href="https://issues.redhat.com/browse/LOG-895" class="bare">https://issues.redhat.com/browse/LOG-895</a>][[LOG-895] Comply with OCP cluster-wide cryptographic policies - Red Hat Issue Tracker]]</h3>
+<div class="paragraph">
+<p>Bugs</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><a href="https://bugzilla.redhat.com/show_bug.cgi?id=1888943">1888943 –
+ClusterLogForwarder with Output.Secret causes fluentd crash loop</a></p>
+</li>
+<li>
+<p><a href="https://bugzilla.redhat.com/show_bug.cgi?id=1890072">1890072 – Log
+forwarding API with multiple outputs same secret cause issues</a></p>
+</li>
+<li>
+<p>NEED JIRA: Consistent TLS across the board.</p>
+</li>
+<li>
+<p>&#10063; Apply cluster-wide stuff, more flexible TLS configuration.</p>
+</li>
+<li>
+<p>&#10063; collect all RFEs, JIRAS for planning - TLS 1.2, 1.3 support.</p>
+</li>
+<li>
+<p>&#10063; Verizon had problems with old SSL, Still present? They suggest
+rdkafka - better SSL config than the previous. Requirements:
+<a href="https://docs.google.com/document/d/1z3bDACneB3fsskYoAqpO3p3cpR85wiW2Ff3EaOVJ94I/edit">{Webscale}
+Logging &amp; Monitoring: Sync Meeting with VZ to Address Questions from
+Conrad - Google Docs</a></p>
+</li>
+<li>
+<p>&#10063; evaluate effort, configuration cost.</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_fix_or_comment_rfe_1262_support_log_forwarding_api_without_mtls_with_external_elastic_search_red_hat_issue_tracker">Fix or comment: <a href="https://issues.redhat.com/browse/RFE-1262">{RFE-1262} Support Log Forwarding API without mTLS with external Elastic Search - Red Hat Issue Tracker</a></h4>
+<div class="paragraph">
+<p>Also: <a href="https://issues.redhat.com/browse/OCPBUGSM-9095">{OCPBUGSM-9095}
+{1834414} Allow enable mutual TLS in cluster logging Log Forwarding
+feature - Red Hat Issue Tracker</a> :bug:</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_fix_or_comment_httpsissues_redhat_combrowseocpbugsm_9095ocpbugsm_9095_1834414_allow_enable_mutual_tls_in_cluster_logging_log_forwarding_feature_red_hat_issue_tracker">Fix or comment: [[<a href="https://issues.redhat.com/browse/OCPBUGSM-9095" class="bare">https://issues.redhat.com/browse/OCPBUGSM-9095</a>][[OCPBUGSM-9095] [1834414] Allow enable mutual TLS in cluster logging Log Forwarding feature - Red Hat Issue Tracker]]</h4>
+
+</div>
+</div>
+<div class="sect2">
+<h3 id="_tls_customer_issue_consistent_enablement_of_mtls_all_outputs">TLS customer issue - consistent enablement of mTLS all outputs</h3>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Need JIRAs</p>
+</li>
+<li>
+<p>&#10063; Relate to other TlS bugs.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>mswenson Yesterday at 09:57 Hello all @aoslogging,</p>
+</div>
+<div class="paragraph">
+<p>I am currently working with a customer that has a hard requirement
+around forwarding audit logs over syslog. The client&#8217;s syslog server is
+setup for server TLS validation but not client TLS validation. I noticed
+that the documentation specifies you need a tls.key, tls.crt, and
+ca-bundle.crt which to me implies mTLS. Is there any way to get around
+this and only supply the public crt for the server-side authentication?
+(edited)</p>
+</div>
+<div class="paragraph">
+<p><a href="https://coreos.slack.com/archives/CB3HXM2QK/p1612553849388200?thread_ts=1612450673.342600&amp;cid=CB3HXM2QK" class="bare">https://coreos.slack.com/archives/CB3HXM2QK/p1612553849388200?thread_ts=1612450673.342600&amp;cid=CB3HXM2QK</a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_fiducia">Fiducia</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_notes_8">Notes</h3>
+<div class="paragraph">
+<p>Angry. Escalations.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>JSON proposal - how does it help other problems.</p>
+</li>
+<li>
+<p>Some bugs are fixed now - open security distro plugin.</p>
+</li>
+<li>
+<p>Problems come from not using logging stack as intended</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Expected <strong>full enterprise logging</strong> solution <strong>90 days</strong></p>
+</li>
+<li>
+<p>Short-term logging, not for long retentions + backup &amp; recovery.</p>
+</li>
+<li>
+<p><strong>Need numbers</strong> for what we can handle.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Collector + forwarder only.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_a_fiducia_prep">[#A] Fiducia prep.</h3>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; JSON interest - presentation.</p>
+</li>
+<li>
+<p>&#10063; Noisy neighbour interest - Flow Control Design?</p>
+</li>
+<li>
+<p>&#10063; Need statement of what we intend to support.</p>
+</li>
+<li>
+<p>Need numbers for what we can support. Jeder.</p>
+</li>
+<li>
+<p>Open issues - Christian has doc. Open vs. Closed</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.google.com/spreadsheets/d/1T1gj2zDFoH95C2aY0R1ImWDwzaqibClAlUuU1hi-DHs/edit?pli=1#gid=0">Fiducia
+Support Cases - Logging/Monitoring - Google Sheets</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Jeremy Eder</p>
+</li>
+<li>
+<p>Have something from perf team? Jcantril, Christian?</p>
+</li>
+<li>
+<p>Telemetry?</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_json_enhancement">JSON enhancement</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_next_b_update_json_epic_with_latest_changes">NEXT [#B] Update JSON epic with latest changes.</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_next_a_log_1157_implement_json_forwarding_parse_json_message_by_vimalk78_pull_request_934_openshiftcluster_logging_operator">NEXT [#A] <a href="https://github.com/openshift/cluster-logging-operator/pull/934">LOG-1157: Implement Json Forwarding: Parse Json Message by vimalk78 · Pull Request #934 · openshift/cluster-logging-operator</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_a_sub_routes_document_general_guidelines">[#A] Sub-routes document, general guidelines.</h3>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Separate proposal for "generic sub routes"</p>
+</li>
+<li>
+<p>&#10063; Review cloudwatch and JSON also</p>
+</li>
+<li>
+<p>&#10063; Library suggestions, code?</p>
+</li>
+<li>
+<p>&#10063; OPENSHIFT labels</p>
+</li>
+<li>
+<p>&#10063; Backport to JSON, cloudwatch</p>
+</li>
+<li>
+<p>&#10063; Update LOG-1667</p>
+</li>
+<li>
+<p>Think about repetition? - USE CLF LABELS</p>
+</li>
+<li>
+<p>Think about scope: scoped to a connection.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Exactly: that&#8217;s what just clicked - we are talking about "sub-routes",
+addressing destinations inside a single forwarer output: ES indices,
+cloudwatch groups, kafka topics… And you hit the nail on the head - we
+want to express that in the terms of the outputs own concepts, not try
+to come up with a "generic" notion like "address" or "schema" - that&#8217;s
+too confusing as all the available words are too overloaded already</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_b_json_logging_extensions_for_infra_logs">[#B] JSON logging extensions for infra logs</h3>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Update with elastic indices</p>
+</li>
+<li>
+<p>&#10063; Review cloudwatch also</p>
+</li>
+<li>
+<p>&#10063; Separate proposal for "generic sub routes"</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Exactly: that&#8217;s what just clicked - we are talking about "sub-routes",
+addressing destinations inside a single forwarer output: ES indices,
+cloudwatch groups, kafka topics… And you hit the nail on the head - we
+want to express that in the terms of the outputs own concepts, not try
+to come up with a "generic" notion like "address" or "schema" - that&#8217;s
+too confusing as all the available words are too overloaded already</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_a_update_json_proposal_move_index_to_elastic">[#A] Update JSON proposal, move index to elastic</h3>
+<div class="paragraph">
+<p>~/enhancements/forward-json/enhancements/cluster-logging/forwarding-json-structured-logs.md::#<mark>#</mark> I want Elasticsearch to schema is indicated by a k8s label on the source pod[proposal
+here]</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>[X] Replace schema with index</p>
+</li>
+<li>
+<p>[X] Add section on OutputDefaults - or new new proposal?</p>
+</li>
+<li>
+<p>[X] Elasticsearch index creation.</p>
+</li>
+<li>
+<p>[X] Update examples for christian</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_notes_9">Notes</h3>
+<div class="paragraph">
+<p>Epics:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>[[<a href="https://issues.redhat.com/browse/LOG-785" class="bare">https://issues.redhat.com/browse/LOG-785</a>][[LOG-785] Allow
+storing and querying of structured logs (JSON) - Red Hat Issue Tracker]]</p>
+</li>
+<li>
+<p>[[<a href="https://www.elastic.co/guide/en/elasticsearch/reference/6.8/ingest-conditionals.html" class="bare">https://www.elastic.co/guide/en/elasticsearch/reference/6.8/ingest-conditionals.html</a>][Conditional
+Execution in Pipelines | Elasticsearch Reference [6.8] | Elastic]]</p>
+</li>
+<li>
+<p><a href="https://github.com/openshift/origin-aggregated-logging/issues/1492">Disable
+merge JSON log in 4.0 · Issue #1492 ·
+openshift/origin-aggregated-logging</a></p>
+</li>
+<li>
+<p>[[<a href="https://www.elastic.co/guide/en/elasticsearch/reference/6.8/ingest-processors.html" class="bare">https://www.elastic.co/guide/en/elasticsearch/reference/6.8/ingest-processors.html</a>][Processors
+| Elasticsearch Reference [6.8] | Elastic]]</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_amdocs_meeting_2021_01_27_wed">AMDocs meeting [2021-01-27 Wed]</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Support exception: 4.3 (general ex. till April, in production)</p>
+</li>
+<li>
+<p>Mar/Apr upgrade to 4.6 - support ex. for JSON logging, both 4.3 + 4.6</p>
+</li>
+<li>
+<p>Running 4.5 for JSON/Elastic issues</p>
+</li>
+<li>
+<p>Current stack is unstable</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Overload of openshift infrastructure logs out of the box. 1d to
+crash.</p>
+</li>
+<li>
+<p>Need to provide sizing guidelines</p>
+</li>
+<li>
+<p>Flush interval - 1s is too fast? 3s is better.</p>
+</li>
+<li>
+<p>Affected by kubelet verbosity change…</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Openshift CI/CD, R&amp;D, Elastic logs for debugging</p>
+<div class="ulist">
+<ul>
+<li>
+<p>150 clusters, assigned to customers - developer customers.</p>
+</li>
+<li>
+<p>Single customer/cluster, multi-tenant by namespace.</p>
+</li>
+<li>
+<p>No need for secure log partitioning per cluster.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Complaint about querying by namespace, make it easier?</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Kibana/Elastic - perf testing shows logs are dropped, not showing in
+ES.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>no health indicators, found during perf tests.</p>
+</li>
+<li>
+<p>passing limits of 2500 msg/sec, log loss.</p>
+</li>
+<li>
+<p>Buffer warnings in fluentd logs - signals possible log loss</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>JSON formats/schemas: foundational logger implementation and format</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Single schema for "conforming apps"</p>
+</li>
+<li>
+<p>3rd party apps may generate additional schemas - Maybe Yes</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>CHE team, sensitivity of EFK, opened 3 bugs</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Index becomes read-only, no explanation/logs.</p>
+</li>
+<li>
+<p>JSON decode/unicode error - need delete indices and restart, daily
+issue.</p>
+</li>
+<li>
+<p>Need better response to bugs/cases.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>UTF-8 warning/split multi-byte code - possible from out of disk.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Shows up in logs <strong>before</strong> fluentd. Need to UTF recode everything.</p>
+</li>
+<li>
+<p>Machine config logs from openshift.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Logs lost during upgrade, ES operator re-installed?</p>
+</li>
+<li>
+<p>4.6 ClusterLogFowarder can disable infrastructure.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>are journal logs of interest? Live vs. stored.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_review_pr_proposal_changes_httpsissues_redhat_combrowselog_1157focusedcommentid15908523pagecom_atlassian_jira_plugin_system_issuetabpanels3acomment_tabpanelcomment_15908523log_1157_implement_the_json_forwarding_proposal_red_hat_issue_tracker">Review PR &amp; proposal changes [[<a href="https://issues.redhat.com/browse/LOG-1157?focusedCommentId=15908523&amp;page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#comment-15908523" class="bare">https://issues.redhat.com/browse/LOG-1157?focusedCommentId=15908523&amp;page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#comment-15908523</a>][[LOG-1157] Implement the JSON forwarding proposal - Red Hat Issue Tracker]]</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_json_sidecar_issue_need_to_match_container_name">JSON sidecar issue, need to match container name?</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_prototype_json_tech_preview_using_namespace_plugin">Prototype JSON tech-preview using namespace plugin?</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_confirm_if_fluentd_logs_when_json_parsing_fails_is_this_usable">Confirm if fluentd logs when JSON parsing fails. Is this usable?</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_talk_to_eric_re_httpsissues_redhat_combrowselog_1157focusedcommentid15880743pagecom_atlassian_jira_plugin_system_issuetabpanels3acomment_tabpanelcomment_15880743log_1157_implement_the_json_forwarding_proposal_red_hat_issue_tracker">Talk to Eric re [[<a href="https://issues.redhat.com/browse/LOG-1157?focusedCommentId=15880743&amp;page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#comment-15880743" class="bare">https://issues.redhat.com/browse/LOG-1157?focusedCommentId=15880743&amp;page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#comment-15880743</a>][[LOG-1157] Implement the JSON forwarding proposal - Red Hat Issue Tracker]]</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_next_a_review_erans_json_work">NEXT [#A] Review Eran&#8217;s JSON work</h3>
+<div class="paragraph">
+<p><a href="https://coreos.slack.com/archives/GGUR75P60/p1616332947209000?thread_ts=1616332538.208600&amp;cid=GGUR75P60" class="bare">https://coreos.slack.com/archives/GGUR75P60/p1616332947209000?thread_ts=1616332538.208600&amp;cid=GGUR75P60</a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_architect">Architect</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>View:
+<a href="https://htmlpreview.github.io/?https://github.com/alanconway/cluster-logging-operator/blob/architecture-pages/docs/architecture.html" class="bare">https://htmlpreview.github.io/?https://github.com/alanconway/cluster-logging-operator/blob/architecture-pages/docs/architecture.html</a>
+Source:
+<a href="https://github.com/alanconway/cluster-logging-operator/blob/architecture-pages/docs/architecture.adoc" class="bare">https://github.com/alanconway/cluster-logging-operator/blob/architecture-pages/docs/architecture.adoc</a></p>
+</div>
+<div class="sect2">
+<h3 id="_next_re_updatemove_arch_page_to_viaq">NEXT Re-update/move Arch page to ViaQ.</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_technical_roadmap_start_something_for_future">Technical Roadmap? Start something for future?</h3>
+<div class="paragraph">
+<p>Internally? Need to drive technical direction 50% of how the team should
+move forward. Sprint planning. Need to be less reactive. Urvashi will
+help with planning.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Loki Roadmap</strong>
+<a href="https://docs.google.com/document/d/1dUfTPaUO7IrjZlYxH5TwFf_bsNBbbm7K7naoCQ4yjQE/edit">Adapting
+Loki - Milestones - Google Docs</a></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Loki forwarder. Need set of JIRAs.</p>
+</li>
+<li>
+<p>Concretize with Eric - along with Peri</p>
+</li>
+<li>
+<p>List all the JIRAs for Swetha</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_arch_page_sections_on_metadata_use_of_promloki_labels">Arch page sections on metadata, use of prom/loki labels</h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_prototype">Prototype</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_next_finish_forwarder_trial_logic_to_solve_namespace_issue">NEXT Finish forwarder trial logic to solve namespace issue.</h3>
+<div class="paragraph">
+<p><a href="<sub>/src/alanconway/trials/pkg/forwarder/forwarder.go">file:</sub>/src/alanconway/trials/pkg/forwarder/forwarder.go</a>
+Comment on:
+<a href="https://coreos.slack.com/archives/GGUR75P60/p1616006115095400?thread_ts=1615925713.055800&amp;cid=GGUR75P60" class="bare">https://coreos.slack.com/archives/GGUR75P60/p1616006115095400?thread_ts=1615925713.055800&amp;cid=GGUR75P60</a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_review">Review</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_next_b_review_event_naming_1_log_1160_added_credentials_update_event_by_igor_karpukhin_pull_request_941_openshiftcluster_logging_operator">NEXT [#B] Review event naming <a href="https://github.com/openshift/cluster-logging-operator/pull/941">(1) LOG-1160: Added credentials update event by igor-karpukhin · Pull Request #941 · openshift/cluster-logging-operator</a></h3>
+<div class="paragraph">
+<p>Write guidelines for architecture doc.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_httpsmail_google_commailu0inboxfmfcgxwlsscxvdbsfcvvgfwmjxrjmbsfaos_devel_opentelemetry_project_health_assessment_is_it_ready_for_the_cncf_incubation_stage_aconwayredhat_com_red_hat_mail">[[<a href="https://mail.google.com/mail/u/0/#inbox/FMfcgxwLsScxVDbsFcVVGFwMjXrJmBSF" class="bare">https://mail.google.com/mail/u/0/#inbox/FMfcgxwLsScxVDbsFcVVGFwMjXrJmBSF</a>][[aos-devel] OpenTelemetry project health assessment; Is it ready for the CNCF Incubation stage? - <a href="mailto:aconway@redhat.com">aconway@redhat.com</a> - Red Hat Mail]]</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_how_will_logging_work_for_hypershift_join_meetings_read_up">How will logging work for hypershift? Join meetings?? Read up.</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>how will this work for different personas.</p>
+</li>
+<li>
+<p>how does observatorium deal with this scenario?</p>
+</li>
+<li>
+<p>Help Christian understand.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Hypershift: Cluster of clusters, central control plane + guest control
+planes.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>how to separate the control planes and forwarding for different
+owners?</p>
+</li>
+<li>
+<p>security separation for central infrastructure vs. sub-cluster
+infrastructure.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Multi-cluster: Routing issues, store-and-forward.* Opentelemetry logging
+overlap (need to get on-board)</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_read_link_from_doc_page_my_philosophy_on_alerting_google_docs">READ &amp; Link from doc page <a href="https://docs.google.com/document/d/199PqyG3UsyXlwieHaqbGiWVa8eMWi8zzAn0YfcApr8Q/preview">My Philosophy on Alerting - Google Docs</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_httpsissues_redhat_combrowselog_902log_902_add_support_for_sending_log_records_via_http_to_third_party_systems_red_hat_issue_tracker">[[<a href="https://issues.redhat.com/browse/LOG-902" class="bare">https://issues.redhat.com/browse/LOG-902</a>][[LOG-902] Add support for sending log records via HTTP to third party systems - Red Hat Issue Tracker]]</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_next_b_review_tracing_docs_from_gary_inform_swetha">NEXT [#B] Review Tracing docs from Gary, inform Swetha.</h3>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Gary - tracing and logging. Looking for a store, Tell Swetha</p>
+</li>
+<li>
+<p>similar architecture: prometheus.</p>
+</li>
+<li>
+<p>want to replace elastic.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_a_read_understand_elo_docs_api">[#A] Read &amp; understand ELO docs &amp; API</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_b_upstream_to_open_telemetry_add_basic_log_collection_capabilities_issue_2264_open_telemetryopentelemetry_collector_contrib">[#B] Upstream to open-telemetry <a href="https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/2264">Add basic log collection capabilities · Issue #2264 · open-telemetry/opentelemetry-collector-contrib</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/logs/data-model.md">opentelemetry-specification/data-model.md
+at main · open-telemetry/opentelemetry-specification</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="https://coreos.slack.com/archives/C013N9P9R6F/p1612450120105300?thread_ts=1612371523.085200&amp;cid=C013N9P9R6F" class="bare">https://coreos.slack.com/archives/C013N9P9R6F/p1612450120105300?thread_ts=1612371523.085200&amp;cid=C013N9P9R6F</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_openshift_dev_experience_developer_journeys_google_docs">Openshift dev experience <a href="https://docs.google.com/document/d/1aNBTOLRdYuCu_mKN3NDkQcgX9_aTtg324w3fJsPKn8Q/edit#heading=h.66sajzcb960c">Developer Journeys - Google Docs</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_servicemesh_operators_delivery_versions_channels">ServiceMesh operators, delivery, versions, channels?</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_use_cases_with_different_osplatform_linuxwindows_openstackopenshiftopentelemetry">Use cases with different OS/Platform - linux/windows, openstack/openshift/opentelemetry</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_openshift_network_observability_update_jan_2021_google_slides"><a href="https://docs.google.com/presentation/d/1nl0EtaxpO2J01LSl58mXagGTssZFwF9QxFcBWPULp4I/edit#slide=id.g547716335e_0_220">OpenShift Network Observability Update - Jan 2021 - Google Slides</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_httpsmail_google_commailu0inboxfmfcgxwlskdffmnwfswkrtvxrzgglvrsdevtools_team_an_introduction_to_opinionated_jira_agile_reviewfeedback_opportunity_aconwayredhat_com_red_hat_mail">[[<a href="https://mail.google.com/mail/u/0/#inbox/FMfcgxwLsKDFfmnwfSWkrtVXrzGgLvrS" class="bare">https://mail.google.com/mail/u/0/#inbox/FMfcgxwLsKDFfmnwfSWkrtVXrzGgLvrS</a>][[devtools-team] An introduction to Opinionated Jira &amp; Agile - Review/Feedback Opportunity - <a href="mailto:aconway@redhat.com">aconway@redhat.com</a> - Red Hat Mail]]</h3>
+<div class="paragraph">
+<p><a href="https://docs.google.com/document/d/1SoI45vqZfM8jZxXdB5Y_JPgolW8WUtpcZqa6KoBNBiY/edit#heading=h.7njraoq9yfyk" class="bare">https://docs.google.com/document/d/1SoI45vqZfM8jZxXdB5Y_JPgolW8WUtpcZqa6KoBNBiY/edit#heading=h.7njraoq9yfyk</a></p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Update logging section</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Goal: tech-independent API for observability, like logging.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#10063; Talk about signal correlation: logs, tracing, metrics.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>loki labels, thanos.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#10063; Packaging and installing observatorium + logs. Unified deployment
+model.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>operator dependency issues.</p>
+</li>
+<li>
+<p>gitops deployment also, common config.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Multi-tennancy in the API?</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Use Open Telemetry collector - has multi-tennant, security.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>one part, doesn&#8217;t solve all collection issues.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Doesn&#8217;t change observability clients: tracing/metrics.</p>
+</div>
+<div class="paragraph">
+<p>Bob Kukura: tracing team, distributed context propagation, not
+mentioned.</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Important for correlating logs/traces - talk to Bob!</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Static helm chart approach vs. operators.</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Tennancy - across signals is handled differently (esp. re.
+installation)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>logging has no multi-zone/multi-cluster tennancy, focus is on-prem</p>
+</li>
+<li>
+<p>unified CR: declaring tennants with stacks - needs to be recognized
+in other CRs.</p>
+</li>
+<li>
+<p>multiply-CRs by tennant: separate CR per tennant for security?</p>
+</li>
+<li>
+<p>correlating CRs belonging to same tennant? By namespace?</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>logging operators: CLF identify tennant of each log, unify with
+others.</p>
+</li>
+<li>
+<p>&#10063; Multiple CRs for logging operator.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_read_open_telemetry_review_its_collector">Read Open Telemetry, review it&#8217;s collector</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_cluster_logging_and_openshift_pipelines_google_docs"><a href="https://docs.google.com/document/d/1091MNIL0jfCj6vJOk5NfwszPjUYY3OnCjQmlRd60k3E/edit#">Cluster Logging and OpenShift Pipelines - Google Docs</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_red_hat_openshift_logging_5_0_is_here_article_google_docs"><a href="https://docs.google.com/document/d/1XNM7ymgqhwbV4TE2Tm-Vnrfjjy4IaLrXu9hgS4Iw0Xc/edit#">Red Hat OpenShift Logging 5.0 Is Here - Article - Google Docs</a></h3>
+<div class="paragraph">
+<p>Note to Christian and Erik Jacobs
+<a href="https://coreos.slack.com/archives/G01K6UDTDD3/p1613490964002300" class="bare">https://coreos.slack.com/archives/G01K6UDTDD3/p1613490964002300</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_principles_for_the_agile_architect"><a href="https://www.agilearchitect.org/agile/principles.htm">Principles for the Agile Architect</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_read_it_opentelemetry_specificationoverview_md_at_main_open_telemetryopentelemetry_specification">Read it <a href="https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/logs/overview.md#log-correlation">opentelemetry-specification/overview.md at main · open-telemetry/opentelemetry-specification</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_next_b_managed_services_respond_to_doc_collect_notes">NEXT [#B] Managed services respond to doc, collect notes.</h3>
+<div class="paragraph">
+<p>Read</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><a href="https://docs.google.com/document/d/1jAvL7QDKpsVFxuA73MwPE3K2ouUlNTRXBT4qNFFJOFc/edit?ts=6023e680#heading=h.od9w1xkvtfa2">Red
+Hat Managed Service Requirements - Google Docs</a> (Respond)</p>
+</li>
+<li>
+<p><a href="https://docs.google.com/document/d/1X1ppt8l4FWJPbuJYHBiizYkzbLu5BMf1Y2Rc1WU9Xv8/edit#heading=h.uj8wv6isku3c">Managed
+Services - A way forward for observability - Q1 2021 - Google Docs</a></p>
+</li>
+<li>
+<p>[[<a href="https://issues.redhat.com/browse/SDE-1088" class="bare">https://issues.redhat.com/browse/SDE-1088</a>][[SDE-1088]
+Deprecation plan for in-cluster logging - Red Hat Issue Tracker]]</p>
+</li>
+<li>
+<p>&#10063; Talk to Ben Browning about managed services, multi-tennant,
+hypershift</p>
+</li>
+<li>
+<p>&#10063; Karan Bea Singh? Spell? Observability.</p>
+</li>
+<li>
+<p>&#10063; Simon Pascea, Bartok, rethinking observability for managed
+services, multi-tennant. Share knowledge.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>@Karanbir Singh @Simon Pasquier
+<a href="https://issues.redhat.com/secure/Dashboard.jspa?selectPageId=12331160" class="bare">https://issues.redhat.com/secure/Dashboard.jspa?selectPageId=12331160</a></p>
+</div>
+<div class="paragraph">
+<p>Christian Heidenreich:palm<sub>tree</sub>: btw, for hypershift and all the other
+things it would be good to understand our limitations/problems that may
+occur for now so that we can have discussions on how, or even if, we
+should tackle it.</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>Customers take over operational support of logging to deploy &amp;
+operate.</p>
+</li>
+<li>
+<p>Rules and metrics in prometheus will be silenced?</p>
+</li>
+<li>
+<p>Customers won&#8217;t get any alerts? Need own alerting setup?</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Customer don&#8217;t have access to openshift namespace.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#10063; Need to deploy in customer namespaces. No more singleton!</p>
+</li>
+<li>
+<p>&#10063; Need an alternate monitoring system? Need to integrate with OSD
+monitoring?</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Customers need own prometheus - need to expose &amp; document details.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#10063; Future solutions for GCP, Azure (like AWS for ROSA, like Grafana).</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Add-on per vendor? Choice in API. More modularity for Outputs?</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>1 service model: e.g. 1 kafaka service per cluster. Log to loki etc.</p>
+</div>
+<div class="paragraph">
+<p>multi-tennant/servide model: need to separate logging by tennant.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>flow control &amp; noisy neighbour.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>managed services + customers on same cluster: multi-tennant</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>customers not happy with same agent, security issues.</p>
+</li>
+<li>
+<p><strong>secure and performant multi-tennant</strong> logging on single cluster.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_read_about_metrics_changes_pre_announcement_of_cadvisor_less_ocp_google_docs">Read about metrics changes <a href="https://docs.google.com/document/d/1BuHX7apxb0Tfyt6KsZBrJBiwUppoa6enAVj6Ut402QQ/edit">Pre Announcement of cAdvisor-less OCP - Google Docs</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_next_b_log_1123_fix_routing_of_app_logs_per_namespace_by_jcantrill_pull_request_955_openshiftcluster_logging_operator">NEXT [#B] <a href="https://github.com/openshift/cluster-logging-operator/pull/955">LOG-1123: fix routing of app logs per namespace by jcantrill · Pull Request #955 · openshift/cluster-logging-operator</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_learn_lua_getting_started">Learn <a href="https://www.lua.org/start.html">Lua: getting started</a></h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installation_olm_addon_other">Installation - OLM, Addon, other</h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_edge_clusters_ran_verizon_single_node">Edge clusters (RAN, Verizon, single node)</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_next_single_node_epic_requirements_steps">NEXT Single node epic, requirements &amp; steps</h3>
+<div class="paragraph">
+<p>NOTE our role is forwarding, no edge log store.
+<a href="https://docs.google.com/document/d/1ZmZVAH8L5R6SlEjlh0l7Wov7_YoB5amGqT6Abbvcm7U/edit#">RAN
+Observability - Requirements document - Google Docs</a>
+<a href="https://docs.google.com/presentation/d/1k0ecKp7NcbVnngRJ3XxSS_AbPQ3sV3s2lo4oJp0f1V4/edit#slide=id.p1">WC
+- Advanced Network Pod Networking Troubleshooting - Google Slides</a>
+<a href="https://issues.redhat.com/browse/KNIDEPLOY-4123">{KNIDEPLOY-4123} Stop
+Gap: Low-latency PTP Events/Alerts for Workloads (Fast Path) - Red Hat
+Issue Tracker</a></p>
+</div>
+<div class="paragraph">
+<p>Performance, reliability, disconnect behavior. Protocol: kafka? amqp?
+Perf slides:
+<a href="https://mail.google.com/mail/u/0/#inbox/FMfcgxwKkbhCDvNKJNTGKfktvFSHdVCN">Fwd:
+Telco 5G/Verizon Executive Update - January 15th, 2021 -
+<a href="mailto:aconway@redhat.com">aconway@redhat.com</a> - Red Hat Mail</a></p>
+</div>
+<div class="paragraph">
+<p>Notes on OOM problems:
+<a href="https://coreos.slack.com/archives/C0131GZPPFF/p1612381367014600?thread_ts=1612351644.476000&amp;cid=C0131GZPPFF" class="bare">https://coreos.slack.com/archives/C0131GZPPFF/p1612381367014600?thread_ts=1612351644.476000&amp;cid=C0131GZPPFF</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_prototype_for_ran_edge_project">Prototype for RAN edge project.</h3>
+<div class="paragraph">
+<p>Single node forwarder with measurement. Notice to group on slack.</p>
+</div>
+<div class="paragraph">
+<p>Peri&#8217;s framework:
+<a href="https://mail.google.com/mail/u/0/#search/to%3Ame+is%3Aunread+is%3Aimportant/FMfcgxwKjnSwSnLbQTmtRMFCKmxXcfsr">Cluster-Logging
+Benchmarks - Invitation to edit - <a href="mailto:aconway@redhat.com">aconway@redhat.com</a> - Red Hat Mail</a>
+<a href="https://github.com/ViaQ/cluster-logging-benchmarks">ViaQ/cluster-logging-benchmarks</a>
+<a href="https://github.com/ViaQ/cluster-logging-load-client">ViaQ/cluster-logging-load-client</a></p>
+</div>
+<div class="paragraph">
+<p>Lukas Vlcek: did you have a chance to check pbench?
+<a href="https://github.com/distributed-system-analysis/pbench" class="bare">https://github.com/distributed-system-analysis/pbench</a></p>
+</div>
+<div class="paragraph">
+<p>@hui and maybe add to common tests … over time to see that there is no
+degradation in performance … Great work</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Hui Kang - point to quiver.</p>
+</li>
+<li>
+<p>&#10063; Ask lucas also - pbench? Existing framework.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Driver/Reader metrics - throughput, latency percentiles. Beware the Pipe
+Stuffing Test.</p>
+</div>
+<div class="paragraph">
+<p>Use metrics (fluentd etc.) end-to-end.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>need to analyse fluentd metrics.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>REF TO FLUENTD SLIs work.</p>
+</div>
+<div class="paragraph">
+<p>Reporting is collecting &amp; plotting metrics. Server Reader for
+fluent-forward or TCP-plain. Metrics for fluentd.</p>
+</div>
+<div class="paragraph">
+<p>Collection-side metrics in fluentd.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_notes_10">Notes</h3>
+<div class="paragraph">
+<p>Aneesh Puttur &lt;<a href="mailto:aputtur@redhat.com">aputtur@redhat.com</a>&gt;, Brent Rowsell &lt;<a href="mailto:browsell@redhat.com">browsell@redhat.com</a>&gt;,
+Christian Heidenreich &lt;<a href="mailto:cvogel@redhat.com">cvogel@redhat.com</a>&gt;, Ian Jolliffe
+&lt;<a href="mailto:ijolliff@redhat.com">ijolliff@redhat.com</a>&gt;, Joydeep Banerjee &lt;<a href="mailto:jbanerje@redhat.com">jbanerje@redhat.com</a>&gt;, Jeff
+Brent &lt;<a href="mailto:jbrent@redhat.com">jbrent@redhat.com</a>&gt;, Jim Einarsson &lt;<a href="mailto:jeinarss@redhat.com">jeinarss@redhat.com</a>&gt;, Leif
+Madsen &lt;<a href="mailto:leif@redhat.com">leif@redhat.com</a>&gt;, Pradeep Kilambi &lt;<a href="mailto:prad@redhat.com">prad@redhat.com</a>&gt;, Randy
+George &lt;<a href="mailto:rageorge@redhat.com">rageorge@redhat.com</a>&gt;, Robert Love &lt;<a href="mailto:rolove@redhat.com">rolove@redhat.com</a>&gt;</p>
+</div>
+<div class="paragraph">
+<p><a href="https://docs.google.com/document/d/1ZmZVAH8L5R6SlEjlh0l7Wov7_YoB5amGqT6Abbvcm7U/edit#heading=h.dkg5byq9pagc">RAN
+Observability - Requirements document - Google Docs</a>
+<a href="https://docs.google.com/presentation/d/10789IEGsG21qw_n9W-srTni3rf1uoQ_5D-2aKaPWDUQ/edit#slide=id.gb7e7c21889_0_511">Far
+Edge - Obs - Google Slides</a>
+<a href="https://docs.google.com/document/d/1ZSpbk_Vp5-lsBLPYZdHpAVv8bi0hs7wbAVR-Gr4U-50/edit#">ORAN
+Event Bus Architecture Meeting - Google Docs</a>
+<a href="https://app.slack.com/client/T027F3GAJ/G01FS0B9LUW/thread/G01FS0B9LUW-1607348027.096200">Slack
+| tmp-ran-observability</a>
+<a href="https://docs.google.com/document/d/1ChZ8i11e5iTc8QHpIrDNtAxAt7X_8CL1iHSPYYFvWDM/edit?ts=601427a7">RAN
+Observability Meeting Minutes - Google Docs</a></p>
+</div>
+<div class="paragraph">
+<p>Verizon terms</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Radio Unit (RU) - phone connection: DU Distributed unit</p>
+</li>
+<li>
+<p>5G ran models:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>DRAN (distrubed) DU is near RU (far edge 1 server)</p>
+</li>
+<li>
+<p>CRAN (central) DU is a workload on near edge (regional, mini data
+center)</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>RH terms</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ACM: Advanced Cluster Manager.</p>
+</li>
+<li>
+<p>SDX: Service Telemetry Framework - eventing engine.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>IPv6 from edge. Need a cheap forwarder for low-powered edge nodes.</p>
+</div>
+<div class="paragraph">
+<p>Latencies</p>
+</div>
+<div class="paragraph">
+<p>far edge - 250μs &#8594; far-ish edge</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>25ms &#8594; near edge</p>
+</li>
+<li>
+<p>45ms &#8594; NOC/Core</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_write">Write</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_log_filtering_by_content_do_we_have_a_jira">Log filtering by content - do we have a JIRA?</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_next_utf8_encoding_problem_verify_status_raise_issue">NEXT UTF8 encoding problem - verify status, raise ISSUE</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_next_need_story_kafka_topickey_addition_like_schemakey_and_groupby">NEXT Need story: Kafka TopicKey addition, like SchemaKey and GroupBy</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_output_template_proposal">Output template proposal</h3>
+<div class="paragraph">
+<p>tennancy, indexing (elastic), topics(kafka), groups (cloudwatch)… Look
+up tennacy comments</p>
+</div>
+<div class="paragraph">
+<p>jsonpath Multi-tenancy: Brokers per namespace for logs: forwarders per
+namespace.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Namespace scoped log forwarder?</p>
+</li>
+<li>
+<p>Templated Broker (Kafka etc.) by namespace forwarder???</p>
+</li>
+<li>
+<p>Output with substitution - prometheus syntx? jsonpath? \{\{$x}},
+subst:xxx</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Tennancy as part of output - esp. using namespace. Use tenancy model
+provided by openshift</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_filtering_for_data_reduction_filtering_at_source">Filtering for data reduction - filtering at source</h3>
+<div class="paragraph">
+<p>Filter out logs by regular expression Fliter out logs JSON key/value
+tests.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_infraaudit_breakdown">Infra/audit breakdown.</h3>
+<div class="paragraph">
+<p>Consider all existing outputs - cloudwatch etc.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Journal logs not interesting to many, want infra<sub>container</sub>.</p>
+</li>
+<li>
+<p>What about audit logs?</p>
+</li>
+<li>
+<p>Add more log types?</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_debugging_on_osd_clusters_backplane_user_documentation_the_source">Debugging on OSD clusters <a href="https://source.redhat.com/groups/public/openshiftplatformsre/wiki/backplane_user_documentation">Backplane User Documentation - The Source</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_clo_add_on_development_google_docs"><a href="https://docs.google.com/document/d/12YH0YRimj8y3JlOdb5vWJaqa-zBh5bXnqEDHKtNBIIs/edit?ts=60185024">CLO Add-on development - Google Docs</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_move_forwarder_output_type_code_use_callback_to_keep_near_output">Move forwarder output-type code, use callback to keep near output.</h3>
+<div class="paragraph">
+<p>Fix up the Verify code for secrets etc. Verify callback interface.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_need_bz_fluentd_crash_on_missing_outputs">Need BZ: Fluentd crash on missing outputs</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_a_pr_bug_1888943_clusterlogforwarder_with_output_secret_causes_fluentd_crash_loop">[#A] <a href="https://github.com/openshift/cluster-logging-operator/pull/823">PR Bug 1888943 - ClusterLogForwarder with Output.Secret causes fluentd crash loop</a></h3>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>CI:https://prow.ci.openshift.org/view/gs/origin-ci-test/pr-logs/pull/openshift_cluster-logging-operator/823/pull-ci-openshift-cluster-logging-operator-master-e2e-operator/1347685874178985984#1:build-log.txt%3A2091[pull-ci-openshift-cluster-logging-operator-master-e2e-operator
+#1347685874178985984]</p>
+<div class="ulist">
+<ul>
+<li>
+<p>src:
+<a href="file:///home/aconway/src/cluster-logging-operator/test/e2e/logforwarding/syslog/forward_to_syslog_test.go" class="bare">file:///home/aconway/src/cluster-logging-operator/test/e2e/logforwarding/syslog/forward_to_syslog_test.go</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>not a slow test.</p>
+</li>
+<li>
+<p>&#10063; Review TLS code for syslog, anything obvious? Secret stuff?</p>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; DOH need tls:// - BACKWARDS INCOMPAT, infer tls from secret!</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#10063; run syslog tests in isolation ()</p>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; fix to be self-initializing?</p>
+</li>
+<li>
+<p>&#10063; replace cleanup daemonset with rsh
+[[file:~/src/cluster-logging-operator/test/helpers/framework.go::Args:
+[]string\{"sh", "-c", "rm -rf /fluentd-buffers/** || rm
+/logs/audit/audit.log.pos || rm /logs/kube-apiserver/audit.log.pos || rm
+/logs/es-containers.log.pos"},][daemonset here]]</p>
+<div class="ulist">
+<ul>
+<li>
+<p>merge separately</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#10063; is it a problem with leftover fluent pos files? Proper reset for
+fluentd?</p>
+</li>
+<li>
+<p><a href="https://docs.fluentd.org/input/forward#how-to-enable-tls-encryption" class="bare">https://docs.fluentd.org/input/forward#how-to-enable-tls-encryption</a>[forward</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Fluentd]</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_a_missing_doc_text_1888943_clusterlogforwarder_with_output_secret_causes_fluentd_crash_loop">[#A] Missing doc text: <a href="https://bugzilla.redhat.com/show_bug.cgi?id=1888943">1888943 – ClusterLogForwarder with Output.Secret causes fluentd crash loop</a></h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_capacity_planning_auto_configuration_api_next">Capacity planning (auto-configuration, API.next)</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_notes_11">Notes</h3>
+<div class="paragraph">
+<p>Chris Blum</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_experiment_to_establish_value_example_prototype">Experiment to establish value, example prototype?</h3>
+<div class="paragraph">
+<p>Updating of tool for typescript, typed language cross compiled to
+javascript. yarn builder/dep manager.
+<a href="https://gitlab.consulting.redhat.com/red-hat-data-services/ocs-sizer">Red
+Hat Data Services / OCS Sizer · GitLab</a> local
+~/src/ocs-sizer/README.md::# OCS Sizing Tool[file:~/src/ocs-sizer/README.md::# OCS Sizing Tool]
+Nodes do computation. Nodes.</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Play with demo.</p>
+</li>
+<li>
+<p>&#10063; Sketch some capacity calculationgs.</p>
+</li>
+<li>
+<p>&#10063; Build shell of logging calculator.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_proposaljira_and_prototype_for_the_group">Proposal/JIRA and prototype for the group?</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_api_next_document_andor_enhancment_proposals_what_to_say">API.next document and/or enhancment proposals what to say.</h3>
+<div class="paragraph">
+<p><a href="https://docs.google.com/presentation/d/1Mf0mxSAdUz3zfzs3VP9agqI6ysoj2Tdx-RichEXJSRA/edit#slide=id.gadd43be4bd_0_2264">API.Next
+- Google Slides</a></p>
+</div>
+<div class="paragraph">
+<p>sizing status (events, alerts)</p>
+</div>
+<div class="paragraph">
+<p>CL: store goals</p>
+</div>
+<div class="paragraph">
+<p>Remove controls from customers - don&#8217;t have to turn knobs.</p>
+</div>
+<div class="paragraph">
+<p>Auto-heal: give restrictions/goals</p>
+</div>
+<div class="paragraph">
+<p>How to escape-hatch to reality?</p>
+</div>
+<div class="paragraph">
+<p>AlertManager API - don&#8217;t need to query Prom. Can use AlertManager.</p>
+</div>
+<div class="paragraph">
+<p>Error handling/reporting</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>logs</p>
+</li>
+<li>
+<p>status (CR API) Degraded, LastUpdated, ManagedState. Generic, global
+stuff?</p>
+<div class="ulist">
+<ul>
+<li>
+<p>should be able to recover from status.</p>
+</li>
+<li>
+<p>not too busy.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>k8s events ??</p>
+</li>
+<li>
+<p>metrics</p>
+</li>
+<li>
+<p>alerts</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>—-</p>
+</div>
+<div class="paragraph">
+<p>Collector, aggregator API.Next</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Type (fluent, combo)</p>
+</li>
+<li>
+<p>Topology</p>
+</li>
+<li>
+<p>Advanced</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Forwarder: status upgrades.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>new operators vs. versioning operators.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Default: fast/reliable. Audit specials?a</p>
+</div>
+<div class="paragraph">
+<p>Status - move away from dumping Pod info etc. into status.</p>
+</div>
+<div class="paragraph">
+<p>Naming - avoid UUIDs? Avoid random naming?</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_productization_5_0_versioning">Productization (5.0, Versioning)</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_notes_12">Notes</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://access.redhat.com/support/policy/updates/openshift#logging">OpenShift
+Container Platform Life Cycle - Red Hat Customer Portal</a></p>
+</li>
+<li>
+<p><a href="https://docs.google.com/document/d/1QBiunBNnpxIwWlYX4l6yFzFYXvnSZNIyybpf3kXh5R4/edit?ts=601194e7">OpenShift
+Logging Support Policy - Google Docs</a> (new version?)</p>
+</li>
+<li>
+<p><a href="https://docs.google.com/document/d/19Up2GCZOHztBj9uG4u7aByqn9OsEwV55zUdvCEXHUPM/edit#heading=h.diwdsjfkvym7">Cluster
+Logging Versions - Google Docs</a></p>
+</li>
+<li>
+<p><a href="https://docs.google.com/document/d/1erILvVgauVDd4pVg8dKwitzmPdB9FUkddnKEJ-RnQJ8/edit">OpenShift
+Logging Life Cycle - Google Docs</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_provide_docs_to_product_security_architect">Provide docs to product security architect</h3>
+<div class="paragraph">
+<p><a href="https://coreos.slack.com/archives/C01J9P10G20/p1613582673171100?thread_ts=1613515646.158700&amp;cid=C01J9P10G20" class="bare">https://coreos.slack.com/archives/C01J9P10G20/p1613582673171100?thread_ts=1613515646.158700&amp;cid=C01J9P10G20</a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_bug_fixes">Bug Fixes</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_b_inputrefinputref_problem_httpscoreos_slack_comarchivesggur75p60p1615827147247000">[#B] inputref/inputRef problem <a href="https://coreos.slack.com/archives/GGUR75P60/p1615827147247000" class="bare">https://coreos.slack.com/archives/GGUR75P60/p1615827147247000</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_httpsissues_redhat_combrowselog_788log_788_verify_secure_output_configurations_red_hat_issue_tracker">[[<a href="https://issues.redhat.com/browse/LOG-788" class="bare">https://issues.redhat.com/browse/LOG-788</a>][[LOG-788] Verify secure output configurations. - Red Hat Issue Tracker]]</h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_agility">Agility</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_a_review_use_of_eventslogsstatus_in_cluster_logging_operator_log_1160_now_igor">[#A] Review use of events/logs/status in cluster logging operator. LOG-1160 NOW. Igor.</h3>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Review add exposure of error handling, fluentd logs, connection
+status?</p>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Use of events, use of logs, use of status. Events point to
+status?</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_labels_and_correlation">Labels and correlation:</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>resource: cluster, node, namespace, name</p>
+<div class="ulist">
+<ul>
+<li>
+<p>simple equality matches important for fast indexing.</p>
+</li>
+<li>
+<p>other ways to communicate fixed meta-data?</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>identify/control noisy resources for logging.</p>
+</li>
+<li>
+<p>keep full metadata in body?</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Correlating from instance (full metadata) via index (prom/loki label
+set) to instances (full metadata).</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>cardinality + volume pressure on metrics &amp; traces.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>metric labels: classify the metric (e.g. HTTP aresult type) rather
+than locate the source</p>
+</li>
+<li>
+<p>trace labels: need very light trace/span IDs, traces are pervasive
+and invasive</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>role of labels in correlatio is to <strong>reduce the search space</strong> not to
+<strong>identify or match signals</strong></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Resource attributes:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Observatorium</th>
+<th class="tableblock halign-left valign-top">OpenTelemetry</th>
+<th class="tableblock halign-left valign-top">Logging Data Model</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cluster</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">k8s.cluster.name</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">namespace</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">k8s.namespace.name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kubernetes.namespace<sub>name</sub></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pod</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">k8s.namespace.uid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kubernetes.namespace<sub>id</sub></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">k8s.pod.name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kubernetes.pod<sub>name</sub></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">k8s.pod.uiduid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kubernetes.pod<sub>id</sub></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">container.name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kubernetes.container<sub>name</sub></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">container.id</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">k8s.node.name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kubernetes.host</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">k8s.node.uid</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_status_error_and_debug_reporting">Status, error and debug reporting</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Mechanism</th>
+<th class="tableblock halign-left valign-top">Sources</th>
+<th class="tableblock halign-left valign-top">Verbosity</th>
+<th class="tableblock halign-left valign-top">Audience</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Prometheus Alerts</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Metrics: Fluentd, Store (Operators?)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V. Low,
+actionable problems only</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Admin monitor</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">K8s Events</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Operators, Operands?</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Medium (don&#8217;t flood the console)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Admin investigate</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Resource Status</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Operators (Indirect <em>Fluentd</em>, Store)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Medium,
+Snapshot</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Admin investigate</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Container Logs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Operators, Fluentd, Store</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">High, Stream</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Debug</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Must Gather</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">High, Snapshot</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Debug</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Internal library to give coherence across mechanisms?</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Alerts - generated outside, must correlate to other mechanisms.</p>
+</li>
+<li>
+<p>K8s Events &lt; Status &lt; logs?</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Every k8s event should reflect a status change</p>
+</li>
+<li>
+<p>Not all status changes deserve to be events</p>
+</li>
+<li>
+<p>Every status change is logged v(1)</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Integrate library for status and event changes.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>code just makes the status change</p>
+</li>
+<li>
+<p>library decides if it is also an event</p>
+</li>
+<li>
+<p>all changes are logged** Refactor fluentd config</p>
+</li>
+<li>
+<p><a href="https://github.com/openshift/cluster-logging-operator/pull/865/files">WIP:
+Enable pod label base filtering using label router plugin by
+k-keiichi-rh · Pull Request #865 · openshift/cluster-logging-operator</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="https://docs.google.com/document/d/1dUfTPaUO7IrjZlYxH5TwFf_bsNBbbm7K7naoCQ4yjQE/edit#">Adapting
+Loki - Milestones - Google Docs</a></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>efficient, template indenting, generation</p>
+</li>
+<li>
+<p>testing portions of generated config</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_better_fluentd_config_generation_tabs_spaces_clean_templates">Better fluentd config generation - tabs, spaces, clean templates.</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_a_ci_follow_up_with_ben_eric">[#A] CI follow-up with Ben &amp; Eric</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Task in sprint retro doc
+<a href="https://docs.google.com/document/d/1glazoDi8NMRXmUFb8533nSkN9erJ0jBQCVhB1hAKHr8/edit?ts=6005aec0" class="bare">https://docs.google.com/document/d/1glazoDi8NMRXmUFb8533nSkN9erJ0jBQCVhB1hAKHr8/edit?ts=6005aec0</a>[Sprint</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Retrospective - Logging - Google Docs]</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>collect records of latest failed CIs &amp; announcements.</p>
+</li>
+<li>
+<p>seek alternate solutions?</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Testplatform slack: Steve Kuznetsov We are aware of instability with the
+API server and etcd on the build01 build farm cluster. This may impact
+jobs that cannot reconcile their state while running.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>More bad CI
+<a href="https://prow.ci.openshift.org/view/gs/origin-ci-test/pr-logs/pull/openshift_elasticsearch-operator/630/pull-ci-openshift-elasticsearch-operator-master-cluster-logging-operator-e2e/1352854162051698688">pull-ci-openshift-elasticsearch-operator-master-cluster-logging-operator-e2e
+#1352854162051698688</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_dogfooding_do_our_debugging_using_our_logging_tools">Dogfooding - do our debugging using our logging tools?</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_coding_guidelines_log_levels">Coding guidelines - log levels</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>log levels: <a href="https://www.openshift.com/blog/oc-command-newbies">The oc
+Command for Newbies</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_better_makefile_brett">Better Makefile (Brett)</h3>
+<div class="paragraph">
+<p>make deploy-image deploy-catalog - need to deploy locally! make undeploy
+undeploy-elasticsearch-operator test-e2e-local</p>
+</div>
+<div class="paragraph">
+<div class="title">target/xxx target files</div>
+<p>Images .target/<strong>.image: podman build local .target/</strong>.pushed: pushed to
+registry of choice</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>external - any</p>
+</li>
+<li>
+<p>oc registry (default except for olm tests)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Apply YAML: be idempotent - don&#8217;t need targets?</p>
+</div>
+<div class="paragraph">
+<div class="title">target/codegen: generated code and YAML .target/docgen: generated doc</div>
+<p>test-unit:</p>
+</div>
+<div class="paragraph">
+<p>test-e2e-*: undeploy-all</p>
+</div>
+<div class="paragraph">
+<p>elastic</p>
+</div>
+<div class="paragraph">
+<p>Registries: (deploy)</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>create route (if cluster)</p>
+</li>
+<li>
+<p>use existing</p>
+</li>
+<li>
+<p>push elasticsearch image</p>
+</li>
+<li>
+<p>push local images</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Cluster: (install)</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>install step (done by e2e tests): namespace label operator group etc.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Clean:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>filesystem</p>
+</li>
+<li>
+<p>cluster (steps)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>CI entry points (check script):</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>test-unit, test-e2e-olm</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_fix_make_lint_in_ci_not_enabled_why_did_we_abandon_make_build">Fix make lint in CI. Not enabled. Why did we abandon make build?</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_move_this_to_hacking_md_in_repo_remove_hacking_openshift_logging_google_docs">Move this to HACKING.md in repo, remove!! <a href="https://docs.google.com/document/d/1CKPU5nWYpVb5eBW7l3J0fH-KbSFziaRuCXO6ZJLgJ-A/edit#heading=h.tlb1wovoz9dr">Hacking OpenShift Logging - Google Docs</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_update_benchmark_with_latency_percentile_stats">Update benchmark with latency &amp; percentile stats</h3>
+<div class="paragraph">
+<p><a href="https://github.com/openshift/cluster-logging-operator/pull/782/files">LOG-994:
+functional benchmarker by jcantrill · Pull Request #782 ·
+openshift/cluster-logging-operator</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_bug_process_brett_driving_the_annexation_of_bugs_google_docs">Bug process, Brett driving <a href="https://docs.google.com/document/d/1fc9_aW_xqbDx0ZSte3nCickmjY-RBnRpulsG8vecurk/edit#heading=h.ld414onltrts">The Annexation of Bugs - Google Docs</a></h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_support_relationship_sbr_shift">Support relationship SBR-shift</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_relationship_going_with_sbr_shift_support_float_email_to_team_and_sbr">Relationship going with sbr-shift support - float email to team and sbr.</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Want from them - patterns, key problems.</p>
+</li>
+<li>
+<p>Give to them - tools to help them debug etc.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>—-</p>
+</div>
+<div class="paragraph">
+<p>Oscar Casal Sanchez Alan Conway Alexis Solanas Robert Bost</p>
+</div>
+<div class="paragraph">
+<p>Quickly spin up clusters: CRC clusters. 1 hour??</p>
+</div>
+<div class="paragraph">
+<p>"We want to verify and reproduce bugs before putting them in Bugzilla,
+and communicate clearly to dev"</p>
+</div>
+<div class="paragraph">
+<p>Questions:</p>
+</div>
+<div class="paragraph">
+<p>How to install older versions of logging to match customer deployment?
+OperatorHub gives latest by default.</p>
+</div>
+<div class="paragraph">
+<p>How to deploy external rsyslog, elasticsearch, fluentd for forwarding
+tests (not default ES)?</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>OS 4 <a href="https://github.com/openshift-qe/v3-testfiles/tree/master/logging" class="bare">https://github.com/openshift-qe/v3-testfiles/tree/master/logging</a></p>
+</li>
+<li>
+<p>common approach to make it easier for dev to reproduce support cases.</p>
+</li>
+<li>
+<p>anything useful in our test harness? can we use their drivers easily?</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>What information is most useful for dev on reproduced problems?</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>they know about must-gather.</p>
+</li>
+<li>
+<p>reproducers - see question above on common test tools.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>How to speed up creation, configuration, deployment of logging in test
+clusters?</p>
+</div>
+<div class="paragraph">
+<p>How to improve the documentation?</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>support have valuable notes about doc gaps, how to capture in product
+doc?</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>How to quickly separate sources of problems: is it logging or something
+else?</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>how to diagnose from customer data <strong>before</strong> setting up reproducer?</p>
+</li>
+<li>
+<p>how to diagnose in a reproducer environment?</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>How to simulate customer log volume? What aspects are important?</p>
+</div>
+<div class="paragraph">
+<p>How to improve debugability of CLO/ELO components?</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>local operator logs are a primary debugging tool</p>
+<div class="ulist">
+<ul>
+<li>
+<p>noisy, missing some useful info</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>how can we get feedback from support to improve it?</p>
+</li>
+<li>
+<p>use feedback to help design alerts, events and other future error
+reporting.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_meeting_2021_01_29_fri_ceelogging_team_sync_google_docs">Meeting [2021-01-29 Fri] <a href="https://docs.google.com/document/d/15hg4k_-jAcIa1MlPrVMb6Sg-0lR5aeVpS7cd_4xAls4/edit#">CEE/Logging Team Sync - Google Docs</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.google.com/document/d/1ENdOLFe5KcI1HRKB1P9GvuWNTOtbTVLnexK8FdxHwiA/edit">OpenShift
+Get Well: Shift Logging (In Progress) - Google Docs</a></p>
+</li>
+<li>
+<p>Jeffs new doc.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Channels: BZ, JIRA, Google docs, github.somerepo/docs, KB, Slack, Email,
+User doc, Mojo, "The Source", Visibility: Customers, SBR, Consultants,
+Other RH, IBM, Developers (Logging team, on-boarding, outside
+contributors)</p>
+</div>
+<div class="paragraph">
+<p>Shared channels:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>User docs: (all browse/search, doc-team write) all info of long-term
+use to customers should get here ASAP.</p>
+</li>
+<li>
+<p>KB: (all browse/search, any RH can contribute) workarounds and tips
+not yet polished for user doc, or of very narrow interest
+(version/use-case specific).</p>
+</li>
+<li>
+<p>github.com/repo/docs "upstream docs": (all browse/search, developers
+write) developer-facing docs (upstream, newbie, experienced) not
+suitable for user doc.</p>
+</li>
+<li>
+<p>JIRA: (all browse/search/raise tickets, developers handle): , problem
+reporting, activity tracking, planning.</p>
+</li>
+<li>
+<p>Slack/Email: (internal groups/channels): harass a human when all else
+fails.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Other channls:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Google docs (RH internal): Do we over use it? I think good docs get
+lost in there.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Great for internal shared editing, great if someone tells you about a
+useful doc.</p>
+</li>
+<li>
+<p>Browse/search is almost useless for anyone not directly pointed to a
+doc - RH support/consulting, IBMers, etc.</p>
+</li>
+<li>
+<p>Suggestion: restrict to temporary/in-progress/RH-inner-team-only
+content. Quickly move sharable content to a better home, and <strong>maintain
+it there</strong></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>BZ: (all browse/search/raise tickets) - continues to be an input
+channel, moving to JIRA as the central source of truth.</p>
+</li>
+<li>
+<p>The Source: Does anybody on the technical side of Red Hat find this
+useful?</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Questions:</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>What can I do?</p>
+</li>
+<li>
+<p>How should I configure my system to accomplish…?</p>
+</li>
+<li>
+<p>How to use a feature? How to diagnose/report a problem? How to
+work-around a problem?</p>
+</li>
+<li>
+<p>&#10063; Better movement of information to documentation - involve SBR and
+doc.</p>
+</li>
+<li>
+<p>&#10063; Plan better use of information resources.</p>
+</li>
+<li>
+<p>&#10063; Survey what do you use to:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>search for information about a problem?</p>
+</li>
+<li>
+<p>report a problem?</p>
+</li>
+<li>
+<p>ask a human for help with a problem?</p>
+</li>
+<li>
+<p>get started contributing to logging as a developer?</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#10063; Feedback with support about prometheus metrics &amp; alarms, how to
+use, how to design.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>SBR &amp; support: helping with logging. must-gather</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>fast feedback, internal docs to SBR</p>
+</li>
+<li>
+<p>collecting as user docs/KB articles/help site</p>
+</li>
+<li>
+<p>fast feecback SBR to eng?</p>
+</li>
+<li>
+<p>Duplication &amp; discovery, browsing.</p>
+</li>
+<li>
+<p>Eng internal docs, why are they internal? Can we get them out there?
+Gdocs vs. repo.</p>
+</li>
+<li>
+<p>SBR issues: BZ? <strong>JIRA</strong>? Slack.</p>
+</li>
+<li>
+<p>&#10063; Need better org/architecture user doc for troubleshooting, use of
+must-gather</p>
+</li>
+<li>
+<p>&#10063; Jeff working on presentation</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_meeting_membership">Meeting membership</h4>
+<div class="paragraph">
+<p>Ajay Gupta &lt;<a href="mailto:ajgupta@redhat.com">ajgupta@redhat.com</a>&gt;, Anping Li &lt;<a href="mailto:anli@redhat.com">anli@redhat.com</a>&gt;, Atri
+Mandal &lt;<a href="mailto:atmandal@redhat.com">atmandal@redhat.com</a>&gt;, Ben Parees &lt;<a href="mailto:bparees@redhat.com">bparees@redhat.com</a>&gt;, Brett
+Jones &lt;<a href="mailto:brejones@redhat.com">brejones@redhat.com</a>&gt;, Chris Shinn &lt;<a href="mailto:cshinn@redhat.com">cshinn@redhat.com</a>&gt;, Christian
+Heidenreich &lt;<a href="mailto:cvogel@redhat.com">cvogel@redhat.com</a>&gt;, Devendra Kulkarni
+&lt;<a href="mailto:dkulkarn@redhat.com">dkulkarn@redhat.com</a>&gt;, Eran Raichstein &lt;<a href="mailto:eraichst@redhat.com">eraichst@redhat.com</a>&gt;, Eric
+Wolinetz &lt;<a href="mailto:ewolinet@redhat.com">ewolinet@redhat.com</a>&gt;, Giriyamma Karagere Ramaswamy
+&lt;<a href="mailto:gkarager@redhat.com">gkarager@redhat.com</a>&gt;, Guruprasad Tantry &lt;<a href="mailto:gtantry@redhat.com">gtantry@redhat.com</a>&gt;, Hui Kang
+&lt;<a href="mailto:hkang@redhat.com">hkang@redhat.com</a>&gt;, Igor Karpukhin &lt;<a href="mailto:ikarpukh@redhat.com">ikarpukh@redhat.com</a>&gt;, Jeff Cantrill
+&lt;<a href="mailto:jcantril@redhat.com">jcantril@redhat.com</a>&gt;, JINHO HWANG &lt;<a href="mailto:jhwang@redhat.com">jhwang@redhat.com</a>&gt;, Jatan Malde
+&lt;<a href="mailto:jmalde@redhat.com">jmalde@redhat.com</a>&gt;, Ksenija Pelc &lt;<a href="mailto:kpelc@redhat.com">kpelc@redhat.com</a>&gt;, Lukas Vlcek
+&lt;<a href="mailto:lvlcek@redhat.com">lvlcek@redhat.com</a>&gt;, Michael Burke &lt;<a href="mailto:mburke@redhat.com">mburke@redhat.com</a>&gt;, Oscar Casal
+Sanchez &lt;<a href="mailto:ocasalsa@redhat.com">ocasalsa@redhat.com</a>&gt;, Preeti Chandrashekar
+&lt;<a href="mailto:pchandra@redhat.com">pchandra@redhat.com</a>&gt;, Pushpendra Chavan &lt;<a href="mailto:pchavan@redhat.com">pchavan@redhat.com</a>&gt;, Periklis
+Tsirakidis &lt;<a href="mailto:periklis@redhat.com">periklis@redhat.com</a>&gt;, PRATIBHA MOOGI &lt;<a href="mailto:pmoogi@redhat.com">pmoogi@redhat.com</a>&gt;,
+Paresh Mutha &lt;<a href="mailto:pmutha@redhat.com">pmutha@redhat.com</a>&gt;, Pavel Postler &lt;<a href="mailto:ppostler@redhat.com">ppostler@redhat.com</a>&gt;,
+Qiaoling Tang &lt;<a href="mailto:qitang@redhat.com">qitang@redhat.com</a>&gt;, Randy Bollinger
+&lt;<a href="mailto:rbolling@redhat.com">rbolling@redhat.com</a>&gt;, Rolfe Dlugy-Hegwer &lt;<a href="mailto:rdlugyhe@redhat.com">rdlugyhe@redhat.com</a>&gt;, Robert
+Kratky &lt;<a href="mailto:rkratky@redhat.com">rkratky@redhat.com</a>&gt;, Sashank Agarwal &lt;<a href="mailto:sasagarw@redhat.com">sasagarw@redhat.com</a>&gt;,
+Swetha Shankar Paida &lt;<a href="mailto:swshanka@redhat.com">swshanka@redhat.com</a>&gt;, Sergey Yedrikov
+&lt;<a href="mailto:syedriko@redhat.com">syedriko@redhat.com</a>&gt;, Tiffany-Emil Jacob &lt;<a href="mailto:tjacob@redhat.com">tjacob@redhat.com</a>&gt;, Urvashi
+Bhargava &lt;<a href="mailto:ubhargav@redhat.com">ubhargav@redhat.com</a>&gt;, Vimal Kumar &lt;<a href="mailto:vimalkum@redhat.com">vimalkum@redhat.com</a>&gt;,
+Vitalii Parfonov &lt;<a href="mailto:vparfono@redhat.com">vparfono@redhat.com</a>&gt;</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cloudwatch_rosa">Cloudwatch (ROSA)</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_notes_13">Notes</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/openshift/enhancements/blob/master/enhancements/cluster-logging/forward_to_cloudwatch.md#L1">enhahncements/forward<sub>tocloudwatch</sub>.md
+at master · openshift/enhancements</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Read</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>[X]
+<a href="https://docs.google.com/document/d/1OLYjlhHPRHfK6GpQpFgNuPlKacm9b8hZ__2M0T4o9U4/edit#heading=h.3z8b6fun6g4m">Log
+Forwarding Design for CCS+ROSA+CloudWatch - Google Docs</a></p>
+</li>
+<li>
+<p>[X]
+<a href="https://docs.google.com/document/d/1QjzbxMR3QhU1vFdOp1GXzcEWE-LqIT1jAwzOF3GWpT4/edit?ts=5fcfddf4#heading=h.5qeuoul324vb">Logforwarding
+Cloudwatch API - Google Docs</a></p>
+</li>
+<li>
+<p>[X]
+<a href="https://github.com/fluent-plugins-nursery/fluent-plugin-cloudwatch-logs#out_cloudwatch_logs">fluent-plugins-nursery/fluent-plugin-cloudwatch-logs:
+CloudWatch Logs Plugin for Fluentd</a></p>
+</li>
+<li>
+<p>[X]
+<a href="https://github.com/openshift/cloud-credential-operator">openshift/cloud-credential-operator:
+Manage cloud provider credentials as Kubernetes CRDs</a></p>
+</li>
+<li>
+<p>[X]
+<a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/cloudwatch_limits_cwl.html">CloudWatch
+Logs quotas - Amazon CloudWatch Logs</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>UPDATE:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>[X]
+<a href="https://issues.redhat.com/browse/OSD-5795?focusedCommentId=15549100&amp;page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#comment-15549100">{OSD-5795}
+{SPIKE} - Investigate OSD LogForwarding to AWS CloudWatch - Red Hat
+Issue Tracker</a></p>
+</li>
+<li>
+<p>[X] <a href="https://issues.redhat.com/browse/LOG-998">{LOG-998} EPIC Enable
+CloudWatch forwarding on ROSA clusters - Red Hat Issue Tracker</a></p>
+</li>
+<li>
+<p>[X] <a href="https://issues.redhat.com/browse/LOG-1001">{LOG-1001} Cloudwatch
+LF API design - Red Hat Issue Tracker</a></p>
+</li>
+<li>
+<p>[X] <a href="https://issues.redhat.com/browse/LOG-756">{LOG-756} Add support
+for Cloudwatch as a new log forwarding target - Red Hat Issue Tracker</a></p>
+</li>
+<li>
+<p>[X]
+<a href="https://github.com/openshift/cluster-logging-operator/pull/839#issuecomment-746682053">PR
+LOG-1002: Add cloudwatch logforwarding type by jcantrill · Pull Request
+#839 · openshift/cluster-logging-operator</a>b</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_maybesomeday">Maybe,Someday</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_openshift_architecture_delivery_toolkit_for_consulting_the_source"><a href="https://source.redhat.com/communitiesatredhat/applications/containers-paas-community/tracks/cantcontainthis/cant_contain_this_wiki/openshift_architecture_delivery_toolbox_for_consulting">OpenShift Architecture Delivery Toolkit for Consulting - The Source</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_reminder_use_your_reward_zone_nomination_points_by_dec_18_aconwayredhat_com_red_hat_mail"><a href="https://mail.google.com/mail/u/0/#search/is%3Aunread+-to%3Ame+-is%3Aimportant+-in%3Awatch+%7Bin%3AForums+in%3APromotions+in%3Az-junk%7D/FMfcgxwKjfDGzFHBThmKjdmrCLTxhwXw">Reminder: Use your Reward Zone nomination points by Dec. 18 - <a href="mailto:aconway@redhat.com">aconway@redhat.com</a> - Red Hat Mail</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_play_with_open_broadcaster_software️_obs">Play with <a href="https://obsproject.com/">Open Broadcaster Software®️ | OBS</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_spend_350_work_from_home_budget_slack_unread_messages_coreos_1_new_item">Spend $350 work from home budget! <a href="https://app.slack.com/client/T027F3GAJ/unreads/thread/GGUR75P60-1606921469.005400">Slack | Unread Messages | CoreOS | 1 new item</a></h3>
+<div class="paragraph">
+<p>Screen? Router/net improvement.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_review_video_building_operators_for_osd_bluejeans_network_recording_playback">Review video, building operators for OSD: <a href="https://redhat.bluejeans.com/playback/s/hSZeuCRZ5Z6WhcWDbfLNQ3aj0MUbbY9iGI5lSyFpAmjfobYFXNYazyzAvihOjVDh">BlueJeans Network | Recording Playback</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_read_ibm_json_logging_plans_send_log4j_2_logs_to_red_hat_openshift_container_platform_efk_stack_openliberty_io">Read IBM JSON logging plans <a href="https://openliberty.io/blog/2020/05/19/log4j-openshift-container-platform.html">Send Log4j 2 logs to Red Hat OpenShift Container Platform EFK stack - OpenLiberty.io</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_review_versioning_re_action_needed_credibility_problem_at_santander_argentina_aconwayredhat_com_red_hat_mail">Review versioning <a href="https://mail.google.com/mail/u/0/#inbox/FMfcgxwKjdtCzxHXcPRrXZZxJlctDfMR">Re: Action needed: Credibility problem at Santander Argentina - <a href="mailto:aconway@redhat.com">aconway@redhat.com</a> - Red Hat Mail</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_how_to_deal_with_apps_that_dont_stdoutstderr">How to deal with apps that don&#8217;t stdout/stderr?</h3>
+<div class="paragraph">
+<p>Write to disk. Journald. Other stuff? Log files + syslog. Sidecar
+solution: like event capture tool. Linux vs. Windows gap - windows event
+system.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ben_browning_talk_to_him_about_telemetry_logs_correlatiogn">Ben Browning - talk to him about telemetry + logs correlatiogn.</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_give_some_rh_rewardzone_rewards">Give some RH rewardzone rewards</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_read_kubernetes_io_docs_tutorials">Read kubernetes.io docs &amp; tutorials.</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_canned_forwarder_configurations_for_easy_of_use">Canned forwarder configurations for easy of use?</h3>
+<div class="paragraph">
+<p>Identify and simplify common cases:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Single database</p>
+</li>
+<li>
+<p>Cloudwatch</p>
+</li>
+<li>
+<p>Offsite? Type/URL.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_appsbreaktimer_gnome_wiki"><a href="https://wiki.gnome.org/Apps/BreakTimer">Apps/BreakTimer - GNOME Wiki!</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_word_nerds_conscious_language_working_group_google_sheets"><a href="https://docs.google.com/spreadsheets/d/1AkmBjeKV6cWka1ezdgGhgd2sSXNNCbVjWIcsTqlx9n0/edit#gid=330690737">Word Nerds Conscious Language Working Group - Google Sheets</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_resources_for_avoiding_problematic_language_the_source"><a href="https://source.redhat.com/groups/public/ospo/open_source_program_office_wiki/resources_for_avoiding_problematic_language">Resources for avoiding problematic language - The Source</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_project_ideas_for_2021_bangalore_internship_google_sheets"><a href="https://docs.google.com/spreadsheets/d/1ov7Krxb8XMP-1b9QFo21tIpZSQmRZi5m_q6zHIm_Rzo/edit#gid=1788034840">Project ideas for 2021 Bangalore Internship - Google Sheets</a></h3>
+<div class="paragraph">
+<p>Mentoring, India timezone. Igor Vitali.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_sumitting_open_source_articles_httpsmail_google_commailu0inboxfmfcgxwkkbkthwdnhxhflczdvvxpqrzbdevtools_team_we_have_an_award_winning_author_aconwayredhat_com_red_hat_mail">Sumitting open source articles [[<a href="https://mail.google.com/mail/u/0/#inbox/FMfcgxwKkbkTHwDNHxhFLCzdvvxPQrZB" class="bare">https://mail.google.com/mail/u/0/#inbox/FMfcgxwKkbkTHwDNHxhFLCzdvvxPQrZB</a>][[devtools-team] We have an award-winning author! - <a href="mailto:aconway@redhat.com">aconway@redhat.com</a> - Red Hat Mail]]</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_replacereduce_enhancement_proposals">Replace/reduce enhancement proposals</h3>
+<div class="paragraph">
+<p>Google doc proposal:</p>
+</div>
+<div class="paragraph">
+<p>User docs: Separated user content? Add sections/pointers to template?
+Design docs: JIRA Epics/Stories Implementation notes: JIRA Epics/Stories</p>
+</div>
+<div class="paragraph">
+<p>Requirements</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; External discussion.</p>
+</li>
+<li>
+<p>&#10063; Discussion threads and diffs.</p>
+</li>
+<li>
+<p>&#10063; Place for large design docs.</p>
+</li>
+<li>
+<p>&#10063; The Code Is The Truth - structure of code.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ideas">Ideas</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_next_idea_replace_design_docs_with_dev_draft_user_docs">NEXT Idea: Replace design docs with dev-draft user docs?</h3>
+<div class="paragraph">
+<p>Problems with enhancement requests:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Not agile: separation of design and implementation is classic
+waterfall. Insights gained during implementation can and should change
+the design.</p>
+</li>
+<li>
+<p>Large overlap with JIRA, duplicate writing and inconsistencies.</p>
+</li>
+<li>
+<p>Immediate doc rot, supposed to be a public record of design but almost
+always out of date.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Proposal:</p>
+</div>
+<div class="paragraph">
+<p><strong>Complete</strong> design details in JIRA epics and stories.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>We usually have most of them already</p>
+</li>
+<li>
+<p>JIRA description serves as the design document</p>
+</li>
+<li>
+<p>JIRA discussion threads replace Github PR discussion threads</p>
+</li>
+<li>
+<p><strong>NOTE</strong>: all this does is consolidate the design text in a JIRA instead
+of duplicating it over 2 disjoint docs that become inconsistent.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Designer <strong>also</strong> creates draft user documentation:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Not polished, but technically accurate and intelligible to doc
+writers.</p>
+</li>
+<li>
+<p>Forces the designer to think like a user.</p>
+</li>
+<li>
+<p>Provides initial input to the doc team.</p>
+</li>
+<li>
+<p>Becomes the primary channel for communicating changes to doc team - so
+stays up to date</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Result:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a more agile process with less duplication and better interaction in
+design and implementation.</p>
+</li>
+<li>
+<p>a living "rough draft" of user docs for latest master that developers
+can keep updated, and doc writers can consult.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_better_cluster_developer_tools">Better cluster developer tools</h3>
+<div class="paragraph">
+<p>Less is more: Minmize new API/tool surface, mental overhead.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>k8s doesn&#8217;t do this.</p>
+</li>
+<li>
+<p>openshift is additive, some simplification but not clear what k8s can
+be ignored.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>simplify: not hiding information, making it un-necessary to know</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Don&#8217;t reinvent the wheel: make, podman, docker, IDE</p>
+</li>
+<li>
+<p>Do provide canned dependencies &amp; tools</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_concurrent_network_programming_thinking_outside_the_box">Concurrent network programming, thinking outside the box</h3>
+<div class="paragraph">
+<p>Scaling horizontally:</p>
+</div>
+<div class="paragraph">
+<p>Resource units | Core | CPU | Host | Network | Internet Workloads
+container Store: near cache</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>core (near cache to other cores)</p>
+</li>
+<li>
+<p>CPU (cache, local memory bus, NUMA bus)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Connections</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>scale <span class="underline">small</span></p>
+<div class="ulist">
+<ul>
+<li>
+<p>resoruce units_ cores</p>
+</li>
+<li>
+<p>workloads- coroutines</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>abstract programmer from resource units, stores and connections:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>no-error abstraction: core (near cache), CPU (cache, local memory
+bus, NUMA bus)</p>
+</li>
+<li>
+<p>with-error abstraction: local disk, network (container, hosts,
+clusters)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>minimize the visibility of <span class="underline">collections</span>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>pre-emptive threads, processes, clusters</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_logging_design_choices_stages">Logging: Design choices, stages</h3>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; Compare vector vs. fluentbit? Peter Portante</p>
+</li>
+<li>
+<p>&#10063; Simple Go collector/metrics?</p>
+</li>
+<li>
+<p>&#10063; Look at rate limiting in
+<a href="https://www.freedesktop.org/software/systemd/man/journald.conf.html">journald.conf</a>.
+RateLimitIntervalSec=, RateLimitBurst=</p>
+</li>
+<li>
+<p>&#10063; Simplify fluentd config?</p>
+</li>
+<li>
+<p>Fluentbit raw byte collection.</p>
+</li>
+<li>
+<p>AMQP with session properties for static props.</p>
+</li>
+<li>
+<p>QDR backbone</p>
+</li>
+<li>
+<p>Normalizer/forwarder mid-tier - co-located or service.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_documentation">Documentation</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_notes_14">Notes</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>User docs
+<a href="https://github.com/openshift/openshift-docs/blob/master/modules/">https://github.com/openshift/openshift-docs/blob/master/modules/cluster-logging-*</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Servicemesh public pages</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_openshift_workshops_consultant_toolkit_keep_up_to_date">Openshift Workshops Consultant Toolkit - keep up to date?</h3>
+<div class="paragraph">
+<p>Find a low-cost way to keep the logging section up to date.
+[[<a href="https://mail.google.com/mail/u/0/#inbox/FMfcgxwKkRJSnzNthSMpSJjHvZsfHtsr" class="bare">https://mail.google.com/mail/u/0/#inbox/FMfcgxwKkRJSnzNthSMpSJjHvZsfHtsr</a>][Fwd:
+[openshift-sme] OpenShift Architecture Workshops Delivery Toolkit [
+January Release ] - <a href="mailto:aconway@redhat.com">aconway@redhat.com</a> - Red Hat Mail]]</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Tools for consultants</p>
+</li>
+<li>
+<p>Keep them up to date? Integrate with our own materials</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_httpsissues_redhat_combrowselog_1221log_1221_keep_user_doc_up_to_date_with_internal_faq_red_hat_issue_tracker">[[<a href="https://issues.redhat.com/browse/LOG-1221" class="bare">https://issues.redhat.com/browse/LOG-1221</a>][[LOG-1221] Keep user doc up-to-date with internal FAQ - Red Hat Issue Tracker]]</h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_operate_first_open_operation_for_openshift">Operate First - open operation for OpenShift?</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_what_to_do_with_operate_first">What to do with Operate first?</h3>
+<div class="paragraph">
+<p><a href="https://mail.google.com/mail/u/0/#inbox/FMfcgxwKkblgCQTWsHFhCbtcXQLddRpr">CLO
+in an Operate First context - <a href="mailto:aconway@redhat.com">aconway@redhat.com</a> - Red Hat Mail</a>
+<a href="https://docs.google.com/presentation/d/1V0RSk4vQY-7GwyuWGtSn02dzLQ_hdWUSa9El7cy4rYQ/edit?ts=602bcb76#slide=id.p">Operate
+First - Teams - Google Slides</a> Set up cluster logging via gitops?</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_clusterfcuk">ClusterFCUK</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_setup_clusterfcuk">Setup ClusterFCUK</h3>
+<div class="paragraph">
+<p>External: clusterfcuk.ddns.net 70.52.32.94 Useful: canyouseeme.org</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>[X] IP connectivity</p>
+</li>
+<li>
+<p>[X] Add oscar7 to the cluster</p>
+</li>
+<li>
+<p>[X] Remote login: canyouseeme.org says OK</p>
+</li>
+<li>
+<p>[X] ssh VPN tunnel via test/external using sshuttle</p>
+</li>
+<li>
+<p>[X] Internal sshuttle or route + hosts?</p>
+</li>
+<li>
+<p>[X] Delete old VPN junk, flatten history.</p>
+</li>
+<li>
+<p>[X] DNS and domain</p>
+<div class="ulist">
+<ul>
+<li>
+<p>[X] dns linked to laptop:</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>[X] All hosts on-line (oscar 6 &amp; 7)</p>
+</li>
+<li>
+<p>&#10063; Update server/README regarding network setup</p>
+<div class="ulist">
+<ul>
+<li>
+<p>DNSmasq on console</p>
+</li>
+<li>
+<p>domain .test</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#10063; Permanent route to garage?</p>
+</li>
+<li>
+<p>&#10063; OCP 4 bare-metal cluster using latest instructions (update OCC)</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://cloud.redhat.com/openshift/install/metal">Install OpenShift 4
+| Red Hat OpenShift Cluster Manager | Bare Metal</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#10063; Restore firewall on oscar3</p>
+<div class="ulist">
+<ul>
+<li>
+<p>NOTE currently disabled in Makefile</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Other stuff?</p>
+<div class="ulist">
+<ul>
+<li>
+<p>netboot for ISO images</p>
+</li>
+<li>
+<p>DHCP proxy on oscar3</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2021-03-25 17:34:18 -0400
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,19 @@
+= Cluster Logging Documentation
+:author: Alan Conway
+:email: aconway@redhat.com
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+
+
+WARNING: This site is a work in progress, not yet ready for viewing.
+
+Layout:
+	
+- `architecture`: logging link:architecture[architecture overview and status]
+- `data_model`: log record data model and documentation generators.
+
+HTML documents are generated beside the asciidoc sources and checked in to provide
+the documentation as a simple web site.

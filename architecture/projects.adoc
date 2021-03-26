@@ -1,0 +1,2263 @@
+== Loki
+
+=== Notes
+
+Epics
+
+* https://issues.redhat.com/browse/LOG-704[LOG-704 Adapting Loki as an
+alternative to Elasticsearch to support more lightweight, easier to
+manage/operate storage scenarios - Red Hat Issue Tracker]
+* [[https://issues.redhat.com/browse/LOG-770][[LOG-770] [M1] Enable
+collecting logs from all our CI clusters and aggregate them inside a
+central Loki deployment - Red Hat Issue Tracker]]
+* [[https://issues.redhat.com/browse/LOG-1101][[LOG-1101] Epic to track
+the initial creation and work of the Loki Operator for on-cluster
+deployment and management - Red Hat Issue Tracker]]
+* conversation:
+https://coreos.slack.com/archives/G01M0QVNHBP/p1613025772077900
+
+Roadmap:
+https://docs.google.com/document/d/1dUfTPaUO7IrjZlYxH5TwFf_bsNBbbm7K7naoCQ4yjQE/edit#[Adapting
+Loki - Milestones - Google Docs]
+
+Relevant doc:
+
+* https://grafana.com/docs/loki/latest/getting-started/logcli/[LogCLI |
+Grafana Labs]
+* https://grafana.com/docs/loki/latest/best-practices/[Best practices |
+Grafana Labs]
+* https://grafana.com/docs/loki/latest/api/[HTTP API | Grafana Labs]
+* https://github.com/grafana/loki/pull/3420[Introduce a unpack parser.
+by cyriltovena · Pull Request #3420 · grafana/loki · GitHub]
+
+==== Quay.io logs
+
+* 100GB/month to AWS in Pod logs.
+* event log are way larger, but sent over different path? AppSRE call?
+** legal issues
+** cloudwatch forwarder as sidecar now
+** load question
+** collection question: pipe to file?
+* large audit logs, need infosec approval
+* [ ] Not testing our collector for event logs, only testing grafana.
+* [ ] What are we trying to accomplish here? Pod logs to small, event
+logs too unusual?
+
+==== Loki notes from Peri
+
+Distributer->Ingester connection - via consistent hash ring of labels.
+
+* Hash lookup for load balancing.
+* Scale ingesters.
+* Like sharding but not really sharding.
+* Consistent distributed hash ring (memberlist) - new ingester may move
+data around in re-balance.
+* Look up: Gossip ring, Reverse Dictionary, K-set operations, Sharding,
+Consistent Hash
+* BoltDB
+
+Timestamp ordered - timestamp where? From the origin. Nano precision.
+
+* Compactor re-orders out-of-order timestamps. Chunk files to S3.
+
+Query:
+
+* select labels, pipeline (parse, extract fields etc), compare (> < ==
+etc)
+* sum/histogram queries - metrics, alerts
+
+ssoQuery frontend ->N Queriers ->N Ingesters (cached recent data)
+
+* Query workqueue, failed queries are retried.
+* Query frontend splits queries and aggregates results.
+
+Ingesters replicated for write, only one will normally write to backend
+some duplication is possible, queriers deduplicate.
+
+API for cluster: authn, authz, (oauth)
+
+* Review this API with respect to changes to CL API.
+* tokens, RBAC. Ingestion path. Can't distinguish by labels? Maybe?
+* Open Policy Agent - may provide finer control.
+* Maybe we need to write a gateway to do finer grained control.
+* Need to review security issues.
+
+What about on-prem customers - what storage?
+
+* S3 compatible API is implemented for k8s (mineo)
+
+QUESTIONS
+
+* [ ] Find by pod labels => unconstrained high cardinality?? Need to
+hash label sets?
+* [ ] Retention - offload to backend, need backend support from common
+config?
+
+What does CLO need to configure:
+
+* Loki.
+* S3 compatible store (mineo) - retention.
+
+Ingester lifecycle, handoff on exit - instead of replication?
+
+* voluntary exit with handoff - better performance than failure
+recovery?
+* [ ] Split brain on member list? Quorum (of what)?
+
+Ingesters/Queriers are stateful sets over PVCs - can still scale
+horizontally.
+
+BoltDB-Shipper setup uses PVC caching. Possible upstream contribution?
+JSON enhancement
+
+=== NEXT [#A] Loki forwarder & labels design doc, internal and for Grafana.
+
+{empty}[[https://issues.redhat.com/browse/LOG-1194][[LOG-1194] Define
+and implement labels for per-log metrics - Red Hat Issue Tracker]]
+https://grafana.com/docs/loki/latest/logql/#logfmt[LogQL | Grafana Labs]
+
+==== Notes from https://docs.google.com/document/d/1uonrApydz51t1l9LN0_ypLxjMQKv8EVNLVfy2ELWAic/edit?ts=601c03b9[ES queries to map to promql - Google Docs]
+
+* Use a kubernetes.label.app filter to limit output to a service.
+* Message searches:
+** message:error
+** message:1i0en3cm6n0318ke0hr4r7qkt2hmbpts AND message:”failed to”`
+** kubernetes.container~name~.raw="uhc-acct-mngr-ocp-usage-reconciler"
+** kubernetes.pod~name~:"ocm-service-log-557b5fc6c-g4t8g" AND
+kubernetes.namespace~name~:"uhc-production" AND
+kubernetes.container~name~.raw:"service" ANDfpo message:serving
+** deployment pod~labels~ kubernetes.labels.deploymentconfig
+* Get lines around a specific line (in a pod stream)
+* LogQL example:
+** query: kubernetes.labels.deploymentconfig:"f8notification" AND
+level:"error"
+** \{cluster="dsaas"} |=
+'kubernetes.labels.deploymentconfig:f8notification' |= 'level:"error"'
+** kubernetes.labels.app:"keycloak" AND message:"*503 Service
+Unavailable*"
+** \{cluster="dsaas"} |= 'kubernetes.labels.app:keycloak' |=
+'message:%22503 Service Unavailable"'
+* JSON parser: `| json`
+** \{ "a.b": \{c: "d"}, e: "f" }
+** \{a~bc~="d", e="f"}
+* LogQL examples use "container"?
+
+==== To do
+
+Check container names: oc get pod -A -otemplate='\{\{range
+.items}}\{\{.metadata.name}}\{\{range
+.spec.containers}}\{\{""͡}}\{\{.name}}\{\{end}}\{\{""}}\{\{end}}'
+
+* fluent-gem install fluent-plugin-grafana-loki
+* [ ] Typical user queries? namespace/name, label query - review example
+queries
+** how to construct queries for label/non-label metadata?
+** queries for selecting long/short retentions?
+* [ ] Cardinality: cluster, node, namespace, pod, container, pod labels?
+** need equality test for efficient search.
+** option to disable pod on busy clusters. Best default?
+** search by container/image - limited number in cluster?
+** search by label - option to identify important labels?
+* [ ] Look for blogs about query time? Filter on regexp/string match
+before JSON parsing etc.
+* [ ] Include relevant info from _Labels, correlation and project X -
+write up_
+* [ ] JSON format: same features as all. Alternates? Msgpack? Protobuf?
+* [ ] Updates to: Rolfe, Lukas, Jeff, Eric
+** review from Grafana folks, Eldin, Bartok (meeting)
+** IBM: andrew~low~@ca.ibm.com, Eran Raichstein <eranra@il.ibm.com>,
+factor@il.ibm.com, ftucci@ca.ibm.com, Gargi B Dasgupta
+<gaargidasgupta@in.ibm.com>, gerard.vanloo@ibm.com, jrmcgee@us.ibm.com,
+Hui Kang <kangh@us.ibm.com>, paula@il.ibm.com, Periklis Tsirakidis
+<ptsiraki@redhat.com>, sguven@us.ibm.com
+* [ ] Notes on static meta data:
+* Loki tags
+* Cloudwatch group tags
+https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/Working-with-log-groups-and-streams.html
+* Syslog
+* Standardize and advertize our fluent-tag format?
+
+=== NEXT [#A] Prototype Loki forwarder ASAP
+
+* {empty}[[https://issues.redhat.com/browse/LOG-684][[LOG-684] Cluster
+LogForwarder Loki support - Red Hat Issue Tracker]]
+* [ ] COMPARE CPU/Mem use promtail vs. fluentd for budget purposes
+* [ ] *Need* loki forwarder - milestones. Need it in quayg.io
+** introduce promtail first then fluentd, comparison.
+** perf testing - prom, fluetbit, fluentd.
+** Check jeff's stuff?
+* [ ] Fluentd plugins, review:
+** https://github.com/banzaicloud/fluent-plugin-kubernetes-loki
+** https://grafana.com/docs/loki/latest/clients/fluentd/[Fluentd |
+Grafana Labs]
+** https://github.com/fabric8io/fluent-plugin-kubernetes_metadata_filter[fabric8io/fluent-plugin-kubernetes~metadatafilter~:
+Enrich your fluentd events with Kubernetes metadata]
+
+Peri started:
+https://github.com/openshift/cluster-logging-operator/pull/428[Add Loki
+output support for LogForwarding by periklis · Pull Request #428 ·
+openshift/cluster-logging-operator]
+
+* does fluentd support pack/unpack of labels?
+* support optional packed labels? extra real labels?
+* loki query options for JSON?
+* other formats than JSON: PromQL searches? Original still available.
+** JSON path coming
+* Log format: avoid nested objects. Underscore keys. Pack/unpack can
+extract labels.
+** Log FT: key/value format in Go.
+* JSON is faster than regex.
+
+Prometheus label keys are all letters or numbers or _.
+
+==== Me, components
+
+CLO forwarder is critial. Operator? Not Grafana. Not validating CLO yet.
+Validate on OSD.
+
+Quay/next phase:
+
+* missing: need forwarder.
+* missing: testing of operator.
+* operator scaling & setup.
+
+Milestone:
+
+* short term loki forwarder alternative to Elastic
+
+==== NEXT https://docs.google.com/document/d/1uonrApydz51t1l9LN0_ypLxjMQKv8EVNLVfy2ELWAic/edit?ts=601c03b9[ES queries to map to promql - Google Docs]
+
+Review for metadata/tags.
+
+=== DPTP tests for forwarder, CPU requirements promtail vs. fluentd
+
+Get cluster stats - DPTP, Elastic (OSD, Telemetry)
+
+=== Load test cases for Grafana.
+
+Run my forwarder with
+https://github.com/pmoogi-redhat/logloss-benchmarking[pmoogi-redhat/logloss-benchmarking]
+viaq repo loki repo
+
+* [ ] Peri has testing setup, will point at loki. Need to understandd?
+* [ ] Load client to generate load with labels.
+* [ ] Start a google doc and/or repo.
+* [ ] Document for collaboration.
+* [ ] Collect 'em, need test cases
+* [ ] benchmarks
+
+Black box benchmark, not biased by specific workload. (DPTP/OSD
+workloads) Smaller version for loki tests.
+
+=== Grafana Pilot
+
+==== Pilot status
+
+alex.martin@grafana.com, Chris Welch <chris.welch@grafana.com>,
+chris.williamson@grafana.com, cyril.tovena@grafana.com, Eldin
+<eldin@grafana.com>, "Eder, Jeremy" <jeder@redhat.com>, Periklis
+Tsirakidis <periklis@redhat.com>, Swetha Shankar Paida
+<swshanka@redhat.com>, Urvashi Bhargava <ubhargav@redhat.com>, Vadim
+Rutkovsky <vrutkovs@redhat.com>, "W. Trevor King" <wking@redhat.com>
+
+* reducing labels to handle short-lived clusters
+* [2021-03-02 Tue] 800Gb ingested
+
+? Query performance tests ? Phase 2 encryption.
+
+* https://grafana.com/orgs/openshift[Redhat Openshift Overview | Grafana
+Labs]
+* https://grafana.com/docs/grafana/latest/auth/generic-oauth/#generic-oauth-authentication[OAuth
+authentication | Grafana Labs]
+
+Pack/unpack labels support useful, but new in online version only.
+
+* does fluentd have pack/unpack support?
+
+1Tb reached [2021-03-04 Thu] since
+
+==== Notes
+
+Our instance
+
+* https://grafana.com/orgs/openshift/instances/170071[Redhat Openshift
+Instance Details: openshift.grafana.net | Grafana Labs]
+* https://openshift.grafana.net
+* https://grafana.com/orgs/openshift
+* PRs for promtail
+https://github.com/openshift/release/pull/16006/files[hosted-loki: drop
+filename via labeldrop by vrutkovs · Pull Request #16006 ·
+openshift/release]
+
+https://docs.google.com/document/d/1uonrApydz51t1l9LN0_ypLxjMQKv8EVNLVfy2ELWAic/edit?ts=601c03b9[ES
+queries to map to promql - Google Docs]
+https://docs.google.com/document/d/14GfXQrbZXdIMRda3AmZLGbBJAN1av7pMCDWbfAeKiJI/edit[OCM
+log search examples - Google Docs]
+
+Chris Welch | Sr. Enterprise Account Executive | Call/Text: 862-596-2869
+| chris.welch@grafana.com Elidin is tech contact, slack/email. Alex
+Martin tech overseeing. Chris Willamson management business help.
+
+* Pilot scope
+https://docs.google.com/document/d/1nD2rj0qTyj2nRKJ6_H9Az7_OAaPbAimFoAsZGgFjjCo/edit[Scope
+of RHT / Grafana.com Loki Prototype - Google Docs]
+* Grafana slides
+https://docs.google.com/presentation/d/1GS9-n7fLPW8Gs-2wa9cPDFaqHYBPDmo3ia67jO5XOqA/edit?ts=5ffc6e04#slide=id.g9e527f12ab_0_1594[OpenShift
+Online Managed Loki Pilot Success Plan - Google Slides]
+* Slack, Urvashi, Eric & co
+https://coreos.slack.com/archives/G018Z7Y83V1/p1611757434003800
+* Slack #internal-grafana-loki-collab
+https://coreos.slack.com/archives/C01JTSZUG72
+* {empty}[[https://issues.redhat.com/browse/SDE-904][[SDE-904] AppSRE:
+Onboard Loki as part of Observatorium - Red Hat Issue Tracker]]
+* https://mail.google.com/mail/u/0/#inbox/FMfcgxwKkRPDdZtCRwTcPPzhzcjbzsvZ[Re:
+RHT / Grafana.com Loki logging POC - aconway@redhat.com - Red Hat Mail]
+* https://grafana.com/legal/grafana-slas/[Grafana SLAs | Grafana Labs]
+
+Feb 5: Red Hat prep steps before Feb 2
+
+* Gather sample elasticsearch Queries from DPTP (Jeremy) - Translate to
+LogQL
+* Set up Red Hat SSO, grafana.com accounts.
+* Design/test promtail configuration and deployment.
+
+Initial goals of pilot:
+
+* Login & configure Dedicated Cluster
+* Deploy and configure promtail collectors
+* Set up UI - dashboards, queries etc. (question on whether we or
+Grafana host the UI?a)
+* Port Peri's existing dashboards.
+* Load some historical data from our existing Loki (if possible)
+* Begin query testing (response times) with sample queries
+
+Later:
+
+* Define "Heavy Load" test cases to exercise
+* Set up stress tests - check existing work by Peri & others for re-use.
+
+=== NOTE: https://app.box.com/folder/134167028719?s=gbnqwl0wva59bdqbjl1m5cmualjsolv5[IBM Loki Discussoins | Powered by Box]
+
+== Performance
+
+=== NEXT [#A] Rapid scan of alternate collectors
+
+Output
+
+* elasticsearch
+* cloudwatch
+* kafka
+* rsyslog
+* splunk?
+
+Input
+
+* crio-o line assembly
+* systemd-journal/syslog pipes
+* kubernetes metadata decoration
+* JSON parsing, jsonpath?
+* multi-line entries (regexp matching)
+
+Other
+
+* routing - namespaces, labels, source, log type
+* unicode normalization?
+* record rewriting?
+* prometheus - collected bytes, other metrics
+* kubeclient
+* openid~connect~ for SSO?
+
+==== Vector revdiw
+
+https://github.com/timberio/vector/[timberio/vector: High-performance,
+high-reliability observability data pipeline.]
+
+==== Fluentbit: what's missing
+
+==== Vector?
+
+=== NEXT Update [[https://issues.redhat.com/browse/LOG-1179][[LOG-1179] Improve overall log collection performance - Red Hat Issue Tracker]]
+
+=== NEXT [#B] https://github.com/openshift/cluster-logging-operator/pull/836#issuecomment-790351870[Add forward keepalive by cpmoore · Pull Request #836 · openshift/cluster-logging-operator]
+
+=== NEXT [[https://issues.redhat.com/browse/LOG-1059][[LOG-1059] fluentd pod OOMing - Red Hat Issue Tracker]]
+
+[[https://issues.redhat.com/browse/LOG-1059][[LOG-1059] fluentd pod
+OOMing - Red Hat Issue Tracker]] We shouldn't OOM, regardless of the
+memory limit - there's nothing changing here.
+
+=== [#B] Create telemetry dashboards for logging health & performance
+
+Talk to Ben Browning. Can view dashboards from grafana. Elasticsearch
+operator on 77000 clusters. Beware changes!
+
+Ben Browning 9:24 AM Alexey:
+https://help.datahub.redhat.com/docs/interacting-with-telemetry-data is
+a good start for how to access the data and contribute to shared grafana
+dashboards. Depending on your team's needs, you may choose to host/run
+your own grafana instead of using the shared datahub one for dashboards.
+I created https://github.com/bbrowning/openshift-telemetry-playground
+for my own personal telemetry dashboard needs so I can play around
+infinitely in grafana in a container locally without messing with the
+shared one.
+
+=== [#B] Measure current performance limits, sizing recommendations.
+
+https://coreos.slack.com/archives/DQTRK0T45/p1612994507001900 Ask
+Jeremy. Memory consumption by fluentd, what's up
+https://coreos.slack.com/archives/CB3HXM2QK/p1612902201462600?thread_ts=1612897790.459400&cid=CB3HXM2QK
+
+==== Performance benchmark urgently needed.
+
+* [ ] Collect existing work:
+** Flow control, loss measurements:
+https://github.com/pmoogi-redhat/logloss-benchmarking[pmoogi-redhat/logloss-benchmarking]
+
+Faster collector!!! Fluentd supervisor mode hung in the past:
+multi-process + k8s becomes a problems. 2500 msg/sec with single
+container.
+
+* realistic
+* multi-container
+* multi-node
+
+Peter Portante viaq load driver the load driver output embeds a sequence
+number in every log message so that can be used determine loss 17:22 I’d
+use a fluentd command the sends them to a pipe were the “verify loader”
+can read them and detect any problems. 17:22 the verify loader can track
+multiple individual flows.
+
+=== Watch not Poll in operators
+
+Check out Informers also - rather than raw watch?
+https://engineering.bitnami.com/articles/a-deep-dive-into-kubernetes-controllers.html[Bitnami
+Engineering: A deep dive into Kubernetes controllers] (CPU,
+responsiveness, error awareness)
+
+=== Notes
+
+https://coreos.slack.com/archives/G01GW3XH5HP/p1615713302090400[Eran's
+initial fluentd/fluentbit results.]
+
+== Flow Control
+
+=== WAIT [#A] Discuss our Go exporter for prometheus node-exporter plugin
+
+https://github.com/prometheus/node_exporter[prometheus/node~exporter~:
+Exporter for machine mels trics] Not allowed root - is it still worth
+pursuing? Sergiusz Urbaniak @sur https://coreos.slack.com/team/UC0RYBQSE
+
+=== NEXT [#B] Metric labelling! Need to change, file name is too high-cardinality.
+
+Research - Bartok.
+
+=== Review perf tests https://github.com/pmoogi-redhat/logloss-benchmarking/pull/3[working version :-) by eranra · Pull Request #3 · pmoogi-redhat/logloss-benchmarking]
+
+=== Monitor-only mode for logging with logged metric.
+
+=== Notes
+
+Peter:
+
+* https://github.com/containers/conmon/issues/84[Provide logging
+behavior policies applied by conmon to stdout/stderr · Issue #84 ·
+containers/conmon]
+* https://docs.google.com/presentation/d/1kNr5AqKjvWBxJ78yzHU4ANZ84RMvhnBFZtvDjN_mjBE/edit#slide=id.g6bf2897a05_0_61[The
+Problem with Logging: A SRE Perspective - Fall '20 - Google Slides]
+
+Epics:
+
+* [[https://issues.redhat.com/browse/LOG-1073][[LOG-1073] Implement flow
+control by backpressure]]
+* [[https://issues.redhat.com/browse/LOG-884][[LOG-884] Flow control
+mechanisms for more predictable log collection]]
+* [[https://issues.redhat.com/browse/LOG-1074][[LOG-1074] Combined rate
+limits for flow control]]
+
+Stories
+
+* [[https://issues.redhat.com/browse/LOG-1032][[LOG-1032] Metric for
+inbound log data loss at the collector - Red Hat Issue Tracker]]
+
+Docs
+
+* Benchmarks & log loss measurements:
+https://github.com/pmoogi-redhat/logloss-benchmarking[pmoogi-redhat/logloss-benchmarking]
+* Log loss bug from the field:
+https://bugzilla.redhat.com/show_bug.cgi?id=1872465[1872465 – Missing
+messages while testing logging at scale]
+* pportante log stream format
+https://github.com/cri-o/cri-o/pull/1605[WIP - Proposed Stream Log
+Writer by portante cri-o/cri-o]**
+* Pratibha slides
+https://docs.google.com/presentation/d/1T0dPyJo4tm527SA5NnEuRIa_xUrjfkyz/edit#slide=id.p1[Flow
+Control CL OCP - proposal - summary.pptx - Google Slides]
+* Back-pressure POC
+[[https://issues.redhat.com/browse/LOG-575?filter=12357141][[LOG-575]
+MVP container back-pressure mechanism. - Red Hat Issue Tracker]]
+* AMQP fluentd
+https://github.com/ViaQ/docker-fluentd/blob/master/amqp_qpid/lib/fluent/plugin/in_amqp_qpid.rb
+
+=== Re-start work on conmon https://github.com/containers/conmon/issues/84[Provide logging behavior policies applied by conmon to stdout/stderr · Issue #84 · containers/conmon]
+
+!* Testing re-work :test:
+
+=== NEXT [#B] Fix OAL smoke test, all tests to better framework
+
+Stuckf OAL PR:
+https://github.com/openshift/origin-aggregated-logging/pull/2073#issuecomment-791446380[Fixed
+typo in out~syslog~, TCP & UDP. Global @facilty should be @facility by
+samimb · Pull Request #2073 · openshift/origin-aggregated-logging]
+
+* [ ] Read
+https://docs.ci.openshift.org/docs/how-tos/testing-operator-sdk-operators/[Testing
+Operators Built With The Operator SDK and Deployed Through OLM |
+Openshift CI docs]
+* [ ] Track in JIRA - self-contained, central lib for deploying, client,
+manipulation.
+* [ ] Single go lib + program for OLM deployment (bundle?)
+** export shared library: with Viaq logerr? OAL? Move from existing CLO
+lib?
+** need to handle mustgather for CI?
+** no more scripts!
+* [ ] Fix OAL first (Go tests, no scripts etc.)
+* [ ] Self-setup tests: Go and/or Gomega?
+
+https://coreos.slack.com/archives/GGUR75P60/p1614954823032500?thread_ts=1614954542.030000&cid=GGUR75P60[Peri]:
+To the best of my knowledge we have two e2e testing approaches across
+three repos: CLO & EO E2E: Work on olm~deploy~ EO E2E upgrade tests:
+Work on old olm configmap OAL: Work on old olm configmap and to complete
+the confusion, OLM migrated to use bundles in 4.6, but we never adapted
+our E2E machinery…
+
+=== IBM cloud testing
+
+Sudha Ponnaganti - Contact re. logging CI and dev testing. We're OK with
+one cloud testing. Adi Demback is working on it. There are POC acts
+being setup - Jason Holt holds the key. We are going through him for
+these initial POCs
+
+* [ ] Dev testing experiments, OCP not supported?
+
+=== Test clusters? [[https://mail.google.com/mail/u/0/#inbox/FMfcgxwKjnRnbcZZmWvkxqwSCShRQJWQ][Re: [devtools-leads] [aos-leads] WIP: A cluster for hosting product engineering workloads - aconway@redhat.com - Red Hat Mail]]
+
+=== Make all e2e tests self-contained.
+
+Hook up new tests in e2e-tests. CI to run without wrapper scripts
+(artifact collection) Test strategies:
+
+* silent unless fail by default
+* LOG~LEVEL~=0 by default, except for CI?
+* [ ] Replace Watch and List with Informers?
+* [ ] improvement projet - better-tests branch and tests for fluent
+forwarding.
+* [ ] Implement demo Gotest branch and optimal tests for fluent
+
+Reference watcher?
+
+* [ ] Example for watch based controller with independent loops (CLO +
+ELO loops)
+* [ ] Example of logging best practices.
+* [ ] Put it in OAL? Add pointer to readme?
+* [ ] Move arch doc to OAL, mention in both READMES.
+* [ ] helpers/cmd should be named helpers/exec, cmd clashes
+
+=== Merge e2e and functional frameworks.
+
+* [ ] Merge with/update functional tests
+* [ ] still very slow?
+** WIP-better tests: separate changes
+** Reorg packages: helpers in correct place? Move runtime stuff to
+helpers/client?
+** rename cmd->exec
+* [ ] Speed up tests with pre-pulled images??
+
+=== Better test coverage visibility, coveralls
+
+Eric:
+https://coveralls.io/builds/35336515/source?filename=log/logger.go#L75[ViaQ/logerr
+| Build 392418782 | log/logger.go | Coveralls - Test Coverage History &
+Statistics]**
+
+=== Sweep tests for duplication, performance.
+
+* [ ] Faster e2e tests, convert existing tests to be self-contained.
+* [ ] Find slow points, speed things up?
+** [ ] Receiver start is slow.
+** [ ] (once only) 2s Client dynamicRestMapper
+* [ ] Convert a test, record before/after times.
+* [ ] Replace waiting in functional framework
+* [ ] Benchmark & optimize fluentd buffer sizes…
+
+== Observability
+
+=== NEXT Labels, correlation and project X - write up
+
+* [ ] Partial review by grafana?
+* {empty}[ ]
+[[https://docs.google.com/document/d/1usS9H-R-AwFYiGVOiW-N2YSFmla0-oUsTWPRvwyeh34/edit?ts=60368829#heading=h.bupciudrwmna][[Public]
+Scalable Observability Collector - Google Docs]]
+* {empty}[ ]
+https://docs.google.com/document/d/1cSz_ZbS35mk8Op92xhB9ijW1ivOtJuD1uAzPiBdSUqs/edit#heading=h.bupciudrwmna[RHOBS:
+Red Hat Internal Observability Service - Google Docs]
+* Bartok hobby horse: unified observability configuration. Universal
+agent.
+
+Components: Monitoring, Telemetry, Observatorium (Thanos=distrib prom.),
+AlertManager Dashboards: Grafana vs. Openshift? Grafana seems out of
+scope for everybody?
+
+Integration points:
+
+* UI (Grafana? Openshift?)
+* Correlation (Prometheus/Loki label naming, Jaeger traces?)
+* Single installer: configure the scale?
+
+Logging plans:
+
+* [ ] logging labels (max 10): cluster, namespace-name, node?,
+container-name?
+** static, easy search given resource
+** container name is fairly static - image name by default?
+** is node useful? may partition namespaces. Need to match up with
+"instance" representation of node.
+** no pod name, too high cardinality (DPTP experiment), limited value
+(who searches knowing the pod name?)
+* [ ] metric labels (max 30): cluster, namespace-name, pod-name,
+container-name?, job=log-collector, instance
+** pod name required for pod granularity, prometheus is OK with greater
+cardinality than lok (per Grafana, Eldin)
+** container name does not increase cardinality, dependent on pod.
+* [ ] Forward our data model to Bartok.
+* [ ] Security: Cert management is different. Look at Telemetry model.
+* [ ] Relationship to OpenTelemetry (vendor based, not pushing it)
+* [ ] Key/Value nesting structure for loki? Use of packed labels instead
+of JSON?
+* [ ] Combined agents idea?
+** already pull metrics, traces?
+** pull logs from file system? fluentd pull protocol?
+** what's the benefit over push to loki? Configuration?
+** still need push protocols for syslog & other remotes.
+* [ ] Comply with tennancy data (per cluster, namespace what?)
+** Need a tennancy field.
+** Need a tennancy plug-in? Who injects the label? Tennancy security
+requirements & trust?
+** Metric tennancy: get label from cluster/service-account? Total
+metadata.
+* [ ] Review by bartok
+** naming conventions
+* [ ] Obs. "backend"
+
+Write
+
+* [ ] Relationships: Telemetry, Observatorium, Monitoring, Project X
+* [ ] Correlation.
+
+Discuss
+
+* [ ] Start talking to bartok
+
+Overlap:
+
+* Loki operator
+* Common query experience
+** Loki/prom labels
+** Meta-data navigation (design new meta-data format?)
+** Loki label injection?
+
+==== Notes to sort out
+
+[cols=",,",options="header",]
+|===
+|OpenTelemetry Log fields |Openshift |Description
+|Timestamp |@timestamp |Time when the event occurred.
+|TraceId | |Request trace id.
+|SpanId | |Request span id.
+|TraceFlags | |W3C trace flag.
+|SeverityText |level |The severity text (also known as log level).
+|SeverityNumber | |Numerical value of the severity.
+|Name | |Short event identifier.
+|Body |message |The body of the log record.
+|Resource |… |Describes the source of the log.
+|Attributes |… |Additional information about the event.
+|===
+
+* {empty}[ ]
+https://github.com/observatorium/docs/blob/master/design/correlation.md[docs/correlation.md
+at master · observatorium/docs]
+* [X] Review logging and fluentd metrics.
+* [ ] Observatorium
+
+Metadata for correlation. OpenTelemetry: labels, fields and attributes.
+
+* distributed context propagation.
+* w3c standards (in HTTP) baggage.
+* tracing baggage: [trace-id, span-id, trace-flags]
+** server gets request & returns response, with trace attached - this is
+a span.
+** spans have sub-spans, carries existing context.
+* trace data is gathered and forwarded out of band, emitted to.
+** client libraries sampling rules: rate limited, errors, stats, etc.
+** everyone reports with the trace-id, span-id info
+** add metadata, timestamps, resource info - pod, node cluster
+
+Key for correlation - opentelemetry specs for logging
+
+* standardize how to insert trace ID, span ID into logs vs. metrics.
+
+Yaeger, open tracing, w3c etc. standards for propagation. Backends.
+Labels - cardinality
+
+k8s: resource, result\{OK/FAIL}, job k8s kube state:
+https://github.com/kubernetes/kube-state-metrics#conflict-resolution-in-label-names[kubernetes/kube-state-metrics:
+Add-on agent to generate and expose cluster-level metrics.]
+
+* [ ] read opentelemetry logging
+* {empty}[ ]
+https://docs.openshift.com/container-platform/4.6/monitoring/understanding-the-monitoring-stack.html[Understanding
+the monitoring stack | Monitoring | OpenShift Container Platform 4.6]
+* The Prometheus Adapter (PA in the preceding diagram) translates
+Kubernetes node and pod queries for use in Prometheus
+* The kube-state-metrics exporter agent (KSM in the preceding diagram)
+converts Kubernetes objects to metrics that Prometheus can use
+* The openshift-state-metrics exporter (OSM in the preceding diagram)
+expands upon kube-state-metrics by adding metrics for OpenShift
+Container Platform-specific resources.
+* The openshift-state-metrics exporter (OSM in the preceding diagram)
+expands upon kube-state-metrics by adding metrics for OpenShift
+Container Platform-specific resources.
+* {empty}[ ] Review
+https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/logs/data-model.md[opentelemetry-specification/data-model.md
+at main · open-telemetry/opentelemetry-specification]
+* [ ] Note on correlation doc page.
+
+Metric names:
+
+* fluentd_ has own prefix, so should logging.
+
+Labels
+
+==== Start disscussion with Bartek, Ben, Eric, Peri
+
+* slack thread to get going, propos meeting
+* bring in correlation?
+* {empty}[ ] [[https://issues.redhat.com/browse/LOG-1194][[LOG-1194]
+Define and implement labels for per-log metrics - Red Hat Issue
+Tracker]]
+
+=== NEXT Review existing prometheus dashboards for logging.
+
+* [ ] VIEW existing CLO dashboard, alerts and metrics - uses fluentd
+tag. How tagged?
+
+Log explore team know about dashboards.
+
+=== https://github.com/OpenObservability/OpenMetrics/blob/main/specification/OpenMetrics.md[OpenMetrics/OpenMetrics.md at main · OpenObservability/OpenMetrics · GitHub]
+
+=== https://www.robustperception.io/how-to-have-labels-for-machine-roles[How to have labels for machine roles – Robust Perception | Prometheus Monitoring Experts]
+
+=== https://prometheus.io/docs/practices/naming/[Metric and label naming | Prometheus]
+
+=== https://github.com/openshift/cluster-monitoring-operator[GitHub - openshift/cluster-monitoring-operator: Manage the OpenShift monitoring stack]
+
+=== https://docs.google.com/document/d/1a6n5iBGM2QaIQRg9Lw4-Npj6QY9--Hpx3XYut-BrUSY/edit#heading=h.i05nm4wmvn7x[Sending metrics via telemetry - Google Docs]
+
+=== https://docs.google.com/document/d/1GicAsPnOCBdi3aw4NSL3lbM0QsfUmbpVdgIKTwAWLAU/edit?ts=6047a51a#heading=h.9u98xli5oq26[Cluster logging telemetry - Google Docs]
+
+=== SLO for telemetry (not metrics)
+
+Telemetry is observation of product use NOT metrics for management. What
+should we expose?
+
+=== SLA Design doc: https://docs.google.com/document/d/1BNaJXLOfkcqP_4C02qTNpiHNk23i5K-QTph4MnGr5aw/edit?ts=5fce7524#[Logging Service Level - Google Docs]
+
+Ref:
+
+* https://app.slack.com/client/T027F3GAJ/G01FZT72REX/thread/C01D9SK01HN-1606831948.034100[Slack
+| Jeff Cantrill, Periklis Tsirakidis, Swetha Shankar, Urvashi Bhargava |
+CoreOS | 2 new items]
+* https://sre.google/workbook/slo-document/
+* https://docs.google.com/document/d/1BNaJXLOfkcqP_4C02qTNpiHNk23i5K-QTph4MnGr5aw/edit#[Logging
+Service Level - Google Docs]
+
+Metrics
+https://mail.google.com/mail/u/0/#inbox/FMfcgxwKjwwJgvVcfCKJMMqlxzfWBkDx[Logging
+for ROSA and SRE - aconway@redhat.com - Red Hat Mail]
+
+SLOs come later, objectives based on metrics.
+
+SLIs based on metrics from the fluentd prometheus plugin
+https://github.com/fluent/fluent-plugin-prometheus (anyone know where
+these metrics are documented?)
+
+Collector
+
+* latency within fluentd: fluentd~statusbuffernewesttimekey~ -
+fluentd~statusbufferoldesttimekey~
+* output throughput in bytes: (oddly, I only found
+fluentd~outputstatusnumrecordstotal~) (we could include input thruput
+but buffer size is a better measure of a rate mismatch )
+* dropped data in bytes: currently we don't capture this, will be part
+of flow control.
+* buffer size: fluentd~outputstatusbufferqueuebytesize~
+* buffer % full: fluentd~outputstatusbufferavailablespaceratio~
+* total flush time (blocked by target):
+fluentd~outputstatusflushtimecount~
+* output reconnects: fluentd~outputstatusretrycount~
+* output errors: fluentd~outputstatusnumerrors~
+* CPU use.
+
+Note on collector SLO: the collector is in the middle. If output
+endpoints are unavailable or slow then latency and buffer metrics will
+look bad. Do we need to try to distinguish collector problems from
+output endpoint problems?
+
+Store
+
+* end-to-end latency: Compare timestamp with time of arrival
+* incoming data rate
+* disk used Mb
+* % of available disk used
+* estimated time till disk full (based on incoming rate, disk available,
+retention)
+* CPU use.
+
+There are probably more store metrics to consider.
+
+latency across collector
+
+=== Dashboard for team SLO https://team-slo-results-ocp-eng-architects.apps.ocp4.prod.psi.redhat.com/[My page]
+
+{empty}[[https://mail.google.com/mail/u/0/#inbox/FMfcgxwKjKqzLzXKCNkXTpFvXvTLrzTp][Fwd:
+[aos-leads] RFC: a proper feedback loop on Alerts - aconway@redhat.com -
+Red Hat Mail]]
+
+=== https://github.com/open-telemetry/community/issues/605[Contribution of Stanza logging agent to OpenTelemetry · Issue #605 · open-telemetry/community]
+
+* https://mail.google.com/mail/u/0/#inbox/FMfcgxwHNqJFhxSXVNTMxfvTjjCKmzFC[Re:
+Logging Architecture Overview - Invitation to edit - aconway@redhat.com
+- Red Hat Mail]
+
+== Label selectors (NEC)
+
+=== Notes
+
+* https://github.com/openshift/enhancements/blob/master/enhancements/cluster-logging/forwarder-label-selector.md[enhancements/forwarder-label-selector.md
+at master · openshift/enhancements]
+* https://github.com/openshift/cluster-logging-operator/pull/865#issuecomment-766560279[Pull
+Request #865 · openshift/cluster-logging-operator]
+* Kii-san repo:
+https://github.com/k-keiichi-rh/cluster-logging-operator[keiichi-rh/cluster-logging-operator:
+Operator to support OKD cluster logging]
+* Label selectors enhancement
+https://github.com/openshift/enhancements/blob/master/enhancements/cluster-logging/forwarder-label-selector.md[enhancements/forwarder-label-selector.md]
+* Label selectors
+** Epic [[https://issues.redhat.com/browse/LOG-883][[LOG-883] Add
+filtering logs via pod labels to the log forwarding API]]
+** Story [[https://issues.redhat.com/browse/LOG-660][[LOG-660]
+ClusterLogFowarder Log Filtering by pod label - Red Hat Issue Tracker]]
+
+=== NEXT [#A] Review label selector PR
+
+=== NEXT [#B] https://github.com/openshift/cluster-logging-operator/pull/865[WIP: Enable pod label base filtering using label router plugin by k-keiichi-rh · Pull Request #865 · openshift/cluster-logging-operator]
+
+== Data model documentation & design
+
+=== Notes
+
+Contacts: Eran, Bartok, Ben Browning OpenTelemetry, observability group.
+OpenMetrics. Common meta-data/label dictionary: correlation &
+cross-query.
+
+https://opentelemetry.io/[OpenTelemetry]
+
+* Resources
+https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/resource/semantic_conventions/README.md[opentelemetry-specification/README.md
+at main · open-telemetry/opentelemetry-specification]
+* k8s
+https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/resource/semantic_conventions/k8s.md[opentelemetry-specification/k8s.md
+at main · open-telemetry/opentelemetry-specification]
+* Log data model
+https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/logs/data-model.md[opentelemetry-specification/data-model.md
+at main · open-telemetry/opentelemetry-specification]
+
+Openshift Monitoring model:
+https://github.com/openshift/cluster-monitoring-operator/blob/master/Documentation/data-collection.md[cluster-monitoring-operator/data-collection.md
+at master · openshift/cluster-monitoring-operator] Observatorium:
+https://github.com/observatorium/docs/blob/master/design/correlation.md[docs/correlation.md
+at master · observatorium/docs]
+
+=== NEXT [#B] [[https://issues.redhat.com/browse/RHDEVDOCS-2521][[RHDEVDOCS-2521] Document our JSON log entry format. - Red Hat Issue Tracker]]
+
+Doc team JIRA:
+[[https://issues.redhat.com/browse/RHDEVDOCS-2521][[RHDEVDOCS-2521]
+Document our JSON log entry format. - Red Hat Issue Tracker]] Data
+model:
+https://github.com/ViaQ/elasticsearch-templates[viaQ/elasticsearch-templates
+repo] PR: https://github.com/ViaQ/elasticsearch-templates/pull/125[WIP:
+Initial stab at generating public docs for data model. by alanconway ·
+Pull Request #125 · ViaQ/elasticsearch-templates]
+
+* [ ] Discuss: @jpkroehling (tracing), Ben, Christian (other) metrics.
+Bartok, etc.
+* Goals:
+** support JSON and flat name/value (separators? prometheus syntax?)
+** relate to OpenTelemetry data model
+** update README and other doc
+** k8s: are these public: component, provider etc.
+* [X] New output directory logging/ - subset by namespace =>
+openshift-cluster-logging.adoc
+* [X] Establish markers for: public/internal (e.g. viaq in root
+namespace)
+* [ ] Conservative pass at public fields.
+** namespace~name~/~id~ doubled up in root & k8s?
+** master~url~ should be cluster~name~?
+** deploymentconfig?
+** event group status?
+** openshift field for forwarder labels? Other?
+
+Rolfe:
+
+* .adoc suffix
+* Public-only generator
+* Give me sample, I'll fix generator
+* Let adoc create the index?
+* Parameterize intro text, formatting bits - include snippets? adoc
+template?
+* [ ] Check actual logging output for fields.
+* [ ] Review all fields, mark explicit public/private
+* [ ] Separate/parameterize document generator - asciidoc template from
+Rolfe with includes.
+* [ ] Establish markers for static/dynamic (immutable/mutable,
+invariant/variant)
+* [ ] Review namespaces/ pass 1, mark public/private (conservative)
+static/dynamic. Leave as "unknown" where unknown.
+** Lukas review input:
+https://coreos.slack.com/archives/G01KY955MU3/p1611770697043000
+** check real log messages.
+** overview: records, metadata, static vs. dynamic
+** known fields & types - rely only on these. Record may include other
+fields.
+** encodings - mention loki labels, JSON fields, elastic indices, syslog
+userdata
+** Jeff Cantrill 'docker' should probably be deprecated in favor of
+something like container~engine~ unless there is docker specific info
+** Drop the Collectd namespace from the data model.
+** No openshift namespace? Check tagging proposal.
+* [ ] Labelling for flow control metrics
+* [ ] Generate public & private subset docs
+** jq filters before existing doc generatorto list: public/private,
+static/dynamic etc.
+** get rid of elasticsearch guff, tidy up format, check Rolfes doc.
+* [ ] New fields: logType, schema, structured (review proposal)
+* [ ] extract data model from elasticsearch stuff, create new repo?
+data~model~
+* [ ] Review pass 2, compare to CLO/ELO codebases
+* [ ] Review pass 3, collect logs from live cluster & check for
+conformance.
+* [ ] Extract generic model, remove elasticsearch terminology. Support
+alternate encodings.
+
+==== Notes
+
+* Changed suffix to .adoc -
+https://asciidoctor.org/docs/asciidoc-recommended-practices/#document-extension
+* Data model is in namespaces/
+* Create new output dir for logging public/private docs?
+* Need to cover metric models also in future?
+* Lukas: why idetical -projects and -operations doc files?
+* [ ] Back with tests:
+https://github.com/openshift/cluster-logging-operator/pull/934/files#diff-74642f44fce5da5ad4f33f4d04348787e5c97beb2e975d764e2de0eee1b23674
+
+=== Purge of unused fields
+
+=== Review all public fields for accurate comments
+
+* [ ] Cross ref with CLO and Elastic code, check with Lukas
+
+=== Data model why notes [2021-01-28 Thu]
+
+Lukas history:
+
+* started before logging team
+* codebase built for Elasticsearch (based on logstash, not full
+original)
+* our field definitions + namespaces notion. (*user* namespace)
+* was for logging + metrics
+* was designed per collector (fluentd/syslog etc.)
+
+Namespace
+
+* collectd namespace for metrics
+* can drop most namespaces.
+* Rolfe:
+** [ ] doc what customers need
+** [ ] work on top-level first
+
+For me
+
+* [ ] Eric and Jeff need to know for compatibility.
+** remove
+** add?
+** rename?
+* [ ] Public (downstream) doc: fields for Rolfe first cut.
+* [ ] Internal (upstream ) greater detail, private fields.
+* [ ] Use the mechanics: YAML source, generation, documentation.
+** extend to code generators?
+** tweak for docs - minor formatting changes/aesethetic
+* [ ] Goal docs:
+** upstream/internal/details
+** downstream doc
+* [ ] Metadata classification: static/dynamic, labels/content
+* [ ] Fields still in use: docker
+* [ ] Some new fields in ES (from fluentd), some modified by CLO.
+** test: start logging & compare resulting indices.
+** vlog
+
+Users
+
+* [ ] JSON record output
+* [ ] Metadata classification: static/dynamic, labels/content
+* [ ] Relationship to metrics & prometheus lables
+
+Viaq repository:
+
+* [ ] Merged by Lukas, owner.
+* [ ] Unit tests etc. automation missing?
+** manage changes in namespaces.
+
+=== Write up common pattern for mapping metadata to transport fields
+
+https://mail.google.com/mail/u/0/#inbox/FMfcgxwLsJzmHpmWMvHnTbKzXDQMRxWQ
+cloudwatch groups kafka topics JSON stuff?
+
+==== [[https://issues.redhat.com/browse/RFE-923][[RFE-923] Enable the default "@ERROR label" configuration in the logging forwarder - Red Hat Issue Tracker]]
+
+Update JSON handling, see conversation:
+https://github.com/openshift/cluster-logging-operator/pull/934#discussion_r593284611
+
+== TLS configuration
+
+=== NEXT Jeff certificate problem, help debug.
+
+Slack:
+https://coreos.slack.com/archives/GGUR75P60/p1615404272099700?thread_ts=1615403877.099000&cid=GGUR75P60
+
+6m Jeff Cantrill:spiral~calendarpad~: trying a 4.6 backport
+https://github.com/openshift/cluster-logging-operator/pull/926 doesnt
+recognize the output 2m Alan Conway There was definitely recent
+refactoring in that area, very possible that backport missed a line that
+created such a problem. <1m Alan Conway Let me look again with that in
+mind…
+
+Pull: https://github.com/openshift/cluster-logging-operator/pull/926[Bug
+1929420: ClusterLogForwarder with Output.Secret causes fluentd crash
+loop by jcantrill · Pull Request #926 ·
+openshift/cluster-logging-operator] Failure:
+https://prow.ci.openshift.org/view/gs/origin-ci-test/pr-logs/pull/openshift_cluster-logging-operator/926/pull-ci-openshift-cluster-logging-operator-release-4.6-e2e-operator/1367646706383982592#1:build-log.txt%3A673[pull-ci-openshift-cluster-logging-operator-release-4.6-e2e-operator
+#1367646706383982592]
+
+=== Update [[https://issues.redhat.com/browse/LOG-895][[LOG-895] Comply with OCP cluster-wide cryptographic policies - Red Hat Issue Tracker]]
+
+Bugs
+
+* https://bugzilla.redhat.com/show_bug.cgi?id=1888943[1888943 –
+ClusterLogForwarder with Output.Secret causes fluentd crash loop]
+* https://bugzilla.redhat.com/show_bug.cgi?id=1890072[1890072 – Log
+forwarding API with multiple outputs same secret cause issues]
+* NEED JIRA: Consistent TLS across the board.
+* [ ] Apply cluster-wide stuff, more flexible TLS configuration.
+* [ ] collect all RFEs, JIRAS for planning - TLS 1.2, 1.3 support.
+* [ ] Verizon had problems with old SSL, Still present? They suggest
+rdkafka - better SSL config than the previous. Requirements:
+https://docs.google.com/document/d/1z3bDACneB3fsskYoAqpO3p3cpR85wiW2Ff3EaOVJ94I/edit[\{Webscale}
+Logging & Monitoring: Sync Meeting with VZ to Address Questions from
+Conrad - Google Docs]
+* [ ] evaluate effort, configuration cost.
+
+==== Fix or comment: https://issues.redhat.com/browse/RFE-1262[\{RFE-1262} Support Log Forwarding API without mTLS with external Elastic Search - Red Hat Issue Tracker]
+
+Also: https://issues.redhat.com/browse/OCPBUGSM-9095[\{OCPBUGSM-9095}
+\{1834414} Allow enable mutual TLS in cluster logging Log Forwarding
+feature - Red Hat Issue Tracker] :bug:
+
+==== Fix or comment: [[https://issues.redhat.com/browse/OCPBUGSM-9095][[OCPBUGSM-9095] [1834414] Allow enable mutual TLS in cluster logging Log Forwarding feature - Red Hat Issue Tracker]]
+
+=== TLS customer issue - consistent enablement of mTLS all outputs
+
+* [ ] Need JIRAs
+* [ ] Relate to other TlS bugs.
+
+mswenson Yesterday at 09:57 Hello all @aoslogging,
+
+I am currently working with a customer that has a hard requirement
+around forwarding audit logs over syslog. The client's syslog server is
+setup for server TLS validation but not client TLS validation. I noticed
+that the documentation specifies you need a tls.key, tls.crt, and
+ca-bundle.crt which to me implies mTLS. Is there any way to get around
+this and only supply the public crt for the server-side authentication?
+(edited)
+
+https://coreos.slack.com/archives/CB3HXM2QK/p1612553849388200?thread_ts=1612450673.342600&cid=CB3HXM2QK
+
+== Fiducia
+
+=== Notes
+
+Angry. Escalations.
+
+* JSON proposal - how does it help other problems.
+* Some bugs are fixed now - open security distro plugin.
+* Problems come from not using logging stack as intended
+** Expected *full enterprise logging* solution *90 days*
+** Short-term logging, not for long retentions + backup & recovery.
+** *Need numbers* for what we can handle.
+
+Collector + forwarder only.
+
+=== [#A] Fiducia prep.
+
+* [ ] JSON interest - presentation.
+* [ ] Noisy neighbour interest - Flow Control Design?
+* [ ] Need statement of what we intend to support.
+* Need numbers for what we can support. Jeder.
+* Open issues - Christian has doc. Open vs. Closed
+** https://docs.google.com/spreadsheets/d/1T1gj2zDFoH95C2aY0R1ImWDwzaqibClAlUuU1hi-DHs/edit?pli=1#gid=0[Fiducia
+Support Cases - Logging/Monitoring - Google Sheets]
+* Jeremy Eder
+* Have something from perf team? Jcantril, Christian?
+* Telemetry?
+
+== JSON enhancement
+
+=== NEXT [#B] Update JSON epic with latest changes.
+
+=== NEXT [#A] https://github.com/openshift/cluster-logging-operator/pull/934[LOG-1157: Implement Json Forwarding: Parse Json Message by vimalk78 · Pull Request #934 · openshift/cluster-logging-operator]
+
+=== [#A] Sub-routes document, general guidelines.
+
+* [ ] Separate proposal for "generic sub routes"
+* [ ] Review cloudwatch and JSON also
+* [ ] Library suggestions, code?
+* [ ] OPENSHIFT labels
+* [ ] Backport to JSON, cloudwatch
+* [ ] Update LOG-1667
+* Think about repetition? - USE CLF LABELS
+* Think about scope: scoped to a connection.
+
+Exactly: that's what just clicked - we are talking about "sub-routes",
+addressing destinations inside a single forwarer output: ES indices,
+cloudwatch groups, kafka topics… And you hit the nail on the head - we
+want to express that in the terms of the outputs own concepts, not try
+to come up with a "generic" notion like "address" or "schema" - that's
+too confusing as all the available words are too overloaded already
+
+=== [#B] JSON logging extensions for infra logs
+
+* [ ] Update with elastic indices
+* [ ] Review cloudwatch also
+* [ ] Separate proposal for "generic sub routes"
+
+Exactly: that's what just clicked - we are talking about "sub-routes",
+addressing destinations inside a single forwarer output: ES indices,
+cloudwatch groups, kafka topics… And you hit the nail on the head - we
+want to express that in the terms of the outputs own concepts, not try
+to come up with a "generic" notion like "address" or "schema" - that's
+too confusing as all the available words are too overloaded already
+
+=== [#A] Update JSON proposal, move index to elastic
+
+~/enhancements/forward-json/enhancements/cluster-logging/forwarding-json-structured-logs.md::#### I want Elasticsearch to schema is indicated by a k8s label on the source pod[proposal
+here]
+
+* [X] Replace schema with index
+* [X] Add section on OutputDefaults - or new new proposal?
+* [X] Elasticsearch index creation.
+* [X] Update examples for christian
+
+=== Notes
+
+Epics:
+
+* {empty}[[https://issues.redhat.com/browse/LOG-785][[LOG-785] Allow
+storing and querying of structured logs (JSON) - Red Hat Issue Tracker]]
+* {empty}[[https://www.elastic.co/guide/en/elasticsearch/reference/6.8/ingest-conditionals.html][Conditional
+Execution in Pipelines | Elasticsearch Reference [6.8] | Elastic]]
+* https://github.com/openshift/origin-aggregated-logging/issues/1492[Disable
+merge JSON log in 4.0 · Issue #1492 ·
+openshift/origin-aggregated-logging]
+* {empty}[[https://www.elastic.co/guide/en/elasticsearch/reference/6.8/ingest-processors.html][Processors
+| Elasticsearch Reference [6.8] | Elastic]]
+
+==== AMDocs meeting [2021-01-27 Wed]
+
+* Support exception: 4.3 (general ex. till April, in production)
+* Mar/Apr upgrade to 4.6 - support ex. for JSON logging, both 4.3 + 4.6
+* Running 4.5 for JSON/Elastic issues
+* Current stack is unstable
+** Overload of openshift infrastructure logs out of the box. 1d to
+crash.
+** Need to provide sizing guidelines
+** Flush interval - 1s is too fast? 3s is better.
+** Affected by kubelet verbosity change…
+* Openshift CI/CD, R&D, Elastic logs for debugging
+** 150 clusters, assigned to customers - developer customers.
+** Single customer/cluster, multi-tenant by namespace.
+** No need for secure log partitioning per cluster.
+*** Complaint about querying by namespace, make it easier?
+** Kibana/Elastic - perf testing shows logs are dropped, not showing in
+ES.
+*** no health indicators, found during perf tests.
+*** passing limits of 2500 msg/sec, log loss.
+*** Buffer warnings in fluentd logs - signals possible log loss
+* JSON formats/schemas: foundational logger implementation and format
+** Single schema for "conforming apps"
+** 3rd party apps may generate additional schemas - Maybe Yes
+* CHE team, sensitivity of EFK, opened 3 bugs
+** Index becomes read-only, no explanation/logs.
+** JSON decode/unicode error - need delete indices and restart, daily
+issue.
+** Need better response to bugs/cases.
+* UTF-8 warning/split multi-byte code - possible from out of disk.
+** Shows up in logs *before* fluentd. Need to UTF recode everything.
+** Machine config logs from openshift.
+* Logs lost during upgrade, ES operator re-installed?
+
+* 4.6 ClusterLogFowarder can disable infrastructure.
+** are journal logs of interest? Live vs. stored.
+
+=== Review PR & proposal changes [[https://issues.redhat.com/browse/LOG-1157?focusedCommentId=15908523&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#comment-15908523][[LOG-1157] Implement the JSON forwarding proposal - Red Hat Issue Tracker]]
+
+=== JSON sidecar issue, need to match container name?
+
+=== Prototype JSON tech-preview using namespace plugin?
+
+=== Confirm if fluentd logs when JSON parsing fails. Is this usable?
+
+=== Talk to Eric re [[https://issues.redhat.com/browse/LOG-1157?focusedCommentId=15880743&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#comment-15880743][[LOG-1157] Implement the JSON forwarding proposal - Red Hat Issue Tracker]]
+
+=== NEXT [#A] Review Eran's JSON work
+
+https://coreos.slack.com/archives/GGUR75P60/p1616332947209000?thread_ts=1616332538.208600&cid=GGUR75P60
+
+== Architect
+
+View:
+https://htmlpreview.github.io/?https://github.com/alanconway/cluster-logging-operator/blob/architecture-pages/docs/architecture.html
+Source:
+https://github.com/alanconway/cluster-logging-operator/blob/architecture-pages/docs/architecture.adoc
+
+=== NEXT Re-update/move Arch page to ViaQ.
+
+=== Technical Roadmap? Start something for future?
+
+Internally? Need to drive technical direction 50% of how the team should
+move forward. Sprint planning. Need to be less reactive. Urvashi will
+help with planning.
+
+* **Loki Roadmap**
+https://docs.google.com/document/d/1dUfTPaUO7IrjZlYxH5TwFf_bsNBbbm7K7naoCQ4yjQE/edit[Adapting
+Loki - Milestones - Google Docs]
+** Loki forwarder. Need set of JIRAs.
+** Concretize with Eric - along with Peri
+** List all the JIRAs for Swetha
+
+=== Arch page sections on metadata, use of prom/loki labels
+
+== Prototype
+
+=== NEXT Finish forwarder trial logic to solve namespace issue.
+
+link:~/src/alanconway/trials/pkg/forwarder/forwarder.go[file:~/src/alanconway/trials/pkg/forwarder/forwarder.go]
+Comment on:
+https://coreos.slack.com/archives/GGUR75P60/p1616006115095400?thread_ts=1615925713.055800&cid=GGUR75P60
+
+== Review
+
+=== NEXT [#B] Review event naming https://github.com/openshift/cluster-logging-operator/pull/941[(1) LOG-1160: Added credentials update event by igor-karpukhin · Pull Request #941 · openshift/cluster-logging-operator]
+
+Write guidelines for architecture doc.
+
+=== [[https://mail.google.com/mail/u/0/#inbox/FMfcgxwLsScxVDbsFcVVGFwMjXrJmBSF][[aos-devel] OpenTelemetry project health assessment; Is it ready for the CNCF Incubation stage? - aconway@redhat.com - Red Hat Mail]]
+
+=== How will logging work for hypershift? Join meetings?? Read up.
+
+* how will this work for different personas.
+* how does observatorium deal with this scenario?
+* Help Christian understand.
+
+Hypershift: Cluster of clusters, central control plane + guest control
+planes.
+
+* how to separate the control planes and forwarding for different
+owners?
+* security separation for central infrastructure vs. sub-cluster
+infrastructure.
+
+Multi-cluster: Routing issues, store-and-forward.* Opentelemetry logging
+overlap (need to get on-board)
+
+=== READ & Link from doc page https://docs.google.com/document/d/199PqyG3UsyXlwieHaqbGiWVa8eMWi8zzAn0YfcApr8Q/preview[My Philosophy on Alerting - Google Docs]
+
+=== [[https://issues.redhat.com/browse/LOG-902][[LOG-902] Add support for sending log records via HTTP to third party systems - Red Hat Issue Tracker]]
+
+=== NEXT [#B] Review Tracing docs from Gary, inform Swetha.
+
+* [ ] Gary - tracing and logging. Looking for a store, Tell Swetha
+* similar architecture: prometheus.
+* want to replace elastic.
+
+=== [#A] Read & understand ELO docs & API
+
+=== [#B] Upstream to open-telemetry https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/2264[Add basic log collection capabilities · Issue #2264 · open-telemetry/opentelemetry-collector-contrib]
+
+* https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/logs/data-model.md[opentelemetry-specification/data-model.md
+at main · open-telemetry/opentelemetry-specification]
+
+https://coreos.slack.com/archives/C013N9P9R6F/p1612450120105300?thread_ts=1612371523.085200&cid=C013N9P9R6F
+
+=== Openshift dev experience https://docs.google.com/document/d/1aNBTOLRdYuCu_mKN3NDkQcgX9_aTtg324w3fJsPKn8Q/edit#heading=h.66sajzcb960c[Developer Journeys - Google Docs]
+
+=== ServiceMesh operators, delivery, versions, channels?
+
+=== Use cases with different OS/Platform - linux/windows, openstack/openshift/opentelemetry
+
+=== https://docs.google.com/presentation/d/1nl0EtaxpO2J01LSl58mXagGTssZFwF9QxFcBWPULp4I/edit#slide=id.g547716335e_0_220[OpenShift Network Observability Update - Jan 2021 - Google Slides]
+
+=== [[https://mail.google.com/mail/u/0/#inbox/FMfcgxwLsKDFfmnwfSWkrtVXrzGgLvrS][[devtools-team] An introduction to Opinionated Jira & Agile - Review/Feedback Opportunity - aconway@redhat.com - Red Hat Mail]]
+
+https://docs.google.com/document/d/1SoI45vqZfM8jZxXdB5Y_JPgolW8WUtpcZqa6KoBNBiY/edit#heading=h.7njraoq9yfyk
+
+* [ ] Update logging section
+** Goal: tech-independent API for observability, like logging.
+* [ ] Talk about signal correlation: logs, tracing, metrics.
+** loki labels, thanos.
+* [ ] Packaging and installing observatorium + logs. Unified deployment
+model.
+** operator dependency issues.
+** gitops deployment also, common config.
+* Multi-tennancy in the API?
+
+Use Open Telemetry collector - has multi-tennant, security.
+
+* one part, doesn't solve all collection issues.
+
+Doesn't change observability clients: tracing/metrics.
+
+Bob Kukura: tracing team, distributed context propagation, not
+mentioned.
+
+* [ ] Important for correlating logs/traces - talk to Bob!
+
+Static helm chart approach vs. operators.
+
+* [ ] Tennancy - across signals is handled differently (esp. re.
+installation)
+** logging has no multi-zone/multi-cluster tennancy, focus is on-prem
+** unified CR: declaring tennants with stacks - needs to be recognized
+in other CRs.
+** multiply-CRs by tennant: separate CR per tennant for security?
+** correlating CRs belonging to same tennant? By namespace?
+* logging operators: CLF identify tennant of each log, unify with
+others.
+* [ ] Multiple CRs for logging operator.
+
+=== Read Open Telemetry, review it's collector
+
+=== https://docs.google.com/document/d/1091MNIL0jfCj6vJOk5NfwszPjUYY3OnCjQmlRd60k3E/edit#[Cluster Logging and OpenShift Pipelines - Google Docs]
+
+=== https://docs.google.com/document/d/1XNM7ymgqhwbV4TE2Tm-Vnrfjjy4IaLrXu9hgS4Iw0Xc/edit#[Red Hat OpenShift Logging 5.0 Is Here - Article - Google Docs]
+
+Note to Christian and Erik Jacobs
+https://coreos.slack.com/archives/G01K6UDTDD3/p1613490964002300
+
+=== https://www.agilearchitect.org/agile/principles.htm[Principles for the Agile Architect]
+
+=== Read it https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/logs/overview.md#log-correlation[opentelemetry-specification/overview.md at main · open-telemetry/opentelemetry-specification]
+
+=== NEXT [#B] Managed services respond to doc, collect notes.
+
+Read
+
+* https://docs.google.com/document/d/1jAvL7QDKpsVFxuA73MwPE3K2ouUlNTRXBT4qNFFJOFc/edit?ts=6023e680#heading=h.od9w1xkvtfa2[Red
+Hat Managed Service Requirements - Google Docs] (Respond)
+* https://docs.google.com/document/d/1X1ppt8l4FWJPbuJYHBiizYkzbLu5BMf1Y2Rc1WU9Xv8/edit#heading=h.uj8wv6isku3c[Managed
+Services - A way forward for observability - Q1 2021 - Google Docs]
+* {empty}[[https://issues.redhat.com/browse/SDE-1088][[SDE-1088]
+Deprecation plan for in-cluster logging - Red Hat Issue Tracker]]
+* [ ] Talk to Ben Browning about managed services, multi-tennant,
+hypershift
+* [ ] Karan Bea Singh? Spell? Observability.
+* [ ] Simon Pascea, Bartok, rethinking observability for managed
+services, multi-tennant. Share knowledge.
+
+@Karanbir Singh @Simon Pasquier
+https://issues.redhat.com/secure/Dashboard.jspa?selectPageId=12331160
+
+Christian Heidenreich:palm~tree~: btw, for hypershift and all the other
+things it would be good to understand our limitations/problems that may
+occur for now so that we can have discussions on how, or even if, we
+should tackle it.
+
+* Customers take over operational support of logging to deploy &
+operate.
+* Rules and metrics in prometheus will be silenced?
+* Customers won't get any alerts? Need own alerting setup?
+** Customer don't have access to openshift namespace.
+* [ ] Need to deploy in customer namespaces. No more singleton!
+* [ ] Need an alternate monitoring system? Need to integrate with OSD
+monitoring?
+** Customers need own prometheus - need to expose & document details.
+* [ ] Future solutions for GCP, Azure (like AWS for ROSA, like Grafana).
+** Add-on per vendor? Choice in API. More modularity for Outputs?
+
+1 service model: e.g. 1 kafaka service per cluster. Log to loki etc.
+
+multi-tennant/servide model: need to separate logging by tennant.
+
+* flow control & noisy neighbour.
+
+managed services + customers on same cluster: multi-tennant
+
+* customers not happy with same agent, security issues.
+* *secure and performant multi-tennant* logging on single cluster.
+
+=== Read about metrics changes https://docs.google.com/document/d/1BuHX7apxb0Tfyt6KsZBrJBiwUppoa6enAVj6Ut402QQ/edit[Pre Announcement of cAdvisor-less OCP - Google Docs]
+
+=== NEXT [#B] https://github.com/openshift/cluster-logging-operator/pull/955[LOG-1123: fix routing of app logs per namespace by jcantrill · Pull Request #955 · openshift/cluster-logging-operator]
+
+=== Learn https://www.lua.org/start.html[Lua: getting started]
+
+== Installation - OLM, Addon, other
+
+== Edge clusters (RAN, Verizon, single node)
+
+=== NEXT Single node epic, requirements & steps
+
+NOTE our role is forwarding, no edge log store.
+https://docs.google.com/document/d/1ZmZVAH8L5R6SlEjlh0l7Wov7_YoB5amGqT6Abbvcm7U/edit#[RAN
+Observability - Requirements document - Google Docs]
+https://docs.google.com/presentation/d/1k0ecKp7NcbVnngRJ3XxSS_AbPQ3sV3s2lo4oJp0f1V4/edit#slide=id.p1[WC
+- Advanced Network Pod Networking Troubleshooting - Google Slides]
+https://issues.redhat.com/browse/KNIDEPLOY-4123[\{KNIDEPLOY-4123} Stop
+Gap: Low-latency PTP Events/Alerts for Workloads (Fast Path) - Red Hat
+Issue Tracker]
+
+Performance, reliability, disconnect behavior. Protocol: kafka? amqp?
+Perf slides:
+https://mail.google.com/mail/u/0/#inbox/FMfcgxwKkbhCDvNKJNTGKfktvFSHdVCN[Fwd:
+Telco 5G/Verizon Executive Update - January 15th, 2021 -
+aconway@redhat.com - Red Hat Mail]
+
+Notes on OOM problems:
+https://coreos.slack.com/archives/C0131GZPPFF/p1612381367014600?thread_ts=1612351644.476000&cid=C0131GZPPFF
+
+=== Prototype for RAN edge project.
+
+Single node forwarder with measurement. Notice to group on slack.
+
+Peri's framework:
+https://mail.google.com/mail/u/0/#search/to%3Ame+is%3Aunread+is%3Aimportant/FMfcgxwKjnSwSnLbQTmtRMFCKmxXcfsr[Cluster-Logging
+Benchmarks - Invitation to edit - aconway@redhat.com - Red Hat Mail]
+https://github.com/ViaQ/cluster-logging-benchmarks[ViaQ/cluster-logging-benchmarks]
+https://github.com/ViaQ/cluster-logging-load-client[ViaQ/cluster-logging-load-client]
+
+Lukas Vlcek: did you have a chance to check pbench?
+https://github.com/distributed-system-analysis/pbench
+
+@hui and maybe add to common tests … over time to see that there is no
+degradation in performance … Great work
+
+* [ ] Hui Kang - point to quiver.
+* [ ] Ask lucas also - pbench? Existing framework.
+
+Driver/Reader metrics - throughput, latency percentiles. Beware the Pipe
+Stuffing Test.
+
+Use metrics (fluentd etc.) end-to-end.
+
+* need to analyse fluentd metrics.
+
+REF TO FLUENTD SLIs work.
+
+Reporting is collecting & plotting metrics. Server Reader for
+fluent-forward or TCP-plain. Metrics for fluentd.
+
+Collection-side metrics in fluentd.
+
+=== Notes
+
+Aneesh Puttur <aputtur@redhat.com>, Brent Rowsell <browsell@redhat.com>,
+Christian Heidenreich <cvogel@redhat.com>, Ian Jolliffe
+<ijolliff@redhat.com>, Joydeep Banerjee <jbanerje@redhat.com>, Jeff
+Brent <jbrent@redhat.com>, Jim Einarsson <jeinarss@redhat.com>, Leif
+Madsen <leif@redhat.com>, Pradeep Kilambi <prad@redhat.com>, Randy
+George <rageorge@redhat.com>, Robert Love <rolove@redhat.com>
+
+https://docs.google.com/document/d/1ZmZVAH8L5R6SlEjlh0l7Wov7_YoB5amGqT6Abbvcm7U/edit#heading=h.dkg5byq9pagc[RAN
+Observability - Requirements document - Google Docs]
+https://docs.google.com/presentation/d/10789IEGsG21qw_n9W-srTni3rf1uoQ_5D-2aKaPWDUQ/edit#slide=id.gb7e7c21889_0_511[Far
+Edge - Obs - Google Slides]
+https://docs.google.com/document/d/1ZSpbk_Vp5-lsBLPYZdHpAVv8bi0hs7wbAVR-Gr4U-50/edit#[ORAN
+Event Bus Architecture Meeting - Google Docs]
+https://app.slack.com/client/T027F3GAJ/G01FS0B9LUW/thread/G01FS0B9LUW-1607348027.096200[Slack
+| tmp-ran-observability]
+https://docs.google.com/document/d/1ChZ8i11e5iTc8QHpIrDNtAxAt7X_8CL1iHSPYYFvWDM/edit?ts=601427a7[RAN
+Observability Meeting Minutes - Google Docs]
+
+Verizon terms
+
+* Radio Unit (RU) - phone connection: DU Distributed unit
+* 5G ran models:
+** DRAN (distrubed) DU is near RU (far edge 1 server)
+** CRAN (central) DU is a workload on near edge (regional, mini data
+center)
+
+RH terms
+
+* ACM: Advanced Cluster Manager.
+* SDX: Service Telemetry Framework - eventing engine.
+
+IPv6 from edge. Need a cheap forwarder for low-powered edge nodes.
+
+Latencies
+
+far edge - 250μs -> far-ish edge
+
+* 25ms -> near edge
+* 45ms -> NOC/Core
+
+== Write
+
+=== Log filtering by content - do we have a JIRA?
+
+=== NEXT UTF8 encoding problem - verify status, raise ISSUE
+
+=== NEXT Need story: Kafka TopicKey addition, like SchemaKey and GroupBy
+
+=== Output template proposal
+
+tennancy, indexing (elastic), topics(kafka), groups (cloudwatch)… Look
+up tennacy comments
+
+jsonpath Multi-tenancy: Brokers per namespace for logs: forwarders per
+namespace.
+
+* Namespace scoped log forwarder?
+* Templated Broker (Kafka etc.) by namespace forwarder???
+* Output with substitution - prometheus syntx? jsonpath? \{\{$x}},
+subst:xxx
+
+Tennancy as part of output - esp. using namespace. Use tenancy model
+provided by openshift
+
+=== Filtering for data reduction - filtering at source
+
+Filter out logs by regular expression Fliter out logs JSON key/value
+tests.
+
+=== Infra/audit breakdown.
+
+Consider all existing outputs - cloudwatch etc.
+
+* Journal logs not interesting to many, want infra~container~.
+* What about audit logs?
+* Add more log types?
+
+=== Debugging on OSD clusters https://source.redhat.com/groups/public/openshiftplatformsre/wiki/backplane_user_documentation[Backplane User Documentation - The Source]
+
+=== https://docs.google.com/document/d/12YH0YRimj8y3JlOdb5vWJaqa-zBh5bXnqEDHKtNBIIs/edit?ts=60185024[CLO Add-on development - Google Docs]
+
+=== Move forwarder output-type code, use callback to keep near output.
+
+Fix up the Verify code for secrets etc. Verify callback interface.
+
+=== Need BZ: Fluentd crash on missing outputs
+
+=== [#A] https://github.com/openshift/cluster-logging-operator/pull/823[PR Bug 1888943 - ClusterLogForwarder with Output.Secret causes fluentd crash loop]
+
+* CI:https://prow.ci.openshift.org/view/gs/origin-ci-test/pr-logs/pull/openshift_cluster-logging-operator/823/pull-ci-openshift-cluster-logging-operator-master-e2e-operator/1347685874178985984#1:build-log.txt%3A2091[pull-ci-openshift-cluster-logging-operator-master-e2e-operator
+#1347685874178985984]
+** src:
+file:///home/aconway/src/cluster-logging-operator/test/e2e/logforwarding/syslog/forward_to_syslog_test.go
+* not a slow test.
+* [ ] Review TLS code for syslog, anything obvious? Secret stuff?
+** [ ] DOH need tls:// - BACKWARDS INCOMPAT, infer tls from secret!
+* [ ] run syslog tests in isolation ()
+** [ ] fix to be self-initializing?
+** [ ] replace cleanup daemonset with rsh
+[[file:~/src/cluster-logging-operator/test/helpers/framework.go::Args:
+[]string\{"sh", "-c", "rm -rf /fluentd-buffers/** || rm
+/logs/audit/audit.log.pos || rm /logs/kube-apiserver/audit.log.pos || rm
+/logs/es-containers.log.pos"},][daemonset here]]
+*** merge separately
+* [ ] is it a problem with leftover fluent pos files? Proper reset for
+fluentd?
+* https://docs.fluentd.org/input/forward#how-to-enable-tls-encryption[forward
+- Fluentd]
+
+=== [#A] Missing doc text: https://bugzilla.redhat.com/show_bug.cgi?id=1888943[1888943 – ClusterLogForwarder with Output.Secret causes fluentd crash loop]
+
+== Capacity planning (auto-configuration, API.next)
+
+=== Notes
+
+Chris Blum
+
+=== Experiment to establish value, example prototype?
+
+Updating of tool for typescript, typed language cross compiled to
+javascript. yarn builder/dep manager.
+https://gitlab.consulting.redhat.com/red-hat-data-services/ocs-sizer[Red
+Hat Data Services / OCS Sizer · GitLab] local
+~/src/ocs-sizer/README.md::# OCS Sizing Tool[file:~/src/ocs-sizer/README.md::# OCS Sizing Tool]
+Nodes do computation. Nodes.
+
+* [ ] Play with demo.
+* [ ] Sketch some capacity calculationgs.
+* [ ] Build shell of logging calculator.
+
+=== Proposal/JIRA and prototype for the group?
+
+=== API.next document and/or enhancment proposals what to say.
+
+https://docs.google.com/presentation/d/1Mf0mxSAdUz3zfzs3VP9agqI6ysoj2Tdx-RichEXJSRA/edit#slide=id.gadd43be4bd_0_2264[API.Next
+- Google Slides]
+
+sizing status (events, alerts)
+
+CL: store goals
+
+Remove controls from customers - don't have to turn knobs.
+
+Auto-heal: give restrictions/goals
+
+How to escape-hatch to reality?
+
+AlertManager API - don't need to query Prom. Can use AlertManager.
+
+Error handling/reporting
+
+* logs
+* status (CR API) Degraded, LastUpdated, ManagedState. Generic, global
+stuff?
+** should be able to recover from status.
+** not too busy.
+* k8s events ??
+* metrics
+* alerts
+
+—-
+
+Collector, aggregator API.Next
+
+* Type (fluent, combo)
+* Topology
+* Advanced
+
+Forwarder: status upgrades.
+
+* new operators vs. versioning operators.
+
+Default: fast/reliable. Audit specials?a
+
+Status - move away from dumping Pod info etc. into status.
+
+Naming - avoid UUIDs? Avoid random naming?
+
+== Productization (5.0, Versioning)
+
+=== Notes
+
+* https://access.redhat.com/support/policy/updates/openshift#logging[OpenShift
+Container Platform Life Cycle - Red Hat Customer Portal]
+* https://docs.google.com/document/d/1QBiunBNnpxIwWlYX4l6yFzFYXvnSZNIyybpf3kXh5R4/edit?ts=601194e7[OpenShift
+Logging Support Policy - Google Docs] (new version?)
+* https://docs.google.com/document/d/19Up2GCZOHztBj9uG4u7aByqn9OsEwV55zUdvCEXHUPM/edit#heading=h.diwdsjfkvym7[Cluster
+Logging Versions - Google Docs]
+* https://docs.google.com/document/d/1erILvVgauVDd4pVg8dKwitzmPdB9FUkddnKEJ-RnQJ8/edit[OpenShift
+Logging Life Cycle - Google Docs]
+
+=== Provide docs to product security architect
+
+https://coreos.slack.com/archives/C01J9P10G20/p1613582673171100?thread_ts=1613515646.158700&cid=C01J9P10G20
+
+== Bug Fixes
+
+=== [#B] inputref/inputRef problem https://coreos.slack.com/archives/GGUR75P60/p1615827147247000
+
+=== [[https://issues.redhat.com/browse/LOG-788][[LOG-788] Verify secure output configurations. - Red Hat Issue Tracker]]
+
+== Agility
+
+=== [#A] Review use of events/logs/status in cluster logging operator. LOG-1160 NOW. Igor.
+
+* [ ] Review add exposure of error handling, fluentd logs, connection
+status?
+** [ ] Use of events, use of logs, use of status. Events point to
+status?
+
+==== Labels and correlation:
+
+* resource: cluster, node, namespace, name
+** simple equality matches important for fast indexing.
+** other ways to communicate fixed meta-data?
+* identify/control noisy resources for logging.
+* keep full metadata in body?
+
+Correlating from instance (full metadata) via index (prom/loki label
+set) to instances (full metadata).
+
+* cardinality + volume pressure on metrics & traces.
+** metric labels: classify the metric (e.g. HTTP aresult type) rather
+than locate the source
+** trace labels: need very light trace/span IDs, traces are pervasive
+and invasive
+* role of labels in correlatio is to *reduce the search space* not to
+*identify or match signals*
+
+Resource attributes:
+
+[cols=",,",options="header",]
+|===
+|Observatorium |OpenTelemetry |Logging Data Model
+|cluster |k8s.cluster.name |
+|namespace |k8s.namespace.name |kubernetes.namespace~name~
+|pod |k8s.namespace.uid |kubernetes.namespace~id~
+| |k8s.pod.name |kubernetes.pod~name~
+| |k8s.pod.uiduid |kubernetes.pod~id~
+| |container.name |kubernetes.container~name~
+| |container.id |
+| |k8s.node.name |kubernetes.host
+| |k8s.node.uid |
+|===
+
+==== Status, error and debug reporting
+
+[cols=",,,",]
+|===
+|Mechanism |Sources |Verbosity |Audience
+
+| | | |
+
+|Prometheus Alerts |Metrics: Fluentd, Store (Operators?) |V. Low,
+actionable problems only |Admin monitor
+
+|K8s Events |Operators, Operands? |Medium (don't flood the console)
+|Admin investigate
+
+|Resource Status |Operators (Indirect _Fluentd_, Store) |Medium,
+Snapshot |Admin investigate
+
+|Container Logs |Operators, Fluentd, Store |High, Stream |Debug
+
+|Must Gather | |High, Snapshot |Debug
+|===
+
+Internal library to give coherence across mechanisms?
+
+* Alerts - generated outside, must correlate to other mechanisms.
+* K8s Events < Status < logs?
+** Every k8s event should reflect a status change
+** Not all status changes deserve to be events
+** Every status change is logged v(1)
+
+Integrate library for status and event changes.
+
+* code just makes the status change
+* library decides if it is also an event
+* all changes are logged** Refactor fluentd config
+* https://github.com/openshift/cluster-logging-operator/pull/865/files[WIP:
+Enable pod label base filtering using label router plugin by
+k-keiichi-rh · Pull Request #865 · openshift/cluster-logging-operator]
+
+https://docs.google.com/document/d/1dUfTPaUO7IrjZlYxH5TwFf_bsNBbbm7K7naoCQ4yjQE/edit#[Adapting
+Loki - Milestones - Google Docs]
+
+* efficient, template indenting, generation
+* testing portions of generated config
+
+=== Better fluentd config generation - tabs, spaces, clean templates.
+
+=== [#A] CI follow-up with Ben & Eric
+
+* Task in sprint retro doc
+https://docs.google.com/document/d/1glazoDi8NMRXmUFb8533nSkN9erJ0jBQCVhB1hAKHr8/edit?ts=6005aec0[Sprint
+- Retrospective - Logging - Google Docs]
+* collect records of latest failed CIs & announcements.
+* seek alternate solutions?
+
+Testplatform slack: Steve Kuznetsov We are aware of instability with the
+API server and etcd on the build01 build farm cluster. This may impact
+jobs that cannot reconcile their state while running.
+
+* More bad CI
+https://prow.ci.openshift.org/view/gs/origin-ci-test/pr-logs/pull/openshift_elasticsearch-operator/630/pull-ci-openshift-elasticsearch-operator-master-cluster-logging-operator-e2e/1352854162051698688[pull-ci-openshift-elasticsearch-operator-master-cluster-logging-operator-e2e
+#1352854162051698688]
+
+=== Dogfooding - do our debugging using our logging tools?
+
+=== Coding guidelines - log levels
+
+* log levels: https://www.openshift.com/blog/oc-command-newbies[The oc
+Command for Newbies]
+
+=== Better Makefile (Brett)
+
+make deploy-image deploy-catalog - need to deploy locally! make undeploy
+undeploy-elasticsearch-operator test-e2e-local
+
+.target/xxx target files
+
+Images .target/*.image: podman build local .target/*.pushed: pushed to
+registry of choice
+
+* external - any
+* oc registry (default except for olm tests)
+
+Apply YAML: be idempotent - don't need targets?
+
+.target/codegen: generated code and YAML .target/docgen: generated doc
+
+test-unit:
+
+test-e2e-*: undeploy-all
+
+elastic
+
+Registries: (deploy)
+
+* create route (if cluster)
+* use existing
+* push elasticsearch image
+* push local images
+
+Cluster: (install)
+
+* install step (done by e2e tests): namespace label operator group etc.
+
+Clean:
+
+* filesystem
+* cluster (steps)
+
+CI entry points (check script):
+
+* test-unit, test-e2e-olm
+
+=== Fix make lint in CI. Not enabled. Why did we abandon make build?
+
+=== Move this to HACKING.md in repo, remove!! https://docs.google.com/document/d/1CKPU5nWYpVb5eBW7l3J0fH-KbSFziaRuCXO6ZJLgJ-A/edit#heading=h.tlb1wovoz9dr[Hacking OpenShift Logging - Google Docs]
+
+=== Update benchmark with latency & percentile stats
+
+https://github.com/openshift/cluster-logging-operator/pull/782/files[LOG-994:
+functional benchmarker by jcantrill · Pull Request #782 ·
+openshift/cluster-logging-operator]
+
+=== Bug process, Brett driving https://docs.google.com/document/d/1fc9_aW_xqbDx0ZSte3nCickmjY-RBnRpulsG8vecurk/edit#heading=h.ld414onltrts[The Annexation of Bugs - Google Docs]
+
+== Support relationship SBR-shift
+
+=== Relationship going with sbr-shift support - float email to team and sbr.
+
+* Want from them - patterns, key problems.
+* Give to them - tools to help them debug etc.
+
+—-
+
+Oscar Casal Sanchez Alan Conway Alexis Solanas Robert Bost
+
+Quickly spin up clusters: CRC clusters. 1 hour??
+
+"We want to verify and reproduce bugs before putting them in Bugzilla,
+and communicate clearly to dev"
+
+Questions:
+
+How to install older versions of logging to match customer deployment?
+OperatorHub gives latest by default.
+
+How to deploy external rsyslog, elasticsearch, fluentd for forwarding
+tests (not default ES)?
+
+* OS 4 https://github.com/openshift-qe/v3-testfiles/tree/master/logging
+* common approach to make it easier for dev to reproduce support cases.
+* anything useful in our test harness? can we use their drivers easily?
+
+What information is most useful for dev on reproduced problems?
+
+* they know about must-gather.
+* reproducers - see question above on common test tools.
+
+How to speed up creation, configuration, deployment of logging in test
+clusters?
+
+How to improve the documentation?
+
+* support have valuable notes about doc gaps, how to capture in product
+doc?
+
+How to quickly separate sources of problems: is it logging or something
+else?
+
+* how to diagnose from customer data *before* setting up reproducer?
+* how to diagnose in a reproducer environment?
+
+How to simulate customer log volume? What aspects are important?
+
+How to improve debugability of CLO/ELO components?
+
+* local operator logs are a primary debugging tool
+** noisy, missing some useful info
+* how can we get feedback from support to improve it?
+* use feedback to help design alerts, events and other future error
+reporting.
+
+=== Meeting [2021-01-29 Fri] https://docs.google.com/document/d/15hg4k_-jAcIa1MlPrVMb6Sg-0lR5aeVpS7cd_4xAls4/edit#[CEE/Logging Team Sync - Google Docs]
+
+* https://docs.google.com/document/d/1ENdOLFe5KcI1HRKB1P9GvuWNTOtbTVLnexK8FdxHwiA/edit[OpenShift
+Get Well: Shift Logging (In Progress) - Google Docs]
+* Jeffs new doc.
+
+Channels: BZ, JIRA, Google docs, github.somerepo/docs, KB, Slack, Email,
+User doc, Mojo, "The Source", Visibility: Customers, SBR, Consultants,
+Other RH, IBM, Developers (Logging team, on-boarding, outside
+contributors)
+
+Shared channels:
+
+* User docs: (all browse/search, doc-team write) all info of long-term
+use to customers should get here ASAP.
+* KB: (all browse/search, any RH can contribute) workarounds and tips
+not yet polished for user doc, or of very narrow interest
+(version/use-case specific).
+* github.com/repo/docs "upstream docs": (all browse/search, developers
+write) developer-facing docs (upstream, newbie, experienced) not
+suitable for user doc.
+* JIRA: (all browse/search/raise tickets, developers handle): , problem
+reporting, activity tracking, planning.
+* Slack/Email: (internal groups/channels): harass a human when all else
+fails.
+
+Other channls:
+
+* Google docs (RH internal): Do we over use it? I think good docs get
+lost in there.
+** Great for internal shared editing, great if someone tells you about a
+useful doc.
+** Browse/search is almost useless for anyone not directly pointed to a
+doc - RH support/consulting, IBMers, etc.
+** Suggestion: restrict to temporary/in-progress/RH-inner-team-only
+content. Quickly move sharable content to a better home, and *maintain
+it there*
+* BZ: (all browse/search/raise tickets) - continues to be an input
+channel, moving to JIRA as the central source of truth.
+* The Source: Does anybody on the technical side of Red Hat find this
+useful?
+
+Questions:
+
+* What can I do?
+* How should I configure my system to accomplish…?
+* How to use a feature? How to diagnose/report a problem? How to
+work-around a problem?
+* [ ] Better movement of information to documentation - involve SBR and
+doc.
+* [ ] Plan better use of information resources.
+* [ ] Survey what do you use to:
+** search for information about a problem?
+** report a problem?
+** ask a human for help with a problem?
+** get started contributing to logging as a developer?
+* [ ] Feedback with support about prometheus metrics & alarms, how to
+use, how to design.
+
+SBR & support: helping with logging. must-gather
+
+* fast feedback, internal docs to SBR
+* collecting as user docs/KB articles/help site
+* fast feecback SBR to eng?
+
+* Duplication & discovery, browsing.
+* Eng internal docs, why are they internal? Can we get them out there?
+Gdocs vs. repo.
+* SBR issues: BZ? *JIRA*? Slack.
+* [ ] Need better org/architecture user doc for troubleshooting, use of
+must-gather
+* [ ] Jeff working on presentation
+
+==== Meeting membership
+
+Ajay Gupta <ajgupta@redhat.com>, Anping Li <anli@redhat.com>, Atri
+Mandal <atmandal@redhat.com>, Ben Parees <bparees@redhat.com>, Brett
+Jones <brejones@redhat.com>, Chris Shinn <cshinn@redhat.com>, Christian
+Heidenreich <cvogel@redhat.com>, Devendra Kulkarni
+<dkulkarn@redhat.com>, Eran Raichstein <eraichst@redhat.com>, Eric
+Wolinetz <ewolinet@redhat.com>, Giriyamma Karagere Ramaswamy
+<gkarager@redhat.com>, Guruprasad Tantry <gtantry@redhat.com>, Hui Kang
+<hkang@redhat.com>, Igor Karpukhin <ikarpukh@redhat.com>, Jeff Cantrill
+<jcantril@redhat.com>, JINHO HWANG <jhwang@redhat.com>, Jatan Malde
+<jmalde@redhat.com>, Ksenija Pelc <kpelc@redhat.com>, Lukas Vlcek
+<lvlcek@redhat.com>, Michael Burke <mburke@redhat.com>, Oscar Casal
+Sanchez <ocasalsa@redhat.com>, Preeti Chandrashekar
+<pchandra@redhat.com>, Pushpendra Chavan <pchavan@redhat.com>, Periklis
+Tsirakidis <periklis@redhat.com>, PRATIBHA MOOGI <pmoogi@redhat.com>,
+Paresh Mutha <pmutha@redhat.com>, Pavel Postler <ppostler@redhat.com>,
+Qiaoling Tang <qitang@redhat.com>, Randy Bollinger
+<rbolling@redhat.com>, Rolfe Dlugy-Hegwer <rdlugyhe@redhat.com>, Robert
+Kratky <rkratky@redhat.com>, Sashank Agarwal <sasagarw@redhat.com>,
+Swetha Shankar Paida <swshanka@redhat.com>, Sergey Yedrikov
+<syedriko@redhat.com>, Tiffany-Emil Jacob <tjacob@redhat.com>, Urvashi
+Bhargava <ubhargav@redhat.com>, Vimal Kumar <vimalkum@redhat.com>,
+Vitalii Parfonov <vparfono@redhat.com>
+
+== Cloudwatch (ROSA)
+
+=== Notes
+
+* https://github.com/openshift/enhancements/blob/master/enhancements/cluster-logging/forward_to_cloudwatch.md#L1[enhahncements/forward~tocloudwatch~.md
+at master · openshift/enhancements]
+
+Read
+
+* [X]
+https://docs.google.com/document/d/1OLYjlhHPRHfK6GpQpFgNuPlKacm9b8hZ__2M0T4o9U4/edit#heading=h.3z8b6fun6g4m[Log
+Forwarding Design for CCS+ROSA+CloudWatch - Google Docs]
+* [X]
+https://docs.google.com/document/d/1QjzbxMR3QhU1vFdOp1GXzcEWE-LqIT1jAwzOF3GWpT4/edit?ts=5fcfddf4#heading=h.5qeuoul324vb[Logforwarding
+Cloudwatch API - Google Docs]
+* [X]
+https://github.com/fluent-plugins-nursery/fluent-plugin-cloudwatch-logs#out_cloudwatch_logs[fluent-plugins-nursery/fluent-plugin-cloudwatch-logs:
+CloudWatch Logs Plugin for Fluentd]
+* [X]
+https://github.com/openshift/cloud-credential-operator[openshift/cloud-credential-operator:
+Manage cloud provider credentials as Kubernetes CRDs]
+* [X]
+https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/cloudwatch_limits_cwl.html[CloudWatch
+Logs quotas - Amazon CloudWatch Logs]
+
+UPDATE:
+
+* [X]
+https://issues.redhat.com/browse/OSD-5795?focusedCommentId=15549100&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#comment-15549100[\{OSD-5795}
+\{SPIKE} - Investigate OSD LogForwarding to AWS CloudWatch - Red Hat
+Issue Tracker]
+* [X] https://issues.redhat.com/browse/LOG-998[\{LOG-998} EPIC Enable
+CloudWatch forwarding on ROSA clusters - Red Hat Issue Tracker]
+* [X] https://issues.redhat.com/browse/LOG-1001[\{LOG-1001} Cloudwatch
+LF API design - Red Hat Issue Tracker]
+* [X] https://issues.redhat.com/browse/LOG-756[\{LOG-756} Add support
+for Cloudwatch as a new log forwarding target - Red Hat Issue Tracker]
+* [X]
+https://github.com/openshift/cluster-logging-operator/pull/839#issuecomment-746682053[PR
+LOG-1002: Add cloudwatch logforwarding type by jcantrill · Pull Request
+#839 · openshift/cluster-logging-operator]b
+
+== Maybe,Someday
+
+=== https://source.redhat.com/communitiesatredhat/applications/containers-paas-community/tracks/cantcontainthis/cant_contain_this_wiki/openshift_architecture_delivery_toolbox_for_consulting[OpenShift Architecture Delivery Toolkit for Consulting - The Source]
+
+=== https://mail.google.com/mail/u/0/#search/is%3Aunread+-to%3Ame+-is%3Aimportant+-in%3Awatch+%7Bin%3AForums+in%3APromotions+in%3Az-junk%7D/FMfcgxwKjfDGzFHBThmKjdmrCLTxhwXw[Reminder: Use your Reward Zone nomination points by Dec. 18 - aconway@redhat.com - Red Hat Mail]
+
+=== Play with https://obsproject.com/[Open Broadcaster Software®️ | OBS]
+
+=== Spend $350 work from home budget! https://app.slack.com/client/T027F3GAJ/unreads/thread/GGUR75P60-1606921469.005400[Slack | Unread Messages | CoreOS | 1 new item]
+
+Screen? Router/net improvement.
+
+=== Review video, building operators for OSD: https://redhat.bluejeans.com/playback/s/hSZeuCRZ5Z6WhcWDbfLNQ3aj0MUbbY9iGI5lSyFpAmjfobYFXNYazyzAvihOjVDh[BlueJeans Network | Recording Playback]
+
+=== Read IBM JSON logging plans https://openliberty.io/blog/2020/05/19/log4j-openshift-container-platform.html[Send Log4j 2 logs to Red Hat OpenShift Container Platform EFK stack - OpenLiberty.io]
+
+=== Review versioning https://mail.google.com/mail/u/0/#inbox/FMfcgxwKjdtCzxHXcPRrXZZxJlctDfMR[Re: Action needed: Credibility problem at Santander Argentina - aconway@redhat.com - Red Hat Mail]
+
+=== How to deal with apps that don't stdout/stderr?
+
+Write to disk. Journald. Other stuff? Log files + syslog. Sidecar
+solution: like event capture tool. Linux vs. Windows gap - windows event
+system.
+
+=== Ben Browning - talk to him about telemetry + logs correlatiogn.
+
+=== Give some RH rewardzone rewards
+
+=== Read kubernetes.io docs & tutorials.
+
+=== Canned forwarder configurations for easy of use?
+
+Identify and simplify common cases:
+
+* Single database
+* Cloudwatch
+* Offsite? Type/URL.
+
+=== https://wiki.gnome.org/Apps/BreakTimer[Apps/BreakTimer - GNOME Wiki!]
+
+=== https://docs.google.com/spreadsheets/d/1AkmBjeKV6cWka1ezdgGhgd2sSXNNCbVjWIcsTqlx9n0/edit#gid=330690737[Word Nerds Conscious Language Working Group - Google Sheets]
+
+=== https://source.redhat.com/groups/public/ospo/open_source_program_office_wiki/resources_for_avoiding_problematic_language[Resources for avoiding problematic language - The Source]
+
+=== https://docs.google.com/spreadsheets/d/1ov7Krxb8XMP-1b9QFo21tIpZSQmRZi5m_q6zHIm_Rzo/edit#gid=1788034840[Project ideas for 2021 Bangalore Internship - Google Sheets]
+
+Mentoring, India timezone. Igor Vitali.
+
+=== Sumitting open source articles [[https://mail.google.com/mail/u/0/#inbox/FMfcgxwKkbkTHwDNHxhFLCzdvvxPQrZB][[devtools-team] We have an award-winning author! - aconway@redhat.com - Red Hat Mail]]
+
+=== Replace/reduce enhancement proposals
+
+Google doc proposal:
+
+User docs: Separated user content? Add sections/pointers to template?
+Design docs: JIRA Epics/Stories Implementation notes: JIRA Epics/Stories
+
+Requirements
+
+* [ ] External discussion.
+* [ ] Discussion threads and diffs.
+* [ ] Place for large design docs.
+* [ ] The Code Is The Truth - structure of code.
+
+== Ideas
+
+=== NEXT Idea: Replace design docs with dev-draft user docs?
+
+Problems with enhancement requests:
+
+* Not agile: separation of design and implementation is classic
+waterfall. Insights gained during implementation can and should change
+the design.
+* Large overlap with JIRA, duplicate writing and inconsistencies.
+* Immediate doc rot, supposed to be a public record of design but almost
+always out of date.
+
+Proposal:
+
+*Complete* design details in JIRA epics and stories.
+
+* We usually have most of them already
+* JIRA description serves as the design document
+* JIRA discussion threads replace Github PR discussion threads
+* *NOTE*: all this does is consolidate the design text in a JIRA instead
+of duplicating it over 2 disjoint docs that become inconsistent.
+
+Designer *also* creates draft user documentation:
+
+* Not polished, but technically accurate and intelligible to doc
+writers.
+* Forces the designer to think like a user.
+* Provides initial input to the doc team.
+* Becomes the primary channel for communicating changes to doc team - so
+stays up to date
+
+Result:
+
+* a more agile process with less duplication and better interaction in
+design and implementation.
+* a living "rough draft" of user docs for latest master that developers
+can keep updated, and doc writers can consult.
+
+=== Better cluster developer tools
+
+Less is more: Minmize new API/tool surface, mental overhead.
+
+* k8s doesn't do this.
+* openshift is additive, some simplification but not clear what k8s can
+be ignored.
+** simplify: not hiding information, making it un-necessary to know
+* Don't reinvent the wheel: make, podman, docker, IDE
+* Do provide canned dependencies & tools
+
+=== Concurrent network programming, thinking outside the box
+
+Scaling horizontally:
+
+Resource units | Core | CPU | Host | Network | Internet Workloads
+container Store: near cache
+
+* core (near cache to other cores)
+* CPU (cache, local memory bus, NUMA bus)
+
+Connections
+
+* scale [.underline]#small#
+** resoruce units_ cores
+** workloads- coroutines
+* abstract programmer from resource units, stores and connections:
+** no-error abstraction: core (near cache), CPU (cache, local memory
+bus, NUMA bus)
+** with-error abstraction: local disk, network (container, hosts,
+clusters)
+* minimize the visibility of [.underline]#collections#:
+** pre-emptive threads, processes, clusters
+
+=== Logging: Design choices, stages
+
+* [ ] Compare vector vs. fluentbit? Peter Portante
+* [ ] Simple Go collector/metrics?
+* [ ] Look at rate limiting in
+https://www.freedesktop.org/software/systemd/man/journald.conf.html[journald.conf].
+RateLimitIntervalSec=, RateLimitBurst=
+* [ ] Simplify fluentd config?
+* Fluentbit raw byte collection.
+* AMQP with session properties for static props.
+* QDR backbone
+* Normalizer/forwarder mid-tier - co-located or service.
+
+== Documentation
+
+=== Notes
+
+* User docs
+https://github.com/openshift/openshift-docs/blob/master/modules/[https://github.com/openshift/openshift-docs/blob/master/modules/cluster-logging-*]
+
+Servicemesh public pages
+
+=== Openshift Workshops Consultant Toolkit - keep up to date?
+
+Find a low-cost way to keep the logging section up to date.
+[[https://mail.google.com/mail/u/0/#inbox/FMfcgxwKkRJSnzNthSMpSJjHvZsfHtsr][Fwd:
+[openshift-sme] OpenShift Architecture Workshops Delivery Toolkit [
+January Release ] - aconway@redhat.com - Red Hat Mail]]
+
+* Tools for consultants
+* Keep them up to date? Integrate with our own materials
+
+=== [[https://issues.redhat.com/browse/LOG-1221][[LOG-1221] Keep user doc up-to-date with internal FAQ - Red Hat Issue Tracker]]
+
+== Operate First - open operation for OpenShift?
+
+=== What to do with Operate first?
+
+https://mail.google.com/mail/u/0/#inbox/FMfcgxwKkblgCQTWsHFhCbtcXQLddRpr[CLO
+in an Operate First context - aconway@redhat.com - Red Hat Mail]
+https://docs.google.com/presentation/d/1V0RSk4vQY-7GwyuWGtSn02dzLQ_hdWUSa9El7cy4rYQ/edit?ts=602bcb76#slide=id.p[Operate
+First - Teams - Google Slides] Set up cluster logging via gitops?
+
+== ClusterFCUK
+
+=== Setup ClusterFCUK
+
+External: clusterfcuk.ddns.net 70.52.32.94 Useful: canyouseeme.org
+
+* [X] IP connectivity
+* [X] Add oscar7 to the cluster
+* [X] Remote login: canyouseeme.org says OK
+* [X] ssh VPN tunnel via test/external using sshuttle
+* [X] Internal sshuttle or route + hosts?
+* [X] Delete old VPN junk, flatten history.
+* [X] DNS and domain
+** [X] dns linked to laptop:
+* [X] All hosts on-line (oscar 6 & 7)
+* [ ] Update server/README regarding network setup
+** DNSmasq on console
+** domain .test
+* [ ] Permanent route to garage?
+* [ ] OCP 4 bare-metal cluster using latest instructions (update OCC)
+** https://cloud.redhat.com/openshift/install/metal[Install OpenShift 4
+| Red Hat OpenShift Cluster Manager | Bare Metal]
+* [ ] Restore firewall on oscar3
+** NOTE currently disabled in Makefile
+* Other stuff?
+** netboot for ISO images
+** DHCP proxy on oscar3
