@@ -1,19 +1,60 @@
-= Cluster Logging Documentation
-:author: Alan Conway
-:email: aconway@redhat.com
-:tip-caption: :bulb:
-:note-caption: :information_source:
-:important-caption: :heavy_exclamation_mark:
-:caution-caption: :fire:
-:warning-caption: :warning:
+= ViaQ documentation
+:page: https://viaq.github.io/documentation/index.html[the web page]
+:toc: left
+
+To read the documentation visit {page}.
+
+To modify the documentation, or use the data model for code generation, read .
+
+== Project Layout
+
+* link:src/[] AsciiDoc and DOT source files, edit these to modify the pages.
+* link:src/data_model/[] data model for log record fields.
+* link:docs/[] Generated website available at {page} **do not edit**.
+* link:Makefile[] Update `docs/` to reflect changes in `fsrc/`
 
 
-WARNING: This site is a work in progress, not yet ready for viewing.
+== Raising an issue
 
-Layout:
-	
-- `architecture`: logging link:architecture[architecture overview and status]
-- `data_model`: log record data model and documentation generators.
+You can https://github.com/ViaQ/documentation/issues[raise an issue] using GitHub issues.
+However it is even better if you actually link:_request_a_change[]
 
-HTML documents are generated beside the asciidoc sources and checked in to provide
-the documentation as a simple web site.
+== Request a change
+
+=== Before you start
+
+In order to update the documentation you need to install the following tools:
+
+* https://www.gnu.org/softwarprpr/make/[GNU make]
+* https://asciidoctor.org/[asciidoctor (render AsciiDoc as HTML)]
+* https://graphviz.org/[graphviz (render .dot diagrams as .svg)]
+* https://linkcheck.github.io/linkchecker/[linkchecker]
+* https://docs.gomplate.ca/[gomplate (apply Go templates, generate data model documentation)]
+
+Instructions for Fedora:
+
+----
+dnf install make linkchecker graphviz
+gem install asciidoctor
+go get github.com/hairyhenderson/gomplate/v3/cmd/gomplate
+----
+
+For other platforms, you'll have to figure out the equivalent install steps.
+
+=== Requesting a change
+
+. Clone this repository.
+. Edit or add files in `src/`.
+  Documentation is written in https://asciidoctor.org/docs/what-is-asciidoc/#what-is-asciidoc[AsciiDoc],
+  and rendered using https://asciidoctor.org/[asciidoctor].
+  Diagrams are written in https://graphviz.org/documentation/[graphviz DOT] format.
+. Run `make docs` to render your changes as HTML in `docs/`. Preview your changes using a browser.
+. Run `make all` to re-generate eve	 rything and validate links (link checking takes a minute or two).
+. Submit a link:{repo}/pulls[pull-request] with your changes, and a brief description of why you made them. +
+
+The pull request will be discussed and revised before merging using the GitHub review process.
+It is OK to request changes that you're are not 100% sure of.
+Even if your pull request needs some revisions, a concrete proposal for change often gets resolved more quickly than a general request in an issue.
+
+
+Once the pull-request is merged, the contents of `docs/` is automatically published to {page} using https://pages.github.com/[GitHub pages]

@@ -1,0 +1,13 @@
+==  Using the data model
+
+The logging data model is defined by  `.yaml` files in this directory.
+Top level fields that can appear in any log record are defined in `namespaces/top-level.yaml.
+The remaining files define groups of related fields that appear in some types of record.
+
+The model can be used to generate code or documentation.
+`Makefile` to
+
+See the `Makefile` generates simple AsciiDoc fragments, using Go templates.
+The fragments are `include` ed in `index.adoc` to form a complete document.
+
+To generate documentation for private fields, set env variable `SHOW_PRIVATE=1`

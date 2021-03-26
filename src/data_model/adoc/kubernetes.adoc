@@ -1,0 +1,64 @@
+== kubernetes fields
+
+Namespace for kubernetes-specific metadata
+
+
+=== kubernetes.pod_name
+
+
+
+
+
+=== kubernetes.pod_id
+
+
+
+
+
+=== kubernetes.namespace_name
+
+
+
+
+
+=== kubernetes.namespace_id
+
+
+
+
+
+=== kubernetes.host
+
+
+
+
+
+=== kubernetes.master_url
+
+
+
+
+
+=== kubernetes.container_name
+
+
+
+
+
+=== kubernetes.annotations
+
+
+
+
+
+=== kubernetes.labels
+
+
+
+
+
+=== kubernetes.event
+
+
+
+

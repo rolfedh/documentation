@@ -1,0 +1,94 @@
+== Top level fields
+
+The top level fields may be present in every record.
+
+
+=== message
+
+
+
+
+
+=== @timestamp
+
+
+
+
+
+=== hostname
+
+
+
+
+
+=== ipaddr4
+
+
+
+
+
+=== ipaddr6
+
+
+
+
+
+=== level
+
+
+
+
+
+=== pid
+
+
+
+
+
+=== service
+
+
+
+
+
+=== tags
+
+
+
+
+
+=== file
+
+
+
+
+
+=== offset
+
+
+
+
+
+=== namespace_name
+
+
+
+
+
+=== namespace_uuid
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

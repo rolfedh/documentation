@@ -1,0 +1,34 @@
+== rsyslog fields
+
+RFC5424 based metadata.
+
+
+=== rsyslog.facility
+
+
+
+
+
+=== rsyslog.protocol-version
+
+
+
+
+
+=== rsyslog.structured-data
+
+
+
+
+
+=== rsyslog.msgid
+
+
+
+
+
+=== rsyslog.appname
+
+
+
+

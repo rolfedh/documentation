@@ -1,0 +1,30 @@
+= ViaQ project documentation
+:toc: left
+
+WARNING: Under Construction
+
+ViaQ is a project to create components for collecting, forwarding and storing logs on kubernetes clusters.
+These components are used by https://docs.openshift.com/container-platform/4.7/logging/cluster-logging.html[Openshift Logging] to build a complete cluster logging system.
+
+This is for developers and documentation writers working on the ViaQ and Openshift Logging,  and also anyone who wants to learn about the inner workings of Openshift Logging works.
+
+== Documentation
+
+* link:architecture/index.html[Architecture overview]
+* link:data_model/index.html[Data model for log records]
+
+
+== Other Resources
+
+The project spans several repositories:
+
+* link:https://github.com/ViaQ[ViaQ] contains repositories for components.
+* https://github.com/ViaQ/documentation[ViaQ/documentation] contains this site.
+* link:https://github.com/openshift/cluster-logging-operator[Cluster Logging Operator] deploys log collection and forwarding in a cluster.
+* link:https://github.com/openshift/elasticsearch-operator[Elasticsearch Operator] deploys Elasticsearch as a log store.
+* link:https://github.com/openshift/origin-aggregated-logging[Origin Aggregated Logging] has operands managed by the above operators.
+
+Other project resources:
+
+* link:https://issues.redhat.com/projects/LOG/issues/LOG-96?filter=allopenissues[Planning and issue tracking]
+* link:https://github.com/openshift/enhancements/tree/master/enhancements/cluster-logging[Enhancement proposals]

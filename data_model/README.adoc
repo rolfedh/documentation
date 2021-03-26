@@ -1,3 +1,0 @@
-= Generic Data Model
-
-WARNING: Work in progress.

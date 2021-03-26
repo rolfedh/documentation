@@ -1,5 +1,0 @@
-{
-   "title":"$TITLE$",
-   "timeFieldName":"<time_field_name>",
-   "fields": "[\"This will be populated by generate_template.py script\"]"
-}

@@ -1,0 +1,12 @@
+= Logging Data Model
+:toc: left
+
+WARNING: Work in progress.
+
+The logging data model is an abstract definition of fields that may be present in a log record.
+
+include::adoc/top-level.adoc[]
+
+include::adoc/kubernetes.adoc[]
+
+include::adoc/pipeline.adoc[]

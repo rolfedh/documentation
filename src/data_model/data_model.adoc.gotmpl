@@ -1,0 +1,24 @@
+{{/* Generate an asciidoc fragment describing a data-model namespace */}}
+
+{{- $ns := (index .namespace "name") -}}
+== {{or $ns "Top level"}} fields
+
+{{.namespace.description}}
+{{- range .namespace.fields -}}
+{{- $private := (index . "private") -}}
+{{- $showPrivate := (env.Getenv "SHOW_PRIVATE") -}}
+{{- if or (not $private) $showPrivate}}
+
+=== {{with $ns}}{{$ns}}.{{end}}{{.name}}{{if and $private $showPrivate}} ⚠{{end}}
+{{- end}}
+
+{{if and $private $showPrivate}}
+WARNING: Private field for use by logging system, may change or dissapear in future releases.
+
+[horizontal]
+{{with index . "type"}}Data type:: {{.}}{{end}}
+{{with index . "description"}}Description:: {{.}}{{end}}
+{{with index . "example"}}Example value:: {{.}}{{end}}
+{{end}}
+
+{{end}}
