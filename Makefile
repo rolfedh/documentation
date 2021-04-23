@@ -1,5 +1,8 @@
 ## Generate the website in docs/
 
+# Parameters
+BROWSE ?= index.html
+
 # Commands
 ASCIIDOCTOR=asciidoctor -a icons=font -a --failure-level=WARN
 DOT=dot -Tsvg
@@ -14,14 +17,14 @@ check: docs
 	$(LINKCHECKER) docs/index.html
 
 browse: docs
-	nohup xdg-open docs/index.html &> /dev/null ; sleep 1
+	nohup xdg-open docs/$(BROWSE) &> /dev/null ; sleep 1
 
 clean:
 	rm -rf docs
 	$(MAKE) -C src/data_model clean
 
 # Sources
-ADOCS=$(shell find src -name '*.adoc')
+ADOCS=$(shell find src -name 'index.adoc')
 DOTS=$(shell find src -name '*.dot')
 
 # Generated output
@@ -30,9 +33,11 @@ SVGS=$(patsubst src/%.dot,docs/%.svg,$(DOTS))
 
 docs: $(HTMLS) $(SVGS)
 
+docs/%/index.html: src/%/*.adoc
+
 docs/%.html: src/%.adoc
 	@mkdir -p $(dir $@)
-	$(ASCIIDOCTOR) -a icons=font -o $@ $<
+	$(ASCIIDOCTOR) -o $@ $<
 
 docs/%.svg: src/%.dot
 	@mkdir -p $(dir $@)
