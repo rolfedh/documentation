@@ -9,6 +9,8 @@ This site documents the architecture and some of the internal details of Openshi
 It is aimed at developers, doc writers, and contributors working on the project,
 but may be of interest to those who want to learn more about the internal details.
 
+TIP: To contribute to this site, see https://github.com/ViaQ/documentation
+
 == Documentation
 
 * link:architecture/index.html[Architecture overview]
