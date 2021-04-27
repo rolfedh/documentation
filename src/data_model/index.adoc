@@ -5,7 +5,17 @@ WARNING: Work in progress.
 
 The logging data model is an abstract definition of fields that may be present in a log record.
 
+Log records are usually formatted as JSON objects, but this data model can apply to other encodings.
+
 include::adoc/top-level.adoc[]
+
+=== kubernetes
+
+A collection of sub-fields related to kubernetes clusters, described link:#_kubernetes[below].
+
+=== pipeline
+
+A collection of sub-fields related to the logging pipeline, described  link:#_pipeline[below].
 
 include::adoc/kubernetes.adoc[]
 

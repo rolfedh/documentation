@@ -13,7 +13,6 @@ To modify the documentation, or use the data model for code generation, read .
 * link:docs/[] Generated website available at {page} **do not edit**.
 * link:Makefile[] Update `docs/` to reflect changes in `fsrc/`
 
-
 == Raising an issue
 
 You can https://github.com/ViaQ/documentation/issues[raise an issue] using GitHub issues.
