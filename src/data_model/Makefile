@@ -1,17 +1,25 @@
-# Generate data model adoc fragments from YAML definitions.
+# Generate data model adoc parts from YAML definitions.
+# The master Makefile will generate HTML for the website.
 
 GOMPLATE=gomplate
 
-YAMLS=$(wildcard *.yaml)
-ADOCS=$(patsubst %.yaml,adoc/%.adoc,$(YAMLS))
-TEMPLATE=data_model.adoc.gotmpl
+YAMLS=$(wildcard model/*.yaml)
+PUBLIC=$(patsubst model/%.yaml,public/%.part.adoc,$(YAMLS))
+PRIVATE=$(patsubst model/%.yaml,private/%.part.adoc,$(YAMLS))
 
-all: $(ADOCS)
+all: $(PUBLIC) $(PRIVATE)
 
-clean:
-	rm -rf adoc
+clean: force
+	rm -f */*.part.adoc
 
-adoc/%.adoc: %.yaml $(TEMPLATE)
+public/%.part.adoc: model/%.yaml $(MAKEFILE) public/*.gotmpl
 	@mkdir -p $(dir $@)
-	$(GOMPLATE) -c.=$< -f $(TEMPLATE) > $@
-	@touch index.adoc
+	$(GOMPLATE) -c.=$< -f public/data_model.adoc.gotmpl > $@
+	@touch public/data_model.adoc
+
+private/%.part.adoc: model/%.yaml $(MAKEFILE) private/*.gotmpl
+	@mkdir -p $(dir $@)
+	$(GOMPLATE) -c.=$< -f private/data_model.adoc.gotmpl > $@
+	@touch private/data_model.adoc
+
+.PHONY: force

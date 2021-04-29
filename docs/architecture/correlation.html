@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.15">
-<title>Generated Data Model Documentation</title>
+<title>Observability and Correlation</title>
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
 /* Remove comment around @import statement below when using as a custom stylesheet */
@@ -420,21 +420,176 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Generated Data Model Documentation</h1>
 </div>
 <div id="content">
+<div class="sect1">
+<h2 id="_observability_and_correlation">Observability and Correlation</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>There are two versions of generated documentation for log records:</p>
+<p>Observability means collecting, forwarding, storing, analyzing and <em>correlating</em>  different types of <em>signal</em> from a cluster to  monitor its health, identify and fix problems, and plan for capacity changes.</p>
+</div>
+<div class="sect2">
+<h3 id="_types_of_signal">Types of signal</h3>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Log entry</dt>
+<dd>
+<p>A block of text (usually one line) written by application or infrastructure processes, annotated by the logging system and forwarded for further processing.</p>
+</dd>
+<dt class="hdlist1">Metric</dt>
+<dd>
+<p>A statistic that changes over time and is sampled to produce a <em>time_series</em>. Presently we can assue all metrics are in  <a href="https://prometheus.io/">Prometheus</a> format, and are sampled by Prometheus. Processes to be monitored must provide a HTTP "scrape endpoint" where the metrics can be read.</p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Alert</dt>
+<dd>
+<p>Alerts are not primary signals but summaries of  metric time series. They identify conditions that need attention.</p>
+</dd>
+</dl>
+</div>
+</dd>
+<dt class="hdlist1">Trace</dt>
+<dd>
+<p>Data attached to request-response <em>scopes</em> to track the progress and outcome of a request. Trace context can follow a chain of requests from server to server, provided the servers co-operate in passing the trace context.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_correlation_points">Correlation Points</h3>
+<div class="paragraph">
+<p>Correlation means associating different types of signal, for example:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="public/data_model.html">Fields for public use</a></p>
+<p>I have an alert saying that an application is in t.rouble.
+I want to see logs from that application around the time of the alert.</p>
 </li>
 <li>
-<p><a href="private/data_model.html">All fields  including those intended for logging system only</a></p>
+<p>I have a log entry showing that a request failed.
+I want to see traces for the entire life-cycle of that request and dependent requests.</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>Correlation requires that the signals have data that can be matched, for example:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+timestamp
+</td>
+<td class="hdlist2">
+<p>All signals carry a timestamp. Signals can always be correlated by time-interval.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+origin resource
+</td>
+<td class="hdlist2">
+<p>Many signals are associated with a <em>resource</em>.
+Resource signals can be correlated by <code>cluster</code>, <code>namespace</code>, <code>pod</code> and <code>node</code>
+The logging system, kubelet metrics and <a href="https://github.com/observatorium/docs/blob/master/design/correlation.md">observatorium metrics</a>
+<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup>
+provide this information.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+trace-id
+</td>
+<td class="hdlist2">
+<p>Trace signals carry a trace-id.
+Applications that support tracing should include trace-id in an identifiable way in their logs.
+<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup>
+Metrics can&#8217;t carry trace-ids due to cardinality limitations.</p>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Traces need more research.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>That names and formats of correlation fields or labels are not uniform across signals.
+     <a href="https://opentelemetry.io/">OpenTelemetry</a> does define a reference data-model for all signal types but
+it is not compatible with the current naming schemes of Openshift Logging, Monitoring or Telemetry,
+or Kubernetes.</p>
+</div>
+<div class="paragraph">
+<p>The data models we currently use are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="../data_model/index.html">Openshift Logging</a></p>
+</li>
+<li>
+<p>Metrics: <em>TODO</em> Openshift and Kubernetes have consistent labels and naming schemes.</p>
+</li>
+<li>
+<p>Traces: <em>TODO</em></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>OpenTelemetry specs for comparison:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/open-telemetry/opentelemetry-specification/tree/main/specification/resource/semantic_conventions">Resources</a></p>
+</li>
+<li>
+<p><a href="https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/logs/data-model.md">Logging</a>]</p>
+</li>
+<li>
+<p><a href="https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/metrics/datamodel.md">Metrics</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_correlation_stories">Correlation Stories</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>On receiving an alert, I want to see correlated logs or traces.</p>
+</li>
+<li>
+<p>On reading a log, I want to see correlated traces or metrics.</p>
+</li>
+<li>
+<p>On following a trace, I want to see correlated logs or metrics.</p>
+</li>
+<li>
+<p>I want to query for a report on (logs/metrics/traces) and have correlated signals included as well.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. Do all observatorium metrics provide this?
+</div>
+<div class="footnote" id="_footnotedef_2">
+<a href="#_footnoteref_2">2</a>. How many applications do this? Are there standards for trace-id format in logs?
 </div>
 </div>
 </body>

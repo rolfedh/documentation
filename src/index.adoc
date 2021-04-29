@@ -1,5 +1,4 @@
 = ViaQ project documentation
-:toc: left
 
 WARNING: Under Construction
 

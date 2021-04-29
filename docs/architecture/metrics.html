@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.15">
-<title>Generated Data Model Documentation</title>
+<title>Metrics and Labels</title>
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
 /* Remove comment around @import statement below when using as a custom stylesheet */
@@ -420,21 +420,196 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Generated Data Model Documentation</h1>
 </div>
 <div id="content">
+<div class="sect1">
+<h2 id="_metrics_and_labels">Metrics and Labels</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>There are two versions of generated documentation for log records:</p>
+<p>The set of metric labels for logging is described here.</p>
+</div>
+<div class="sect2">
+<h3 id="_prometheus_standard_labels">Prometheus standard labels</h3>
+<div class="paragraph">
+<p>All metrics have these standard labels added automatically by prometheus:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="public/data_model.html">Fields for public use</a></p>
+<p><code>endpoint</code>: "web" for HTTP scrape endpoints.</p>
 </li>
 <li>
-<p><a href="private/data_model.html">All fields  including those intended for logging system only</a></p>
+<p><code>instance</code>: address of scrape endpoint in the form "&lt;ip-literal&gt;:&lt;port&gt;"</p>
+</li>
+<li>
+<p><code>job</code>: arbitrary string name to identify related endpoints (e.g. "log_collector")</p>
 </li>
 </ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_labels_identifying_a_container">Labels identifying a container</h3>
+<div class="paragraph">
+<p>Metrics associated with a <em>Pod</em> get the following labels:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>namespace</code>: namespace name</p>
+</li>
+<li>
+<p><code>pod</code>: pod name</p>
+</li>
+<li>
+<p><code>uid</code>: pod UUID</p>
+</li>
+<li>
+<p><code>node</code>: node name, as returned by <code>oc get node -o=jsonpath='{@.items[*].metadata.name}</code><br>
+<strong>Note</strong>: this is node <span class="underline">resource</span> name.
+It may, or may not, coincide with the host name, DNS name, or IP address.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Metrics that are associated with a <em>container</em> also get this label:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>container</code>: container name</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For example, the following metrics are associated with container logs, and have all the above labels:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>log_logged_bytes_total</code> provided by a separate agent that watches writes to log files.</p>
+</li>
+<li>
+<p><code>log_collected_bytes_total</code> provided by the collector</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These labels are compatible with <code>kubelet</code>, here&#8217;s an example <code>kubelet</code> metric:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code># HELP kubelet_container_log_filesystem_used_bytes [ALPHA] Bytes used by the container's logs on the filesystem.
+# TYPE kubelet_container_log_filesystem_used_bytes gauge
+kubelet_container_log_filesystem_used_bytes{container="authentication-operator",namespace="openshift-authentication-operator",pod="authentication-operator-67c88594b5-zftcn ",uid="ead91de5-5e10-42b9-8ab9-6386f21cd554"} 3.44064e+07</code></pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Should we follow <code>kubelet</code> and add <code><em>container</em></code> to our metric names?<br>
+<code>log_container_logged_bytes_total</code> <code>log_container_collected_bytes_total</code>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_label_identifying_a_cluster">Label identifying a cluster</h3>
+<div class="paragraph">
+<p>Multi-cluster deployments need a <code>cluster</code> label
+This label will not be provided by every metric endpoints, it can be added by  prometheus cluster-wide.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+There is a lack of clarity about a standard unique identifier for a cluster.
+Our preferred option is the DNS authority (<code>host:port</code> part) of the public DNS name for the API server.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>We will proceed on this assumption, but to be aware of the debate:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>DNS authority</p>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><i class="fa fa-check-square-o"></i> Easy to read/remember</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> Guaranteed network-unique, globally unique for a registered DNS domain.</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> Definitely known to anyone with API access \
+<code>oc config view -o jsonpath='{.clusters[ ].name}{"\n"}'</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>UUID</p>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><i class="fa fa-check-square-o"></i> Guaranteed unique</p>
+</li>
+<li>
+<p><i class="fa fa-square-o"></i> Hard to read and remember</p>
+</li>
+<li>
+<p><i class="fa fa-square-o"></i> Need to generate and discover it somehow</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Manually chosen string:</p>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><i class="fa fa-check-square-o"></i> Easy to read/remember</p>
+</li>
+<li>
+<p><i class="fa fa-square-o"></i> Not suitable for large multi-cluster, need automatic ID</p>
+</li>
+<li>
+<p><i class="fa fa-square-o"></i> Not guaranteed unique</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Relevant discussions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/kubernetes/kubernetes/issues/2292">UUID for a cluster · Issue #2292 · kubernetes/kubernetes</a></p>
+</li>
+<li>
+<p><a href="https://github.com/openshift/hive/issues/106">Clarify Cluster ID, UUID, Name in API · Issue #106 · openshift/hive</a></p>
+</li>
+<li>
+<p><a href="https://github.com/openshift/origin/issues/10682">How do I check my Kubernets Master URL? · Issue #10682 · openshift/origin</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 </div>
 </body>

@@ -93,12 +93,13 @@ namespace:
 
 '
   - name: namespace_name
+    private: true
     type: keyword
     example: my-cool-project-in-lab04
     doc_values: false
     index: true
+    format: '[a-zA-Z][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]'
     description: |
-      format: [a-zA-Z][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]
 
       Associate this record with the namespace with this name.
       This value will not be stored.  It is only used to associate the
@@ -110,10 +111,11 @@ namespace:
       The format is the same format used for Kubernetes namespace names.
       See also namespace_uuid.
   - name: namespace_uuid
+    private: true
     type: keyword
     example: 82f13a8e-882a-4344-b103-f0a6f30fd218
+    format: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
     description: |
-      format: [a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}
 
       The uuid associated with the namespace_name.
       This value will not be stored.  It is only used to associate the

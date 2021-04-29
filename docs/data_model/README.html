@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.15">
-<title>Generated Data Model Documentation</title>
+<title>Using the data model</title>
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
 /* Remove comment around @import statement below when using as a custom stylesheet */
@@ -420,21 +420,26 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Generated Data Model Documentation</h1>
 </div>
 <div id="content">
+<div class="sect1">
+<h2 id="_using_the_data_model">Using the data model</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>There are two versions of generated documentation for log records:</p>
+<p>The logging data model is defined by  <code>.yaml</code> files in <a href="model/" class="bare">model/</a> .
+Top level fields that can appear in any log record are defined in `namespaces/top-level.yaml.
+The remaining files define groups of related fields that appear in some types of record.
+Some fields are marked "private" meaning they are internal to the logging system, users should not rely on them,</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="public/data_model.html">Fields for public use</a></p>
-</li>
-<li>
-<p><a href="private/data_model.html">All fields  including those intended for logging system only</a></p>
-</li>
-</ul>
+<div class="paragraph">
+<p>The model can be used to generate code or documentation.
+The <code>Makefile</code> generates simple AsciiDoc reference documents, using Go templates.
+There are two versions: <a href="private/" class="bare">private/</a> is the complete model <a href="public/" class="bare">public/</a> only includes public fields.</p>
+</div>
+<div class="paragraph">
+<p>Go to  <a href="../../docs/data_model/index.html" class="bare">../../docs/data_model/index.html</a> to view the generated documents.</p>
+</div>
+</div>
 </div>
 </div>
 </body>

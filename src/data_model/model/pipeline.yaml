@@ -1,4 +1,5 @@
 namespace:
+  private: true
   name: pipeline
   type: group
   description: >
