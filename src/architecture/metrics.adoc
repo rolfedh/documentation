@@ -2,14 +2,6 @@
 
 The set of metric labels for logging is described here.
 
-=== Prometheus standard labels ===
-
-All metrics have these standard labels added automatically by prometheus:
-
-* `endpoint`: "web" for HTTP scrape endpoints.
-* `instance`: address of scrape endpoint in the form "<ip-literal>:<port>"
-* `job`: arbitrary string name to identify related endpoints (e.g. "log_collector")
-
 === Labels identifying a container ===
 
 Metrics associated with a _Pod_ get the following labels:
@@ -71,3 +63,11 @@ Relevant discussions:
 * https://github.com/kubernetes/kubernetes/issues/2292[UUID for a cluster · Issue #2292 · kubernetes/kubernetes]
 * https://github.com/openshift/hive/issues/106[Clarify Cluster ID, UUID, Name in API · Issue #106 · openshift/hive]
 * https://github.com/openshift/origin/issues/10682[How do I check my Kubernets Master URL? · Issue #10682 · openshift/origin]
+
+=== Prometheus standard labels ===
+
+These labels are added by prometheus, they are of limited relevance for to logging.
+They identify the agent that collects logs, not the resource that produced them.
+
+* `instance`: address of scrape endpoint in the form "<ip-literal>:<port>"
+* `job`: arbitrary string name to identify related endpoints (e.g. "log_collector")
