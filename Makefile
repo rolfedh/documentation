@@ -8,7 +8,7 @@ BROWSE ?= index.html
 		-a icons=font -a nofooter \
 		-a stylesheet=$(PWD)/css/asciidoctor.css
 DOT=dot -Tsvg
-LINKCHECKER=linkchecker --anchors --check-html --check-css --check-extern --timeout=5
+# LINKCHECKER=linkchecker --anchors --check-html --check-css --check-extern --timeout=5
 
 rebuild: clean all
 	@echo "Clean rebuild, you can commit the updated site."
@@ -16,7 +16,7 @@ rebuild: clean all
 all: check
 
 check: docs
-	$(LINKCHECKER) docs/index.html
+	#$(LINKCHECKER) docs/index.html
 
 browse: docs
 	nohup xdg-open docs/$(BROWSE) &> /dev/null ; sleep 1

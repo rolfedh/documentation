@@ -497,7 +497,7 @@ Data type
 Example value
 </td>
 <td class="hdlist2">
-<p>TODO</p>
+<p><code>TODO</code></p>
 </td>
 </tr>
 </table>
@@ -508,9 +508,7 @@ Example value
 <h2 id="_timestamp">@timestamp</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>UTC value marking when the log payload was created, or when log payload was first collected if the creation time is not known;
-this is the log processing pipeline’s “best effort” determination of when the log payload was generated
-FYI: the “@” prefix convention to note a field as being reserved for a particular use; in this case, most tools by default look for “@timestamp” with ElasticSearch</p>
+<p>A UTC value that marks when the log payload was created or when the log payload was first collected if the creation time is not known. This value is the log processing pipeline&#8217;s “best effort” determination of when the log payload was generated. The “@” prefix denotes a field that is reserved for a particular use. By default, most tools look for “@timestamp” with ElasticSearch.</p>
 </div>
 <div class="hdlist">
 <table>
@@ -535,7 +533,7 @@ Format
 Example value
 </td>
 <td class="hdlist2">
-<p>2015-01-24 14:06:05.071000000 Z</p>
+<p><code>2015-01-24 14:06:05.071000000 Z</code></p>
 </td>
 </tr>
 </table>
@@ -546,10 +544,7 @@ Example value
 <h2 id="_hostname">hostname</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>FQDN of the entity generating the original payload.  This field
-is a best effort attempt to derive this context; sometimes the entity generating
-it knows it; other times that entity has a restricted namespace itself, and
-the collector or normalizer knows that.</p>
+<p>The FQDN of the entity generating the original payload. This field is a best-effort attempt to derive this context. Sometimes, the entity generating it knows it; other times, that entity has a restricted namespace itself, and the collector or normalizer knows that.</p>
 </div>
 <div class="hdlist">
 <table>
@@ -609,23 +604,54 @@ Data type
 <h2 id="_level">level</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Logging level as provided by: rsyslog(severitytext property), python&#8217;s
-logging module, etc.
-Possible values are as listed here: <a href="http://sourceware.org/git/?p=glibc.git;a=blob;f=misc/sys/syslog.h;h=ee01478c4b19a954426a96448577c5a76e6647c0;hb=HEAD#l74" class="bare">http://sourceware.org/git/?p=glibc.git;a=blob;f=misc/sys/syslog.h;h=ee01478c4b19a954426a96448577c5a76e6647c0;hb=HEAD#l74</a> plus <code>trace</code> and <code>unknown</code>
-That is: alert crit debug emerg err info notice trace unknown warning
-Note that <code>trace</code> isn&#8217;t in the syslog.h list but many applications use it
-<code>unknown</code> is only used when the logging system gets a value it doesn&#8217;t understand
-<code>unknown</code> is the highest level
-<code>trace</code> should be considered as higher (more verbose) than <code>debug</code>
-<code>error</code> should be converted to <code>err</code>
-<code>panic</code> should be converted to <code>emerg</code>
-<code>warn</code> should be converted to <code>warning</code>
-Numeric values from syslog/journal PRIORITY can usually be mapped using the priority values as listed here:
-<a href="http://sourceware.org/git/?p=glibc.git;a=blob;f=misc/sys/syslog.h;h=ee01478c4b19a954426a96448577c5a76e6647c0;hb=HEAD#l51" class="bare">http://sourceware.org/git/?p=glibc.git;a=blob;f=misc/sys/syslog.h;h=ee01478c4b19a954426a96448577c5a76e6647c0;hb=HEAD#l51</a>
-That is, 0 &#8594; emerg, 1 &#8594; alert, &#8230;&#8203;, 7 &#8594; debug, 8 &#8594; trace, 9 &#8594; unknown
-Log levels/priorities from other logging systems should be mapped to the nearest match
-For example, from python logging: <a href="https://docs.python.org/2.7/library/logging.html#logging-levels" class="bare">https://docs.python.org/2.7/library/logging.html#logging-levels</a>
-CRITICAL &#8594; crit, ERROR &#8594; err, &#8230;&#8203;., DEBUG &#8594; debug</p>
+<p>The logging level from various sources, including <code>rsyslog(severitytext property)</code>, python&#8217;s logging module, and others.</p>
+</div>
+<div class="paragraph">
+<p>The following values come from <a href="http://sourceware.org/git/?p=glibc.git;a=blob;f=misc/sys/syslog.h;h=ee01478c4b19a954426a96448577c5a76e6647c0;hb=HEAD#l74"><code>syslog.h</code></a>, and are preceded by their <a href="http://sourceware.org/git/?p=glibc.git;a=blob;f=misc/sys/syslog.h;h=ee01478c4b19a954426a96448577c5a76e6647c0;hb=HEAD#l51">numeric equivalents</a>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>0</code> = <code>emerg</code>, system is unusable</p>
+</li>
+<li>
+<p><code>1</code> = <code>alert</code>, action must be taken immediately</p>
+</li>
+<li>
+<p><code>2</code> = <code>crit</code>, critical conditions</p>
+</li>
+<li>
+<p><code>3</code> = <code>err</code>, error conditions</p>
+</li>
+<li>
+<p><code>4</code> = <code>warn</code>, warning conditions</p>
+</li>
+<li>
+<p><code>5</code> = <code>notice</code>, normal but significant condition</p>
+</li>
+<li>
+<p><code>6</code> = <code>info</code>, informational</p>
+</li>
+<li>
+<p><code>7</code> = <code>debug</code>, debug-level messages</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The two following values are not part of <code>syslog.h</code> but are widely used:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>8</code> = <code>trace</code>, trace-level messages, which are more verbose than <code>debug</code> messages.</p>
+</li>
+<li>
+<p><code>9</code> = <code>unknown</code>, when the logging system gets a value it doesn&#8217;t recognize.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Map the log levels or priorities of other logging systems to their nearest match in the preceding list. For example, from <a href="https://docs.python.org/2.7/library/logging.html#logging-levels">python logging</a>, you can match <code>CRITICAL</code> with <code>crit</code>, <code>ERROR</code> with <code>err</code>, and so on.</p>
 </div>
 <div class="hdlist">
 <table>
@@ -642,7 +668,7 @@ Data type
 Example value
 </td>
 <td class="hdlist2">
-<p>info</p>
+<p><code>info</code></p>
 </td>
 </tr>
 </table>
@@ -673,7 +699,7 @@ Data type
 <h2 id="_service">service</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Name of the service associated with the logging entity, if available. For example, syslog&#8217;s APP-NAME and rsyslog&#8217;s programname property are mapped to the service field.</p>
+<p>Name of the service associated with the logging entity, if available. For example, syslog&#8217;s <code>APP-NAME</code> and rsyslog&#8217;s <code>programname</code> properties are mapped to the service field.</p>
 </div>
 <div class="hdlist">
 <table>
@@ -693,7 +719,7 @@ Data type
 <h2 id="_tags">tags</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Optionally provided operator defined list of tags placed on each log by the collector or normalizer. The payload can be a string with whitespace-delimited string tokens, or a JSON list of string tokens.</p>
+<p>Optionally provided an operator-defined list of tags placed on each log by the collector or normalizer. The payload can be a string with whitespace-delimited string tokens or a JSON list of string tokens.</p>
 </div>
 <div class="hdlist">
 <table>
@@ -733,7 +759,7 @@ Data type
 <h2 id="_offset">offset</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The offset value can represent bytes to the start of the log line in the file (zero or one based), or log line numbers (zero or one based), so long as the values are strictly monotonically increasing in the context of a single log file. They values are allowed to wrap, representing a new version of the log file (rotation).</p>
+<p>The offset value can represent bytes to the start of the log line in the file (zero or one based), or log line numbers (zero or one based), so long as the values are strictly monotonically increasing in the context of a single log file. The values are allowed to wrap, representing a new version of the log file (rotation).</p>
 </div>
 <div class="hdlist">
 <table>
@@ -753,7 +779,7 @@ Data type
 <h2 id="_kubernetes">kubernetes</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Namespace for kubernetes-specific metadata</p>
+<p>The namespace for Kubernetes-specific metadata</p>
 </div>
 <div class="sect2">
 <h3 id="_kubernetes_pod_name">kubernetes.pod_name</h3>
@@ -776,7 +802,7 @@ Data type
 <div class="sect2">
 <h3 id="_kubernetes_pod_id">kubernetes.pod_id</h3>
 <div class="paragraph">
-<p>Kubernetes ID of the pod.</p>
+<p>The Kubernetes ID of the pod</p>
 </div>
 <div class="hdlist">
 <table>
@@ -794,7 +820,7 @@ Data type
 <div class="sect2">
 <h3 id="_kubernetes_namespace_name">kubernetes.namespace_name</h3>
 <div class="paragraph">
-<p>The name of the namespace in Kubernetes.</p>
+<p>The name of the namespace in Kubernetes</p>
 </div>
 <div class="hdlist">
 <table>
@@ -812,7 +838,7 @@ Data type
 <div class="sect2">
 <h3 id="_kubernetes_namespace_id">kubernetes.namespace_id</h3>
 <div class="paragraph">
-<p>ID of the namespace in Kubernetes.</p>
+<p>The ID of the namespace in Kubernetes</p>
 </div>
 <div class="hdlist">
 <table>
@@ -830,7 +856,7 @@ Data type
 <div class="sect2">
 <h3 id="_kubernetes_host">kubernetes.host</h3>
 <div class="paragraph">
-<p>Kubernetes node name</p>
+<p>The Kubernetes node name</p>
 </div>
 <div class="hdlist">
 <table>
@@ -848,7 +874,7 @@ Data type
 <div class="sect2">
 <h3 id="_kubernetes_master_url">kubernetes.master_url</h3>
 <div class="paragraph">
-<p>Kubernetes Master URL</p>
+<p>The Kubernetes Master URL</p>
 </div>
 <div class="hdlist">
 <table>
@@ -866,7 +892,7 @@ Data type
 <div class="sect2">
 <h3 id="_kubernetes_container_name">kubernetes.container_name</h3>
 <div class="paragraph">
-<p>The name of the container in Kubernetes.</p>
+<p>The name of the container in Kubernetes</p>
 </div>
 <div class="hdlist">
 <table>
@@ -902,7 +928,7 @@ Data type
 <div class="sect2">
 <h3 id="_kubernetes_labels">kubernetes.labels</h3>
 <div class="paragraph">
-<p>Labels attached to the Kubernetes object Each label name is a subfield of labels field. Each label name is de-dotted: dots in the name are replaced with underscores.</p>
+<p>Labels attached to the Kubernetes object. Each label name is a subfield of labels field. Each label name is de-dotted: dots in the name are replaced with underscores.</p>
 </div>
 <div class="hdlist">
 <table>
@@ -920,7 +946,7 @@ Data type
 <div class="sect2">
 <h3 id="_kubernetes_event">kubernetes.event</h3>
 <div class="paragraph">
-<p>The kubernetes event obtained from kubernetes master API The event is already JSON object and as whole nested under kubernetes field This description should loosely follow 'type Event' in <a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.21/#event-v1-core" class="bare">https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.21/#event-v1-core</a></p>
+<p>The Kubernetes event obtained from the Kubernetes master API. The event is a whole JSON object nested under the <code>kubernetes</code> field. This event description loosely follows 'type Event' in <a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.21/#event-v1-core">Event v1 core</a>.</p>
 </div>
 <div class="hdlist">
 <table>
