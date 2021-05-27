@@ -82,7 +82,7 @@ namespace:
       public: true
       type: keyword
       example: '`logging-kibana`'
-      description: 'The deploymentconfig associated with this Kubernetes object
+      description: 'The deployment configuration associated with this Kubernetes object
 
 '
       fields:
@@ -104,13 +104,13 @@ namespace:
   - name: event
     type: group
     public: true
-    description: 'The Kubernetes event obtained from the Kubernetes master API. The event is a whole JSON object nested under the `kubernetes` field. This event description loosely follows ''type Event'' in link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.21/#event-v1-core[Event v1 core].'
+    description: 'The Kubernetes event obtained from the Kubernetes master API. The event is a whole JSON object nested under the `kubernetes` field. This event description loosely follows `type Event` in link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.21/#event-v1-core[Event v1 core].'
     fields:
     - name: verb
       public: true
       type: keyword
       example: '`ADDED`'
-      description: 'The type of event, which can be `ADDED`, `MODIFIED`, or `DELETED`.
+      description: 'The type of event, `ADDED`, `MODIFIED`, or `DELETED`
 
 '
     - name: metadata
@@ -131,7 +131,7 @@ namespace:
         public: true
         type: keyword
         example: '`default`'
-        description: 'The name of the namespace which induced the event. It differs from `namespace_name`, which will be in case of every event the ''eventrouter''. TBD
+        description: 'The name of the namespace that induced the event. It differs from `namespace_name`, which will be in case of every event the ''eventrouter''. TBD
 
 '
       - name: selfLink
