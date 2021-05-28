@@ -7,7 +7,7 @@ namespace:
     type: text
     index: true
     doc_values: false
-    example: '`TODO`'
+    example: '`HAPPY`'
     description: 'Original log entry text, UTF-8 encoded.'
     norms: false
   - name: "@timestamp"
