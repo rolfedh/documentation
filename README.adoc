@@ -22,7 +22,7 @@ However it is even better if you actually link:_request_a_change[]
 
 === Before you start
 
-In order to update the documentation you need to install the following tools:
+To update the documentation you need to install the following tools:
 
 * https://www.gnu.org/softwarprpr/make/[GNU make]
 * https://asciidoctor.org/[asciidoctor (render AsciiDoc as HTML)]
