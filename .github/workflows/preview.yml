@@ -1,7 +1,7 @@
 name: Deploy PR preview to GH Pages
 
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - main
 
@@ -11,6 +11,8 @@ jobs:
     steps:
     - name: Checkout Source
       uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
     - name: Install Dependencies
       run: |
         sudo apt-get install -qq asciidoctor graphviz
@@ -32,5 +34,5 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         target_url: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/previews/pr/${{ github.event.number }}/
         environment: previews/pr/${{ github.event.number }}
-        ref: ${{ github.head_ref }}
+        ref: ${{ github.event.pull_request.head.sha }}
         initial_status: success
