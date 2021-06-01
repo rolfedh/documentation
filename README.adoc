@@ -18,7 +18,7 @@ To modify the documentation or use the data model for code generation, read on.
 You can https://github.com/ViaQ/documentation/issues[raise an issue] using GitHub issues.
 However it is even better if you actually link:_request_a_change[]
 
-== Request a change
+== Working on the docs
 
 === Before you start
 
