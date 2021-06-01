@@ -2,9 +2,9 @@
 :page: https://viaq.github.io/documentation/index.html[the web page]
 :toc: left
 
-To read the documentation visit {page}.
+To read the documentation, visit {page}.
 
-To modify the documentation, or use the data model for code generation, read on.
+To modify the documentation or use the data model for code generation, read on.
 
 == Project Layout
 
