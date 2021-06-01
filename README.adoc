@@ -8,7 +8,7 @@ To modify the documentation or use the data model for code generation, read on.
 
 == Project Layout
 
-* link:src/[] AsciiDoc and DOT source files, edit these to modify the pages.
+* link:src/[] AsciiDoc and DOT source files. Edit these files to modify the pages.
 * link:src/data_model/[] data model for log record fields.
 * link:docs/[] Generated website available at {page} **do not edit**.
 * link:Makefile[] Update `docs/` to reflect changes in `fsrc/`
