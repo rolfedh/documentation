@@ -1,5 +1,6 @@
 = Log Record Fields
 :toc: left
+:toclevels: 5
 
 WARNING: Fields that are private to the logging system are marked with ⚠
 

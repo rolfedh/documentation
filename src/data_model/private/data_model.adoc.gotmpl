@@ -1,26 +1,33 @@
 {{/*
 Generate an asciidoc fragment describing fields in a namespace .yaml file.
-Show all fields, public and private.
+Show all fields, public and private, private fields are marked with ⚠.
 */}}
-{{- $ns := (index .namespace "name")}}
-{{- $nsPrivate :=  or (index .namespace "private" | bool) -}}
+{{ trimSpace .namespace.description }}
+{{- range (index .namespace.fields) }}
 
-{{trimSpace .namespace.description}}
+{{ template "field" dict "field" . "heading" 3 "private" (index $.namespace "private" | bool) "prefix" (or (index $.namespace "name") "")}}
+{{ end -}}
 
-{{range .namespace.fields -}}
-{{- $private :=  or $nsPrivate (index . "private" | bool)}}
+{{ define "field" }}
+{{- $private :=  or .private (index .field "private" | bool) }}
+{{- $prefixDot := and .prefix (printf "%s." .prefix) | conv.ToString }}
+{{- $fullName := printf "%s%s" $prefixDot .field.name}}
+{{- $heading := (.heading | conv.ToInt) }}
 
-=== {{with $ns}}{{.}}.{{end}}{{.name}}{{if $private}}  ⚠{{end}}
+{{ strings.Repeat $heading "="}} {{if $private}}⚠{{ end }}{{$fullName}}
 
-{{trimSpace (index . "description")}}
+{{ with (index .field "description") }}{{ trimSpace . }}{{ end }}
 
 [horizontal]
-{{- with index . "type"}}
+{{- with index .field "type"}}
 Data type:: {{.}}
 {{end -}}
-{{- with index . "example"}}
+{{- with index .field "example"}}
 Example value:: {{.}}
-{{end -}}
+{{ end -}}
+{{- range index .field "fields"}}
 
-{{end}}
+{{ template "field" dict "field" . "private" $private "prefix" $fullName "heading" (math.Add $heading 1) }}
+{{- end }}
+{{- end }}
 

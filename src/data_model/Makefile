@@ -7,7 +7,10 @@ YAMLS=$(wildcard model/*.yaml)
 PUBLIC=$(patsubst model/%.yaml,public/%.part.adoc,$(YAMLS))
 PRIVATE=$(patsubst model/%.yaml,private/%.part.adoc,$(YAMLS))
 
-all: $(PUBLIC) $(PRIVATE)
+all: lint $(PUBLIC) $(PRIVATE)
+
+lint:				# Run yamllint if available
+	which yamllint &> /dev/null && yamllint -f parsable -d "{spaces:2}" $(YAMLS)
 
 clean: force
 	rm -f */*.part.adoc
