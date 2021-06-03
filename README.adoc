@@ -8,9 +8,9 @@ To modify the documentation or use the data model for code generation, read on.
 
 == Project Layout
 
-* link:src/[] AsciiDoc and DOT source files, edit these to modify the pages.
-* link:src/data_model/[] data model for log record fields.
-* link:docs/[] Generated website available at {page} **do not edit**.
+* link:src/[] Edit these Asciidoc and DOT source files to modify the pages.
+* link:src/data_model/[] The data model for log record fields.
+* link:docs/[] The generated website available at {page} **do not edit**.
 * link:Makefile[] Update `docs/` to reflect changes in `fsrc/`
 
 == Raising an issue
@@ -19,11 +19,9 @@ You can https://github.com/ViaQ/documentation/issues[raise an issue] using GitHu
 
 However, it is better if you link:_request_a_change[]
 
-== Request a change
+== Working on the docs
 
-=== Before you start
-
-To update the documentation, install or verify that you have:
+First, install or verify that you have:
 
 * https://www.gnu.org/softwarprpr/make/[GNU make]
 * https://asciidoctor.org/[asciidoctor (render AsciiDoc as HTML)]
