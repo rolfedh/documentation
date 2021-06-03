@@ -429,25 +429,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>The set of metric labels for logging is described here.</p>
 </div>
 <div class="sect2">
-<h3 id="_prometheus_standard_labels">Prometheus standard labels</h3>
-<div class="paragraph">
-<p>All metrics have these standard labels added automatically by prometheus:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>endpoint</code>: "web" for HTTP scrape endpoints.</p>
-</li>
-<li>
-<p><code>instance</code>: address of scrape endpoint in the form "&lt;ip-literal&gt;:&lt;port&gt;"</p>
-</li>
-<li>
-<p><code>job</code>: arbitrary string name to identify related endpoints (e.g. "log_collector")</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
 <h3 id="_labels_identifying_a_container">Labels identifying a container</h3>
 <div class="paragraph">
 <p>Metrics associated with a <em>Pod</em> get the following labels:</p>
@@ -605,6 +586,23 @@ Our preferred option is the DNS authority (<code>host:port</code> part) of the p
 </li>
 <li>
 <p><a href="https://github.com/openshift/origin/issues/10682">How do I check my Kubernets Master URL? · Issue #10682 · openshift/origin</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_prometheus_standard_labels">Prometheus standard labels</h3>
+<div class="paragraph">
+<p>These labels are added by prometheus, they are of limited relevance for to logging.
+They identify the agent that collects logs, not the resource that produced them.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>instance</code>: address of scrape endpoint in the form "&lt;ip-literal&gt;:&lt;port&gt;"</p>
+</li>
+<li>
+<p><code>job</code>: arbitrary string name to identify related endpoints (e.g. "log_collector")</p>
 </li>
 </ul>
 </div>
