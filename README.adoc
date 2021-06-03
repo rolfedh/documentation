@@ -21,7 +21,7 @@ However, it is better if you link:_request_a_change[]
 
 == Working on the docs
 
-First, install or verify that you have:
+First, install or verify that you have the following software installed:
 
 * https://www.gnu.org/softwarprpr/make/[GNU make]
 * https://asciidoctor.org/[asciidoctor (render AsciiDoc as HTML)]
@@ -30,13 +30,14 @@ First, install or verify that you have:
 
 Instructions for Fedora:
 
+// dnf install make linkchecker graphviz
 ----
-dnf install make linkchecker graphviz
+dnf install make graphviz
 gem install asciidoctor
 go get github.com/hairyhenderson/gomplate/v3/cmd/gomplate
 ----
 
-For other platforms, you'll have to figure out the equivalent install steps.
+For other platforms, figure out the equivalent installation steps.
 
 === Requesting a change
 
