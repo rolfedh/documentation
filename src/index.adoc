@@ -2,11 +2,11 @@
 
 WARNING: Under Construction
 
-The ViaQ project provides components for  https://docs.openshift.com/container-platform/4.7/logging/cluster-logging.html[Openshift Logging], a central log collection system for openshift clusters.
+The ViaQ project provides components for https://docs.openshift.com/container-platform/4.7/logging/cluster-logging.html[Openshift Logging], a central log collection system for OpenShift clusters.
 
 This site documents the architecture and some of the internal details of Openshift Logging.
-It is aimed at developers, doc writers, and contributors working on the project,
-but may be of interest to those who want to learn more about the internal details.
+
+This content is intended for developers, doc writers, and contributors working on the project. However, it may be of interest to those who want to learn more about the internal details.
 
 TIP: To contribute to this site, see https://github.com/ViaQ/documentation
 
